@@ -9,12 +9,11 @@ import { Toast } from '../../utils/toast';
 
 const ListRequestCallBack = () => {
   const { data, isLoading } = useGetRequestCallBacksQuery(undefined);
+
   const [deleteRequestCallBack, { isSuccess }] =
     useDeleteRequestCallBackMutation();
 
-  console.log(data);
-  console.log(isLoading);
-
+  console.log('isSuccess', isSuccess);
   if (isLoading) {
     return <Loading msg="request call backs loading..." />;
   }

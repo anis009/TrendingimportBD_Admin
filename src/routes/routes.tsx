@@ -7,6 +7,7 @@ import PrivateRoute from './privateRoutes';
 import SignIn from '../pages/Authentication/SignIn';
 import SignUp from '../pages/Authentication/SignUp';
 import ListRequestCallBack from '../pages/RequestCallBack/ListRequestCallBack';
+import Test from '../pages/Test/Test';
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Request Call Back" />
               <ListRequestCallBack />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/test',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Test" />
+              <Test />
             </>
           </PrivateRoute>
         ),
