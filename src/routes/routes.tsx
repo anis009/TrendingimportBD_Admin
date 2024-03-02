@@ -8,6 +8,7 @@ import SignIn from '../pages/Authentication/SignIn';
 import SignUp from '../pages/Authentication/SignUp';
 import ListRequestCallBack from '../pages/RequestCallBack/ListRequestCallBack';
 import Test from '../pages/Test/Test';
+import Quotations from '../pages/Quotations/Quotations';
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Test" />
               <Test />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/quotations',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Quotations" />
+              <Quotations />
             </>
           </PrivateRoute>
         ),
