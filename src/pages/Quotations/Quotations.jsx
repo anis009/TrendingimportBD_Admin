@@ -15,7 +15,7 @@ const Quotations = () => {
     // Transform the API data into the format expected by the table
     const  [myData,setData] = useState({})
  useEffect(()=>{
-  const data = apiData?.data.map(quotation => ({
+  const tmpData = apiData?.data.map(quotation => ({
     name: `${quotation.firstName} ${quotation.lastName}`,
     departureAirport: quotation.departureAirport,
     departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
@@ -24,7 +24,7 @@ const Quotations = () => {
     timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
     action: 'View Details', // You can keep this or adjust based on your API data
   })) || [];
-  setData(data)
+  setData(tmpData)
  },[])
 
     const flightData = [
