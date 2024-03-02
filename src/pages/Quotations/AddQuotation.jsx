@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Toast } from '../../utils/toast';
 import {
     useDeleteQuotationMutation,
     useGetQuotationsQuery,
@@ -15,13 +16,13 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
     firstName: '',
     lastName: '',
     email: '',
-    contactNumber: '',
+    phoneNumber: '',
     departureAirport: '',
     departureDate: '',
     arrivalAirport: '',
     arrivalDate: '',
-    pax: '',
-    type: '',
+    PAX: '',
+    flightType: '',
     flexibility: '',
     class: '',
     notes: '',
@@ -38,8 +39,32 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+   // Basic validation for phoneNumber
+   if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
+    Toast.error('Phone number is required.');
+    return;
+  }
+        // Remove form fields not expected by the API
+
+  delete formData.existingClient;
+  delete formData.clientId;
     e.preventDefault();
+    console.log("submitteddd dta---- ",formData)
+    // alert(JSON.parse(formData))
+    try {
+        // Call the mutation with the adjusted data
+        const result = await addQuotations(formData).unwrap();
+        console.log('Form submitted successfully:', result);
+        Toast.success('Deleted successfully');
+    
+        // Handle success (e.g., showing a success message or closing the modal)
+        // onClose();
+      } catch (error) {
+        Toast.success('Err successfully',error);
+        console.error('Error submitting form:', error);
+        // Handle error (e.g., showing an error message)
+      }
 //    const result=  async addQuotations('','');
     console.log(formData);
     onClose(); // Consider closing the modal or resetting form state here
@@ -167,16 +192,16 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
           {/* Contact Number */}
           <div className="mb-4">
             <label
-              htmlFor="contactNumber"
+              htmlFor="phoneNumber"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               Contact Number
             </label>
             <input
-              id="contactNumber"
-              name="contactNumber"
-              type="tel"
-              value={formData.contactNumber}
+              id="phoneNumber"
+              name="phoneNumber"
+              type="text"
+              value={formData.phoneNumber}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
@@ -261,16 +286,16 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
           {/* PAX */}
           <div className="mb-4">
             <label
-              htmlFor="pax"
+              htmlFor="PAX"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               PAX
             </label>
             <input
-              id="pax"
-              name="pax"
+              id="PAX"
+              name="PAX"
               type="number"
-              value={formData.pax}
+              value={formData.PAX}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required

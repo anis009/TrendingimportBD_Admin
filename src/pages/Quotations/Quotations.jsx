@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import AddQuotationModal from './AddQuotation';
 import Loading from '../../components/Loading/Loading';
+import { Grid } from 'react-loader-spinner'
 import {
   useDeleteQuotationMutation,
   useGetQuotationsQuery,
@@ -139,11 +140,26 @@ const Quotations = () => {
           Add Quotation
         </button>
       </div>
+      {isLoading &&(
+        <Grid
+  visible={true}
+  height="80"
+  width="80"
+  color="#4fa94d"
+  ariaLabel="grid-loading"
+  radius="12.5"
+  wrapperStyle={{}}
+  wrapperClass="grid-wrapper"
+  />
+      )}
+   
+   {!isLoading && myData &&(
       <TableComponent
         className="min-w-full table-auto"
         data={myData}
         columns={columns}
       />
+   )}
       <AddQuotationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
