@@ -11,80 +11,89 @@ import { getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
 
 const Quotations = () => {
-  const { data: apiData, isLoading } = useGetQuotationsQuery(undefined);
-    // Transform the API data into the format expected by the table
-    const  [myData,setData] = useState({})
- useEffect(()=>{
-  const tmpData = apiData?.data.map(quotation => ({
-    name: `${quotation.firstName} ${quotation.lastName}`,
-    departureAirport: quotation.departureAirport,
-    departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
-    arrivalAirport: quotation.arrivalAirport,
-    arrivalDate: getLocalDate(quotation.arrivalDate), // Adjust this as well
-    timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
-    action: 'View Details', // You can keep this or adjust based on your API data
-  })) || [];
-  setData(tmpData)
- },[])
+  const {
+    data: apiData,
+    isLoading,
+    isSuccess,
+  } = useGetQuotationsQuery(undefined);
+  const [myData, setData] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const flightData = [
-      {
-        name: 'Flight 1',
-        departureAirport: 'JFK',
-        departureDate: '2024-03-01',
-        arrivalAirport: 'LAX',
-        arrivalDate: '2024-03-01',
-        timeReceived: '10:00',
-        action: 'View Details' // This can also be a JSX element like a button
-      },
-      {
-        name: 'Flight 1',
-        departureAirport: 'JFK',
-        departureDate: '2024-03-01',
-        arrivalAirport: 'LAX',
-        arrivalDate: '2024-03-01',
-        timeReceived: '10:00',
-        action: 'View Details' // This can also be a JSX element like a button
-      },
-      {
-        name: 'Flight 1',
-        departureAirport: 'JFK',
-        departureDate: '2024-03-01',
-        arrivalAirport: 'LAX',
-        arrivalDate: '2024-03-01',
-        timeReceived: '10:00',
-        action: 'View Details' // This can also be a JSX element like a button
-      },
-      {
-        name: 'Flight 1',
-        departureAirport: 'JFK',
-        departureDate: '2024-03-01',
-        arrivalAirport: 'LAX',
-        arrivalDate: '2024-03-01',
-        timeReceived: '10:00',
-        action: 'View Details' // This can also be a JSX element like a button
-      },
-      {
-        name: 'Flight 1',
-        departureAirport: 'JFK',
-        departureDate: '2024-03-01',
-        arrivalAirport: 'LAX',
-        arrivalDate: '2024-03-01',
-        timeReceived: '10:00',
-        action: 'View Details' // This can also be a JSX element like a button
-      },
-      {
-        name: 'Flight 1',
-        departureAirport: 'JFK',
-        departureDate: '2024-03-01',
-        arrivalAirport: 'LAX',
-        arrivalDate: '2024-03-01',
-        timeReceived: '10:00',
-        action: 'View Details' // This can also be a JSX element like a button
-      },
-      // Add more flights as needed
-    ];
-    
+  // Transform the API data into the format expected by the table
+  useEffect(() => {
+    if (isSuccess) {
+      const tmpData =
+        apiData?.data.map((quotation) => ({
+          name: `${quotation.firstName} ${quotation.lastName}`,
+          departureAirport: quotation.departureAirport,
+          departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
+          arrivalAirport: quotation.arrivalAirport,
+          arrivalDate: getLocalDate(quotation.arrivalDate), // Adjust this as well
+          timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
+          action: 'View Details', // You can keep this or adjust based on your API data
+        })) || [];
+      setData(tmpData);
+    }
+  }, [isSuccess]);
+
+  const flightData = [
+    {
+      name: 'Flight 1',
+      departureAirport: 'JFK',
+      departureDate: '2024-03-01',
+      arrivalAirport: 'LAX',
+      arrivalDate: '2024-03-01',
+      timeReceived: '10:00',
+      action: 'View Details', // This can also be a JSX element like a button
+    },
+    {
+      name: 'Flight 1',
+      departureAirport: 'JFK',
+      departureDate: '2024-03-01',
+      arrivalAirport: 'LAX',
+      arrivalDate: '2024-03-01',
+      timeReceived: '10:00',
+      action: 'View Details', // This can also be a JSX element like a button
+    },
+    {
+      name: 'Flight 1',
+      departureAirport: 'JFK',
+      departureDate: '2024-03-01',
+      arrivalAirport: 'LAX',
+      arrivalDate: '2024-03-01',
+      timeReceived: '10:00',
+      action: 'View Details', // This can also be a JSX element like a button
+    },
+    {
+      name: 'Flight 1',
+      departureAirport: 'JFK',
+      departureDate: '2024-03-01',
+      arrivalAirport: 'LAX',
+      arrivalDate: '2024-03-01',
+      timeReceived: '10:00',
+      action: 'View Details', // This can also be a JSX element like a button
+    },
+    {
+      name: 'Flight 1',
+      departureAirport: 'JFK',
+      departureDate: '2024-03-01',
+      arrivalAirport: 'LAX',
+      arrivalDate: '2024-03-01',
+      timeReceived: '10:00',
+      action: 'View Details', // This can also be a JSX element like a button
+    },
+    {
+      name: 'Flight 1',
+      departureAirport: 'JFK',
+      departureDate: '2024-03-01',
+      arrivalAirport: 'LAX',
+      arrivalDate: '2024-03-01',
+      timeReceived: '10:00',
+      action: 'View Details', // This can also be a JSX element like a button
+    },
+    // Add more flights as needed
+  ];
+
   const columns = [
     {
       Header: 'Name',
@@ -118,19 +127,27 @@ const Quotations = () => {
       Cell: ({ value }) => <button>{value}</button>,
     },
   ];
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log('mydata~', myData);
   return (
     <div className="overflow-x-auto">
       <div className="qoutations-header-wrapper flex flex-row items-center justify-between space-x-4">
         <h3 className="text-xl mb-4">Quotations Lists</h3>
-        <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-slate-600 text-white rounded-md">Add Quotation</button>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-slate-600 text-white rounded-md"
+        >
+          Add Quotation
+        </button>
       </div>
       <TableComponent
         className="min-w-full table-auto"
         data={myData}
         columns={columns}
       />
-        <AddQuotationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AddQuotationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
