@@ -45,7 +45,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ columns, data }) => {
         {...getTableProps()}
         className="min-w-full divide-y divide-gray-200"
       >
-        <thead className="bg-gray-800 text-white">
+        <thead className="bg-gray-800 text-black dark:text-white">
           {headerGroups.map((headerGroup: any) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column: any) => (
