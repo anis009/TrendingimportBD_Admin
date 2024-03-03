@@ -8,4 +8,5 @@ export type IRequestCallBack = {
   to: string;
   travel_class: string;
   _id: string;
+  status: string;
 };
