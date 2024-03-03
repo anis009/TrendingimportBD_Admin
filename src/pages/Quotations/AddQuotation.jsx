@@ -54,9 +54,12 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
     // alert(JSON.parse(formData))
     try {
         // Call the mutation with the adjusted data
-        const result = await addQuotations(formData).unwrap();
+        const result = await addQuotations({data:formData});
         console.log('Form submitted successfully:', result);
-        Toast.success('Deleted successfully');
+        if(result.data.success){
+            Toast.success('Quotation Added successfully');
+        }
+        
     
         // Handle success (e.g., showing a success message or closing the modal)
         // onClose();
