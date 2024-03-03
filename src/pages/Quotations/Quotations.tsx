@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import TableComponent from '../../components/TableComponent/TableComponent';
-import AddQuotationModal from './AddQuotation';
-import Loading from '../../components/Loading/Loading';
+
+import Loading from '../../components/Loading/Loading.tsx';
 import { Grid } from 'react-loader-spinner';
-import {
-  useDeleteQuotationMutation,
-  useGetQuotationsQuery,
-} from '../../redux/features/quotations/apiquotations';
 // import { IRequestCallBack } from '../../types/requestCallBack';
-import { getLocalDate } from '../../utils/date';
-import { Toast } from '../../utils/toast';
+import { getLocalDate } from '../../utils/date.ts';
+import { Toast } from '../../utils/toast.ts';
+import { useGetQuotationsQuery } from '../../redux/features/quotations/apiQuotations.tsx';
+import TableComponent from '../../components/TableComponent/TableComponents.tsx';
+import AddQuotationModal from './AddQuotation.tsx';
 
 const Quotations = () => {
   const {
@@ -134,6 +132,7 @@ const Quotations = () => {
       ),
     },
   ];
+
   console.log('mydata~', myData);
   return (
     <div className="overflow-x-auto">
@@ -150,7 +149,6 @@ const Quotations = () => {
         <div className="flex flex-row items-center justify-center">
           {' '}
           <Grid
-            className=""
             visible={true}
             height="80"
             width="80"

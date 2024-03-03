@@ -1,4 +1,5 @@
 import Loading from '../../components/Loading/Loading';
+import TableComponent from '../../components/TableComponent/TableComponents';
 import {
   useDeleteRequestCallBackMutation,
   useGetRequestCallBacksQuery,
@@ -6,17 +7,31 @@ import {
 import { IRequestCallBack } from '../../types/requestCallBack';
 import { getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
+import { useEffect, useState } from 'react';
 
 const ListRequestCallBack = () => {
-  const { data, isLoading } = useGetRequestCallBacksQuery(undefined);
+  const { data, isLoading, isSuccess } = useGetRequestCallBacksQuery(undefined);
+  const [tableData, setTableData] = useState([]);
+  useEffect(() => {
+    if (isSuccess && data && data?.data) {
+      const temp = data.data.map((item: IRequestCallBack) => {
+        const departure = getLocalDate(item.departure as string);
+        const arrival = getLocalDate(item.arrival as string);
+        return { ...item, departure, arrival };
+      });
+      setTableData(temp);
+    }
+  }, [isSuccess, data]);
 
-  const [deleteRequestCallBack, { isSuccess }] =
+  const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
     useDeleteRequestCallBackMutation();
 
-  console.log('isSuccess', isSuccess);
+  console.log('isSuccess', deleteSuccess);
   if (isLoading) {
     return <Loading msg="request call backs loading..." />;
   }
+
+  //TODO:: DELETE HANDLER
   const deleteHandler = async (id: string) => {
     const confirm = window.confirm('Are you sure you want to delete');
     if (!confirm) {
@@ -33,63 +48,55 @@ const ListRequestCallBack = () => {
       console.log(error);
     }
   };
+
+  // TODO:: TABLE COLUMNS
+
+  const columns = [
+    {
+      Header: 'Phone Number',
+      accessor: 'phoneNumber',
+    },
+    {
+      Header: 'From',
+      accessor: 'from',
+    },
+    {
+      Header: 'Arrival',
+      accessor: 'arrival',
+    },
+    {
+      Header: 'To',
+      accessor: 'to',
+    },
+    {
+      Header: 'Departure',
+      accessor: 'departure',
+    },
+    {
+      Header: 'Flight Type',
+      accessor: 'flight_type',
+    },
+    // Define other columns similarly
+    {
+      Header: 'No Of Passengers',
+      accessor: 'no_of_passengers',
+    },
+    {
+      Header: 'Travel Class',
+      accessor: 'travel_class',
+    },
+  ];
+
   return (
     <div className="rounded-sm  overflow-x-auto border border-stroke bg-white px-5 pt-6 pb-2.5  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Request Call Back
       </h4>
-      <div className="overflow-x-auto">
-        <table className="container mx-auto dark:bg-gray-900 dark:text-white bg-gray-100 text-gray-900">
-          <thead className="border-[1px] border-gray-2 py-3 px-2">
-            <tr className="py-3 px-2">
-              <th className="py-3 px-2">#</th>
-              <th className="py-3 px-2">Phone Number</th>
-              <th className="py-3 px-2">From </th>
-              <th className="py-3 px-2">Arrival</th>
-              <th className="py-3 px-2">To</th>
-              <th>Departure</th>
-              <th>Flight Type</th>
-              <th>No of Passengers</th>
-              <th>Travel Class</th>
-              <th colSpan={2}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data &&
-              data?.data.map((_item: IRequestCallBack, key: number) => {
-                return (
-                  <tr
-                    key={_item._id}
-                    className="text-center border-[1px] border-gray-2 "
-                  >
-                    <td className="py-2 px-3">{key + 1}</td>
-                    <td>{_item.phoneNumber}</td>
-                    <td>{_item.from}</td>
-                    <td>{getLocalDate(_item.arrival as string)}</td>
-                    <td>{_item.to}</td>
-                    <td>{getLocalDate(_item.departure as string)}</td>
-                    <td>{_item.flight_type}</td>
-                    <td>{_item.no_of_passengers}</td>
-                    <td>{_item.travel_class}</td>
-                    <td>
-                      <button className="bg-green-600 text-white px-3  py-1 rounded-lg mr-2">
-                        Edit
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => deleteHandler(_item?._id as string)}
-                        className="bg-red-600 text-white px-3  py-1 rounded-lg mr-2"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
-      </div>
+      <TableComponent
+        className="min-w-full table-auto"
+        data={tableData}
+        columns={columns}
+      />
     </div>
   );
 };

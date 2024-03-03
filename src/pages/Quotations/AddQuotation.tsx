@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Toast } from '../../utils/toast';
-import {
-    useDeleteQuotationMutation,
-    useGetQuotationsQuery,
-    usePostQuotationMutation
-  } from '../../redux/features/quotations/apiquotations';
-const AddQuotationModal = ({ isOpen, onClose }) => {
-    const [addQuotations, { isSuccess,isError,isLoading }] =
-    usePostQuotationMutation();
+import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
+
+const AddQuotationModal = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  const [addQuotations, {}] = usePostQuotationMutation();
 
   // Initial form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     existingClient: false,
     clientId: '',
     firstName: '',
@@ -30,45 +32,44 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
   });
 
   // Update form state
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-   // Basic validation for phoneNumber
-   if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
-    Toast.error('Phone number is required.');
-    return;
-  }
-        // Remove form fields not expected by the API
+  const handleSubmit = async (e: any) => {
+    // Basic validation for phoneNumber
+    if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
+      Toast.error('Phone number is required.');
+      return;
+    }
+    // Remove form fields not expected by the API
 
-  delete formData.existingClient;
-  delete formData.clientId;
+    delete formData.existingClient;
+    delete formData.clientId;
     e.preventDefault();
-    console.log("submitteddd dta---- ",formData)
+    console.log('submitteddd dta---- ', formData);
     // alert(JSON.parse(formData))
     try {
-        // Call the mutation with the adjusted data
-        const result = await addQuotations({data:formData});
-        console.log('Form submitted successfully:', result);
-        if(result.data.success){
-            Toast.success('Quotation Added successfully');
-        }
-        
-    
-        // Handle success (e.g., showing a success message or closing the modal)
-        // onClose();
-      } catch (error) {
-        Toast.success('Err successfully',error);
-        console.error('Error submitting form:', error);
-        // Handle error (e.g., showing an error message)
+      // Call the mutation with the adjusted data
+      const result: any = await addQuotations({ data: formData });
+      console.log('Form submitted successfully:', result);
+      if (result.data.success) {
+        Toast.success('Quotation Added successfully');
       }
-//    const result=  async addQuotations('','');
+
+      // Handle success (e.g., showing a success message or closing the modal)
+      // onClose();
+    } catch (error) {
+      Toast.success('Err successfully');
+      console.error('Error submitting form:', error);
+      // Handle error (e.g., showing an error message)
+    }
+    //    const result=  async addQuotations('','');
     console.log(formData);
     onClose(); // Consider closing the modal or resetting form state here
   };
@@ -384,7 +385,7 @@ const AddQuotationModal = ({ isOpen, onClose }) => {
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              rows="4"
+              rows={4}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
           </div>
