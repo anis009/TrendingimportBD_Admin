@@ -30,8 +30,8 @@ const TableComponent = ({ columns, data }) => {
   // Render the UI for your table
   return (
     <>
-      <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-800 text-white">
+      <table {...getTableProps()} className="min-w-full overflow-x-auto table-auto divide-y divide-gray-200">
+        <thead className="bg-gray-800 text-black dark:text-white">
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (

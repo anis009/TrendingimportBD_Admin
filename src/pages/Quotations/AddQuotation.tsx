@@ -56,13 +56,15 @@ const AddQuotationModal = ({
     // alert(JSON.parse(formData))
     try {
       // Call the mutation with the adjusted data
-      const result = await addQuotations(formData).unwrap();
+      const result: any = await addQuotations({ data: formData });
       console.log('Form submitted successfully:', result);
-      Toast.success('Deleted successfully');
+      if (result.data.success) {
+        Toast.success('Quotation Added successfully');
+      }
 
       // Handle success (e.g., showing a success message or closing the modal)
       // onClose();
-    } catch (error: any) {
+    } catch (error) {
       Toast.success('Err successfully');
       console.error('Error submitting form:', error);
       // Handle error (e.g., showing an error message)
@@ -383,7 +385,7 @@ const AddQuotationModal = ({
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              rows="4"
+              rows={4}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
           </div>

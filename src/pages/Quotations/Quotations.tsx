@@ -33,7 +33,7 @@ const Quotations = () => {
         })) || [];
       setData(tmpData);
     }
-  }, [isSuccess]);
+  }, [isSuccess,apiData]);
 
   const flightData = [
     {
@@ -123,7 +123,13 @@ const Quotations = () => {
       Header: 'Action',
       accessor: 'action',
       // Example of rendering a custom component or JSX in a cell
-      Cell: ({ value }) => <button>{value}</button>,
+      Cell: ({}) => (
+        <div className='flex flex-row  items-center justify-center space-x-2 '>
+          <button  className='px-4 py-2 bg-green-500 text-white rounded-md'>Edit</button>
+          <button className='px-4 py-2 bg-red-700 text-white rounded-md'>Delete</button>
+          <button className='px-4 py-2 bg-slate-700 text-white rounded-md'>View</button>
+        </div>
+      ),
     },
   ];
 
@@ -157,7 +163,7 @@ const Quotations = () => {
 
       {!isLoading && myData && (
         <TableComponent
-          className="min-w-full table-auto"
+          className="min-w--full table-auto"
           data={myData}
           columns={columns}
         />
