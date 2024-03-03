@@ -13,7 +13,8 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const ListRequestCallBack = () => {
-  const { data, isLoading, isSuccess } = useGetRequestCallBacksQuery(undefined);
+  const { data, isLoading, isSuccess, refetch } =
+    useGetRequestCallBacksQuery(undefined);
   const [tableData, setTableData] = useState([]);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [editedValue, setEditedValue] = useState<IRequestCallBack>();
@@ -40,6 +41,7 @@ const ListRequestCallBack = () => {
       if (result && result.data?.success) {
         Toast.success('Updated successfully');
         modalToggle();
+        await refetch();
       }
       console.log(result);
     } catch (error) {}
@@ -99,6 +101,9 @@ const ListRequestCallBack = () => {
       setValue('phoneNumber', value.phoneNumber);
     }
 
+    if (value.status) {
+      setValue('status', value.status);
+    }
     if (value._id) {
       setEditedId(value._id);
     }
@@ -163,6 +168,10 @@ const ListRequestCallBack = () => {
     {
       Header: 'No Of Passengers',
       accessor: 'no_of_passengers',
+    },
+    {
+      Header: 'Status',
+      accessor: 'status',
     },
     {
       Header: 'Travel Class',
@@ -309,6 +318,17 @@ const ListRequestCallBack = () => {
                 className="w-full px-3 py-2 border rounded-md"
               />
             </div>
+            <div className="mb-4">
+              <label htmlFor="travel_class" className="block text-sm font-bold">
+                Status:
+              </label>
+              <input
+                type="text"
+                id="travel_class"
+                {...register('status')}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
 
             <button
               type="submit"
@@ -371,6 +391,12 @@ const ListRequestCallBack = () => {
                 Travel Class:
               </label>
               <p className="text-gray-700 text-sm">{viewValue.travel_class}</p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Status:
+              </label>
+              <p className="text-gray-700 text-sm">{viewValue.status}</p>
             </div>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
