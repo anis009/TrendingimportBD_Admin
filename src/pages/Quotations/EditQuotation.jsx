@@ -1,16 +1,19 @@
 // EditQuotationModal.js
 import React, { useState, useEffect } from 'react';
 // Import the hook from your API file where it's defined
-import { useUpdateQuotationMutation,useGetSingleQuotationQuery } from '../../redux/features/quotations/apiQuotations';
+import {
+  useUpdateQuotationMutation,
+  useGetSingleQuotationQuery,
+} from '../../redux/features/quotations/apiQuotations';
 
 const EditQuotationModal = ({ isOpen, onClose, id }) => {
   const [updateQuotation, { isLoading, isSuccess, isError }] =
     useUpdateQuotationMutation();
-    const {
-        data: singleData,
-        isLoading:isSingleLoading,
-        isSuccess:isSingleSuccess,
-      } = useGetSingleQuotationQuery(id);
+  const {
+    data: singleData,
+    isLoading: isSingleLoading,
+    isSuccess: isSingleSuccess,
+  } = useGetSingleQuotationQuery(id);
 
   const [formData, setFormData] = useState({
     // Initialize with empty or default values
@@ -28,12 +31,11 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
     type: '',
     status: '',
   });
-  console.log('sigle data ===',singleData);
-  console.log('sigle id ===',id);
+  console.log('sigle data ===', singleData);
+  console.log('sigle id ===', id);
   useEffect(() => {
-
     if (id && singleData) {
-     // Populate the form data with the quotation to be edited
+      // Populate the form data with the quotation to be edited
       setFormData({
         firstName: singleData.data.firstName || '',
         lastName: singleData.data.lastName || '',
@@ -43,8 +45,8 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
         departureDate: singleData.data.departureDate || '',
         arrivalAirport: singleData.data.arrivalAirport || '',
         arrivalDate: singleData.data.arrivalDate || '',
-        pax: singleData.data.PAX || '',
-        flexibility:singleData.data.flexibility,
+        pax: singleData.data.pax || '',
+        flexibility: singleData.data.flexibility,
         class: singleData.data.class,
         notes: singleData.data.notes,
         type: singleData.data.type,
@@ -52,7 +54,7 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
       });
     }
     // console.log('formdata===>',formData);
-  }, [id,singleData]);
+  }, [id, singleData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -80,7 +82,10 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
   return (
     <div className="modal fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
       <div className="modal-content relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
-        <span className="close-button absolute right-2 top-4 cursor-pointer bg-red-600" onClick={onClose}>
+        <span
+          className="close-button absolute right-2 top-4 cursor-pointer bg-red-600"
+          onClick={onClose}
+        >
           &times;
         </span>
         <form onSubmit={handleSubmit}>
@@ -358,6 +363,7 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               <option value="Pending">Pending</option>
               <option value="Confirmed">Confirmed</option>
               <option value="Cancelled">Cancelled</option>
+              <option value="Sold">Sold</option>
             </select>
           </div>
           {/* Add more input fields for other quotation properties */}
