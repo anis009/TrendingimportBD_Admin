@@ -33,14 +33,15 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
   });
   console.log('sigle data ===', singleData);
   console.log('sigle id ===', id);
+//   console.log('sigle first name ===', singleData);
   useEffect(() => {
     if (id && singleData) {
       // Populate the form data with the quotation to be edited
       setFormData({
-        firstName: singleData.data.firstName || '',
-        lastName: singleData.data.lastName || '',
-        email: singleData.data.email || '',
-        phoneNumber: singleData.data.phoneNumber,
+        firstName: singleData.data.client.firstName || '',
+        lastName: singleData.data.client.lastName || '',
+        email: singleData.data.client.email || '',
+        phoneNumber: singleData.data.client.phoneNumber,
         departureAirport: singleData.data.departureAirport || '',
         departureDate: singleData.data.departureDate || '',
         arrivalAirport: singleData.data.arrivalAirport || '',
@@ -118,10 +119,11 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               id="firstName"
               name="firstName"
               type="text"
+              disabled readOnly
               value={formData.firstName}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
+              required 
             />
           </div>
 
@@ -136,10 +138,11 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               id="lastName"
               name="lastName"
               type="text"
+              disabled readOnly
               value={formData.lastName}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
+              required 
             />
           </div>
 
@@ -156,6 +159,7 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               id="email"
               name="email"
               type="email"
+              disabled readOnly
               value={formData.email}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -175,6 +179,7 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               id="phoneNumber"
               name="phoneNumber"
               type="text"
+              disabled readOnly
               value={formData.phoneNumber}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

@@ -148,7 +148,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-                  Quotations
+                  All Quotations
                 </NavLink>
               </li>
               <li>
@@ -172,7 +172,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-                  Clients
+                 My Clients
                 </NavLink>
               </li>
               <li>
