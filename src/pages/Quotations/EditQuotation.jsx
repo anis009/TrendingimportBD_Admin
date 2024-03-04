@@ -45,7 +45,9 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
         departureDate: singleData.data.departureDate || '',
         arrivalAirport: singleData.data.arrivalAirport || '',
         arrivalDate: singleData.data.arrivalDate || '',
+
         pax: singleData.data.pax || '',
+
         flexibility: singleData.data.flexibility,
         class: singleData.data.class,
         notes: singleData.data.notes,
@@ -82,12 +84,33 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
   return (
     <div className="modal fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
       <div className="modal-content relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
+
         <span
           className="close-button absolute right-2 top-4 cursor-pointer bg-red-600"
           onClick={onClose}
         >
           &times;
+       <h3 className='text-xl'>Edit Quotation</h3>
+      <span className="absolute top-0 right-0 p-4">
+          <button
+            onClick={onClose}
+            className="text-gray-900 hover:text-gray-600"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+
         </span>
+       
         <form onSubmit={handleSubmit}>
           {/* Adapt these fields based on your quotation structure */}
 
@@ -360,14 +383,67 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Status</option>
+
               <option value="Pending">Pending</option>
               <option value="Confirmed">Confirmed</option>
               <option value="Cancelled">Cancelled</option>
-              <option value="Sold">Sold</option>
+         
+
+              <option value="fresh">Fresh</option>
+              <option value="processing">Processing</option>
+              <option value="no_flight_found">No flight found</option>
+              <option value="missed_call">Missed Call</option>
+              <option value="will_get_back_later">Will get back later</option>
+              <option value="quote_send">Quote send</option>
+              <option value="asking_for_lower_price">
+                Asking for lower price
+              </option>
+              <option value="sold">Sold</option>
+              <option value="reject">Reject</option>
+              <option value="found_cheaper_elsewhere">
+                Found cheaper elsewhere
+              </option>
+              <option value="scam">Scam</option>
+              <option value="unwilling_to_share_CC">
+                Unwilling to share CC
+              </option>
             </select>
           </div>
           {/* Add more input fields for other quotation properties */}
-          <button type="submit">Save Changes</button>
+          <div className="flex items-center justify-between mt-8">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              <div className="flex flex-row items-center justify-center space-x-2">
+                <span>Save Changes</span>{' '}
+                {isLoading && (
+                  <ColorRing
+                    visible={true}
+                    height="40"
+                    width="40"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="color-ring-wrapper"
+                    colors={[
+                      '#e15b64',
+                      '#f47e60',
+                      '#f8b26a',
+                      '#abbd81',
+                      '#849b87',
+                    ]}
+                  />
+                )}
+              </div>
+            </button>
+            <button
+              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              onClick={onClose}
+            >
+              Close
+            </button>
+          </div>
+         
         </form>
       </div>
     </div>

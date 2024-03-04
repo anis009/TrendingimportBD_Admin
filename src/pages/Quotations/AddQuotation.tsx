@@ -7,6 +7,7 @@ import {
   usePostClientMutation,
 } from '../../redux/features/clients/apiClients';
 
+
 const AddQuotationModal = ({
   isOpen,
   onClose,
@@ -15,6 +16,7 @@ const AddQuotationModal = ({
   onClose: () => void;
 }) => {
   const [addQuotations, { isLoading, isSuccess }] = usePostQuotationMutation();
+
   const [errorMsg, setErrorMsg] = useState('');
   const [
     createClientPost,
@@ -38,6 +40,7 @@ const AddQuotationModal = ({
 
   console.log('emails~', emailsData);
 
+
   // Initial form state
   const [formData, setFormData] = useState<any>({
     existingClient: false,
@@ -50,7 +53,7 @@ const AddQuotationModal = ({
     departureDate: '',
     arrivalAirport: '',
     arrivalDate: '',
-    PAX: '',
+    pax: '',
     flightType: '',
     flexibility: '',
     class: '',
@@ -379,10 +382,10 @@ const AddQuotationModal = ({
               PAX
             </label>
             <input
-              id="PAX"
-              name="PAX"
+              id="pax"
+              name="pax"
               type="number"
-              value={formData.PAX}
+              value={formData.pax}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
@@ -489,9 +492,25 @@ const AddQuotationModal = ({
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Confirmed">Confirmed</option>
-              <option value="Cancelled">Cancelled</option>
+
+              <option value="fresh">Fresh</option>
+              <option value="processing">Processing</option>
+              <option value="no_flight_found">No flight found</option>
+              <option value="missed_call">Missed Call</option>
+              <option value="will_get_back_later">Will get back later</option>
+              <option value="quote_send">Quote send</option>
+              <option value="asking_for_lower_price">
+                Asking for lower price
+              </option>
+              <option value="sold">Sold</option>
+              <option value="reject">Reject</option>
+              <option value="found_cheaper_elsewhere">
+                Found cheaper elsewhere
+              </option>
+              <option value="scam">Scam</option>
+              <option value="unwilling_to_share_CC">
+                Unwilling to share CC
+              </option>
             </select>
           </div>
           <div className="flex items-center justify-between mt-8">
