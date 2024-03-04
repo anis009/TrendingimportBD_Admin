@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Toast } from '../../utils/toast';
 import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
-import { ColorRing } from 'react-loader-spinner'
+import { ColorRing } from 'react-loader-spinner';
 
 const AddQuotationModal = ({
   isOpen,
@@ -10,7 +10,7 @@ const AddQuotationModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const [addQuotations, {isLoading,isSuccess}] = usePostQuotationMutation();
+  const [addQuotations, { isLoading, isSuccess }] = usePostQuotationMutation();
 
   // Initial form state
   const [formData, setFormData] = useState<any>({
@@ -407,9 +407,25 @@ const AddQuotationModal = ({
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Confirmed">Confirmed</option>
-              <option value="Cancelled">Cancelled</option>
+
+              <option value="fresh">Fresh</option>
+              <option value="processing">Processing</option>
+              <option value="no_flight_found">No flight found</option>
+              <option value="missed_call">Missed Call</option>
+              <option value="will_get_back_later">Will get back later</option>
+              <option value="quote_send">Quote send</option>
+              <option value="asking_for_lower_price">
+                Asking for lower price
+              </option>
+              <option value="sold">Sold</option>
+              <option value="reject">Reject</option>
+              <option value="found_cheaper_elsewhere">
+                Found cheaper elsewhere
+              </option>
+              <option value="scam">Scam</option>
+              <option value="unwilling_to_share_CC">
+                Unwilling to share CC
+              </option>
             </select>
           </div>
           <div className="flex items-center justify-between mt-8">
@@ -417,19 +433,26 @@ const AddQuotationModal = ({
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-            <div className='flex flex-row items-center justify-center space-x-2'>
-            <span>Add Quotation</span> {isLoading && (
-               <ColorRing
-               visible={true}
-               height="40"
-               width="40"
-               ariaLabel="color-ring-loading"
-               wrapperStyle={{}}
-               wrapperClass="color-ring-wrapper"
-               colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-               />
-              )}
-            </div>
+              <div className="flex flex-row items-center justify-center space-x-2">
+                <span>Add Quotation</span>{' '}
+                {isLoading && (
+                  <ColorRing
+                    visible={true}
+                    height="40"
+                    width="40"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="color-ring-wrapper"
+                    colors={[
+                      '#e15b64',
+                      '#f47e60',
+                      '#f8b26a',
+                      '#abbd81',
+                      '#849b87',
+                    ]}
+                  />
+                )}
+              </div>
             </button>
             <button
               className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
