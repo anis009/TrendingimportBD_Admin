@@ -84,14 +84,8 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
   return (
     <div className="modal fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
       <div className="modal-content relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
-
-        <span
-          className="close-button absolute right-2 top-4 cursor-pointer bg-red-600"
-          onClick={onClose}
-        >
-          &times;
-       <h3 className='text-xl'>Edit Quotation</h3>
-      <span className="absolute top-0 right-0 p-4">
+        <h3 className="text-xl">Edit Quotation</h3>
+        <span className="absolute top-0 right-0 p-4">
           <button
             onClick={onClose}
             className="text-gray-900 hover:text-gray-600"
@@ -108,9 +102,8 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               <path d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
-
         </span>
-       
+
         <form onSubmit={handleSubmit}>
           {/* Adapt these fields based on your quotation structure */}
 
@@ -387,7 +380,6 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               <option value="Pending">Pending</option>
               <option value="Confirmed">Confirmed</option>
               <option value="Cancelled">Cancelled</option>
-         
 
               <option value="fresh">Fresh</option>
               <option value="processing">Processing</option>
@@ -443,7 +435,6 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               Close
             </button>
           </div>
-         
         </form>
       </div>
     </div>
