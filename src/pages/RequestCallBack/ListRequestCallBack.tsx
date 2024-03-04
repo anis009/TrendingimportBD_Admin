@@ -129,6 +129,7 @@ const ListRequestCallBack = () => {
       console.log(data);
     } catch (error) {
       console.log(error);
+      Toast.success('Error '+error);
     }
   };
 

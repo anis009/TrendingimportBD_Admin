@@ -5,9 +5,10 @@ import { Grid } from 'react-loader-spinner';
 // import { IRequestCallBack } from '../../types/requestCallBack';
 import { getLocalDate } from '../../utils/date.ts';
 import { Toast } from '../../utils/toast.ts';
-import { useGetQuotationsQuery } from '../../redux/features/quotations/apiQuotations.tsx';
+import { useGetQuotationsQuery,useDeleteQuotationMutation } from '../../redux/features/quotations/apiQuotations.tsx';
 import TableComponent from '../../components/TableComponent/TableComponents.tsx';
 import AddQuotationModal from './AddQuotation.tsx';
+import { IQuotation } from '../../types/Quotation.ts';
 
 const Quotations = () => {
   const {
@@ -17,7 +18,26 @@ const Quotations = () => {
   } = useGetQuotationsQuery(undefined);
   const [myData, setData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteQuotation, { isSuccess: deleteSuccess }] =
+    useDeleteQuotationMutation();
+      //TODO:: DELETE HANDLER
+  const deleteHandler = async (id: string) => {
+    const confirm = window.confirm('Are you sure you want to delete');
+    if (!confirm) {
+      return;
+    }
 
+    try {
+      const result: any = await deleteQuotation({ id });
+      if (result && result?.data && result?.data?.success) {
+        Toast.success('Deleted successfully');
+      }
+      console.log(apiData);
+    } catch (error) {
+      console.log(error);
+    }
+    Toast.success('ID'+id);
+  };
   // Transform the API data into the format expected by the table
   useEffect(() => {
     if (isSuccess) {
@@ -30,6 +50,7 @@ const Quotations = () => {
           arrivalDate: getLocalDate(quotation.arrivalDate), // Adjust this as well
           timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
           action: 'View Details', // You can keep this or adjust based on your API data
+          _id: quotation._id,
         })) || [];
       setData(tmpData);
     }
@@ -114,28 +135,36 @@ const Quotations = () => {
       Header: 'Arrival Date',
       accessor: 'arrivalDate',
     },
-    {
-      Header: 'Time Received',
-      accessor: 'timeReceived',
-    },
+    // {
+    //   Header: 'Time Received',
+    //   accessor: 'timeReceived',
+    // },
     // Define other columns similarly
     {
       Header: 'Action',
       accessor: 'action',
       // Example of rendering a custom component or JSX in a cell
-      Cell: ({}) => (
+      Cell: ({
+        cell: {
+          row: { original },
+        },
+      }: {
+        cell: {
+          row: { original: IQuotation };
+        };
+      }) =>
         <div className="flex flex-row  items-center justify-center space-x-2 ">
           <button className="px-4 py-2 bg-green-500 text-white rounded-md">
             Edit
           </button>
-          <button className="px-4 py-2 bg-red-700 text-white rounded-md">
+          <button onClick= {() => deleteHandler(original._id)} className="px-4 py-2 bg-red-700 text-white rounded-md">
             Delete
           </button>
           <button className="px-4 py-2 bg-slate-700 text-white rounded-md">
             View
           </button>
         </div>
-      ),
+      
     },
   ];
 
