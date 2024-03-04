@@ -5,9 +5,13 @@ import { Grid } from 'react-loader-spinner';
 // import { IRequestCallBack } from '../../types/requestCallBack';
 import { getLocalDate } from '../../utils/date.ts';
 import { Toast } from '../../utils/toast.ts';
-import { useGetQuotationsQuery,useDeleteQuotationMutation } from '../../redux/features/quotations/apiQuotations.tsx';
+import {
+  useGetQuotationsQuery,
+  useDeleteQuotationMutation,
+} from '../../redux/features/quotations/apiQuotations.tsx';
 import TableComponent from '../../components/TableComponent/TableComponents.tsx';
 import AddQuotationModal from './AddQuotation.tsx';
+import EditQuotationModal from './EditQuotation.jsx';
 import { IQuotation } from '../../types/Quotation.ts';
 
 const Quotations = () => {
@@ -18,9 +22,18 @@ const Quotations = () => {
   } = useGetQuotationsQuery(undefined);
   const [myData, setData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [edit_id, setEditId] = useState<string>(); // State to hold the quotation to edit
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control modal visibility
+
+  // Existing code...
+
+  const handleEdit = (id: string) => {
+    setEditId(id);
+    setIsEditModalOpen(true);
+  };
   const [deleteQuotation, { isSuccess: deleteSuccess }] =
     useDeleteQuotationMutation();
-      //TODO:: DELETE HANDLER
+  //TODO:: DELETE HANDLER
   const deleteHandler = async (id: string) => {
     const confirm = window.confirm('Are you sure you want to delete');
     if (!confirm) {
@@ -36,7 +49,7 @@ const Quotations = () => {
     } catch (error) {
       console.log(error);
     }
-    Toast.success('ID'+id);
+    // Toast.success('ID'+id);
   };
   // Transform the API data into the format expected by the table
   useEffect(() => {
@@ -152,19 +165,25 @@ const Quotations = () => {
         cell: {
           row: { original: IQuotation };
         };
-      }) =>
+      }) => (
         <div className="flex flex-row  items-center justify-center space-x-2 ">
-          <button className="px-4 py-2 bg-green-500 text-white rounded-md">
+          <button
+            onClick={() => handleEdit(original._id as string)}
+            className="px-4 py-2 bg-green-500 text-white rounded-md"
+          >
             Edit
           </button>
-          <button onClick= {() => deleteHandler(original._id)} className="px-4 py-2 bg-red-700 text-white rounded-md">
+          <button
+            onClick={() => deleteHandler(original._id)}
+            className="px-4 py-2 bg-red-700 text-white rounded-md"
+          >
             Delete
           </button>
           <button className="px-4 py-2 bg-slate-700 text-white rounded-md">
             View
           </button>
         </div>
-      
+      ),
     },
   ];
 
@@ -207,6 +226,13 @@ const Quotations = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      {edit_id && (
+        <EditQuotationModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          id={edit_id}
+        />
+      )}
     </div>
   );
 };

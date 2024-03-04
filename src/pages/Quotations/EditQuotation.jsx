@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
-import { Toast } from '../../utils/toast';
-import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
-import { ColorRing } from 'react-loader-spinner'
+// EditQuotationModal.js
+import React, { useState, useEffect } from 'react';
+// Import the hook from your API file where it's defined
+import { useUpdateQuotationMutation,useGetSingleQuotationQuery } from '../../redux/features/quotations/apiQuotations';
 
-const AddQuotationModal = ({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
-  const [addQuotations, {isLoading,isSuccess}] = usePostQuotationMutation();
+const EditQuotationModal = ({ isOpen, onClose, id }) => {
+  const [updateQuotation, { isLoading, isSuccess, isError }] =
+    useUpdateQuotationMutation();
+    const {
+        data: singleData,
+        isLoading:isSingleLoading,
+        isSuccess:isSingleSuccess,
+      } = useGetSingleQuotationQuery(id);
 
-  // Initial form state
-  const [formData, setFormData] = useState<any>({
-    existingClient: false,
-    clientId: '',
+  const [formData, setFormData] = useState({
+    // Initialize with empty or default values
     firstName: '',
     lastName: '',
     email: '',
@@ -24,120 +22,70 @@ const AddQuotationModal = ({
     departureDate: '',
     arrivalAirport: '',
     arrivalDate: '',
-    PAX: '',
-    flightType: '',
-    flexibility: '',
+    pax: '',
     class: '',
     notes: '',
+    type: '',
     status: '',
   });
+  console.log('sigle data ===',singleData);
+  console.log('sigle id ===',id);
+  useEffect(() => {
 
-  // Update form state
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+    if (id && singleData) {
+     // Populate the form data with the quotation to be edited
+      setFormData({
+        firstName: singleData.data.firstName || '',
+        lastName: singleData.data.lastName || '',
+        email: singleData.data.email || '',
+        phoneNumber: singleData.data.phoneNumber,
+        departureAirport: singleData.data.departureAirport || '',
+        departureDate: singleData.data.departureDate || '',
+        arrivalAirport: singleData.data.arrivalAirport || '',
+        arrivalDate: singleData.data.arrivalDate || '',
+        pax: singleData.data.PAX || '',
+        flexibility:singleData.data.flexibility,
+        class: singleData.data.class,
+        notes: singleData.data.notes,
+        type: singleData.data.type,
+        status: singleData.data.status,
+      });
+    }
+    // console.log('formdata===>',formData);
+  }, [id,singleData]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: any) => {
-    // Basic validation for phoneNumber
-    if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
-      Toast.error('Phone number is required.');
-      return;
-    }
-    // Remove form fields not expected by the API
-
-    delete formData.existingClient;
-    delete formData.clientId;
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('submitteddd dta---- ', formData);
-    // alert(JSON.parse(formData))
     try {
-      // Call the mutation with the adjusted data
-      const result: any = await addQuotations({ data: formData });
-      console.log('Form submitted successfully:', result);
-      if (result.data.success) {
-        Toast.success('Quotation Added successfully');
-      }
-
-      // Handle success (e.g., showing a success message or closing the modal)
-      // onClose();
+      // Assuming your API expects an ID and the updated data
+      await updateQuotation({ id: singleData.data._id, data: formData });
+      Toast.success('Quotation updated successfully');
+      onClose(); // Close the modal after successful update
     } catch (error) {
-      Toast.success('Err successfully');
-      console.error('Error submitting form:', error);
-      // Handle error (e.g., showing an error message)
+      Toast.error('Failed to update quotation');
+      console.error(error);
     }
-    //    const result=  async addQuotations('','');
-    console.log(formData);
-    onClose(); // Consider closing the modal or resetting form state here
   };
 
-  if (!isOpen) return null; // Don't render the modal if it's not open
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
-        <span className="absolute top-0 right-0 p-4">
-          <button
-            onClick={onClose}
-            className="text-gray-900 hover:text-gray-600"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
+    <div className="modal fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
+      <div className="modal-content relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
+        <span className="close-button absolute right-2 top-4 cursor-pointer bg-red-600" onClick={onClose}>
+          &times;
         </span>
+        <form onSubmit={handleSubmit}>
+          {/* Adapt these fields based on your quotation structure */}
 
-        <h2 className="text-2xl font-semibold">Add Quote Request</h2>
-        <form className="mt-4" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="existingClient"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Existing Client?
-            </label>
-            <input
-              id="existingClient"
-              name="existingClient"
-              type="checkbox"
-              checked={formData.existingClient}
-              onChange={handleChange}
-              className=""
-            />
-          </div>
-
-          {formData.existingClient && (
-            <div className="mb-4">
-              <label
-                htmlFor="clientId"
-                className="block text-gray-700 text-sm font-bold mb-2"
-              >
-                Client ID
-              </label>
-              <input
-                id="clientId"
-                name="clientId"
-                type="text"
-                value={formData.clientId}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-          )}
-
-          {/* Repeated pattern for other fields */}
           <div className="mb-4">
             <label
               htmlFor="firstName"
@@ -150,7 +98,7 @@ const AddQuotationModal = ({
               name="firstName"
               type="text"
               value={formData.firstName}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -168,7 +116,7 @@ const AddQuotationModal = ({
               name="lastName"
               type="text"
               value={formData.lastName}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -188,7 +136,7 @@ const AddQuotationModal = ({
               name="email"
               type="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -207,7 +155,7 @@ const AddQuotationModal = ({
               name="phoneNumber"
               type="text"
               value={formData.phoneNumber}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -226,7 +174,7 @@ const AddQuotationModal = ({
               name="departureAirport"
               type="text"
               value={formData.departureAirport}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -245,7 +193,7 @@ const AddQuotationModal = ({
               name="departureDate"
               type="date"
               value={formData.departureDate}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -264,7 +212,7 @@ const AddQuotationModal = ({
               name="arrivalAirport"
               type="text"
               value={formData.arrivalAirport}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -283,7 +231,7 @@ const AddQuotationModal = ({
               name="arrivalDate"
               type="date"
               value={formData.arrivalDate}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
@@ -301,7 +249,7 @@ const AddQuotationModal = ({
               name="PAX"
               type="number"
               value={formData.PAX}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
@@ -319,7 +267,7 @@ const AddQuotationModal = ({
               id="type"
               name="type"
               value={formData.type}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Type</option>
@@ -341,7 +289,7 @@ const AddQuotationModal = ({
               id="flexibility"
               name="flexibility"
               value={formData.flexibility}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Flexibility</option>
@@ -363,7 +311,7 @@ const AddQuotationModal = ({
               id="class"
               name="class"
               value={formData.class}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Class</option>
@@ -385,7 +333,7 @@ const AddQuotationModal = ({
               id="notes"
               name="notes"
               value={formData.notes}
-              onChange={handleChange}
+              onChange={handleInputChange}
               rows={4}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
@@ -403,7 +351,7 @@ const AddQuotationModal = ({
               id="status"
               name="status"
               value={formData.status}
-              onChange={handleChange}
+              onChange={handleInputChange}
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Status</option>
@@ -412,36 +360,12 @@ const AddQuotationModal = ({
               <option value="Cancelled">Cancelled</option>
             </select>
           </div>
-          <div className="flex items-center justify-between mt-8">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-            <div className='flex flex-row items-center justify-center space-x-2'>
-            <span>Add Quotation</span> {isLoading && (
-               <ColorRing
-               visible={true}
-               height="40"
-               width="40"
-               ariaLabel="color-ring-loading"
-               wrapperStyle={{}}
-               wrapperClass="color-ring-wrapper"
-               colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-               />
-              )}
-            </div>
-            </button>
-            <button
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </div>
+          {/* Add more input fields for other quotation properties */}
+          <button type="submit">Save Changes</button>
         </form>
       </div>
     </div>
   );
 };
 
-export default AddQuotationModal;
+export default EditQuotationModal;
