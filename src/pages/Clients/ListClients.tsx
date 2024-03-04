@@ -341,7 +341,7 @@ const ListClients = () => {
             type="submit"
             className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded"
           >
-            {createClientLoading ? 'Creating...' : 'Create client'}
+            {createClientLoading ? 'Adding...' : 'Add client'}
           </button>
         </form>
       </Modal>

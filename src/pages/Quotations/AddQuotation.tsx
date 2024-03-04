@@ -24,7 +24,7 @@ const AddQuotationModal = ({
     departureDate: '',
     arrivalAirport: '',
     arrivalDate: '',
-    PAX: '',
+    pax: '',
     flightType: '',
     flexibility: '',
     class: '',
@@ -297,10 +297,10 @@ const AddQuotationModal = ({
               PAX
             </label>
             <input
-              id="PAX"
-              name="PAX"
+              id="pax"
+              name="pax"
               type="number"
-              value={formData.PAX}
+              value={formData.pax}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
