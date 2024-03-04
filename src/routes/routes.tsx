@@ -9,6 +9,8 @@ import SignUp from '../pages/Authentication/SignUp';
 import ListRequestCallBack from '../pages/RequestCallBack/ListRequestCallBack';
 import Test from '../pages/Test/Test';
 import Quotations from '../pages/Quotations/Quotations';
+import ListClients from '../pages/Clients/ListClients';
+import ClientDetails from '../pages/Clients/ClientDetails';
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +57,28 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Quotations" />
               <Quotations />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/clients',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Clients" />
+              <ListClients />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/clients/:id',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Clients Details" />
+              <ClientDetails />
             </>
           </PrivateRoute>
         ),
