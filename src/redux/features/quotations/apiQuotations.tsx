@@ -6,6 +6,7 @@ const userApi = api.injectEndpoints({
       query: () => `/quotations`,
       providesTags: ['quotations'],
     }),
+
     getSingleQuotation: builder.query({
       query: (id) => `/quotations/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'quotation', id }],

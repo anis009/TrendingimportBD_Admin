@@ -6,6 +6,10 @@ const userApi = api.injectEndpoints({
       query: () => `/clients`,
       providesTags: ['clients'],
     }),
+    getQuotationsEmail: builder.query({
+      query: () => `/clients/email`,
+      providesTags: ['clients'],
+    }),
     getSingleClients: builder.query({
       query: (id) => `/clients/${id}`, // Fix string interpolation
       providesTags: (_result, _error, id) => [{ type: 'client', id }],
@@ -58,4 +62,5 @@ export const {
   useDeleteClientMutation,
   useUpdateClientMutation,
   useGetClientsQuery,
+  useGetQuotationsEmailQuery,
 } = userApi;

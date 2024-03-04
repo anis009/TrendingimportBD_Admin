@@ -45,7 +45,9 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
         departureDate: singleData.data.departureDate || '',
         arrivalAirport: singleData.data.arrivalAirport || '',
         arrivalDate: singleData.data.arrivalDate || '',
-        pax: singleData.data.PAX || '',
+
+        pax: singleData.data.pax || '',
+
         flexibility: singleData.data.flexibility,
         class: singleData.data.class,
         notes: singleData.data.notes,
@@ -82,6 +84,12 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
   return (
     <div className="modal fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
       <div className="modal-content relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
+
+        <span
+          className="close-button absolute right-2 top-4 cursor-pointer bg-red-600"
+          onClick={onClose}
+        >
+          &times;
        <h3 className='text-xl'>Edit Quotation</h3>
       <span className="absolute top-0 right-0 p-4">
           <button
@@ -100,6 +108,7 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               <path d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
+
         </span>
        
         <form onSubmit={handleSubmit}>
@@ -374,6 +383,11 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
               className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">Select Status</option>
+
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Cancelled">Cancelled</option>
+         
 
               <option value="fresh">Fresh</option>
               <option value="processing">Processing</option>

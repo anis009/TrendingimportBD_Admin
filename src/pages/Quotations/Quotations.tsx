@@ -13,6 +13,8 @@ import TableComponent from '../../components/TableComponent/TableComponents.tsx'
 import AddQuotationModal from './AddQuotation.tsx';
 import EditQuotationModal from './EditQuotation.jsx';
 import { IQuotation } from '../../types/Quotation.ts';
+import { useNavigate } from 'react-router-dom';
+import { useGetQuotationsEmailQuery } from '../../redux/features/clients/apiClients.tsx';
 
 const Quotations = () => {
   const {
@@ -25,12 +27,14 @@ const Quotations = () => {
   const [edit_id, setEditId] = useState<string>(); // State to hold the quotation to edit
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control modal visibility
 
+  const navigate = useNavigate();
   // Existing code...
 
   const handleEdit = (id: string) => {
     setEditId(id);
     setIsEditModalOpen(true);
   };
+
   const [deleteQuotation, { isSuccess: deleteSuccess }] =
     useDeleteQuotationMutation();
   //TODO:: DELETE HANDLER
@@ -55,8 +59,8 @@ const Quotations = () => {
   useEffect(() => {
     if (isSuccess) {
       const tmpData =
-        apiData?.data.map((quotation) => ({
-          name: `${quotation.firstName} ${quotation.lastName}`,
+        apiData?.data.map((quotation: any) => ({
+          name: `${quotation?.client?.firstName} ${quotation?.client?.lastName}`,
           departureAirport: quotation.departureAirport,
           departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
           arrivalAirport: quotation.arrivalAirport,
@@ -69,63 +73,9 @@ const Quotations = () => {
     }
   }, [isSuccess, apiData]);
 
-  const flightData = [
-    {
-      name: 'Flight 1',
-      departureAirport: 'JFK',
-      departureDate: '2024-03-01',
-      arrivalAirport: 'LAX',
-      arrivalDate: '2024-03-01',
-      timeReceived: '10:00',
-      action: 'View Details', // This can also be a JSX element like a button
-    },
-    {
-      name: 'Flight 1',
-      departureAirport: 'JFK',
-      departureDate: '2024-03-01',
-      arrivalAirport: 'LAX',
-      arrivalDate: '2024-03-01',
-      timeReceived: '10:00',
-      action: 'View Details', // This can also be a JSX element like a button
-    },
-    {
-      name: 'Flight 1',
-      departureAirport: 'JFK',
-      departureDate: '2024-03-01',
-      arrivalAirport: 'LAX',
-      arrivalDate: '2024-03-01',
-      timeReceived: '10:00',
-      action: 'View Details', // This can also be a JSX element like a button
-    },
-    {
-      name: 'Flight 1',
-      departureAirport: 'JFK',
-      departureDate: '2024-03-01',
-      arrivalAirport: 'LAX',
-      arrivalDate: '2024-03-01',
-      timeReceived: '10:00',
-      action: 'View Details', // This can also be a JSX element like a button
-    },
-    {
-      name: 'Flight 1',
-      departureAirport: 'JFK',
-      departureDate: '2024-03-01',
-      arrivalAirport: 'LAX',
-      arrivalDate: '2024-03-01',
-      timeReceived: '10:00',
-      action: 'View Details', // This can also be a JSX element like a button
-    },
-    {
-      name: 'Flight 1',
-      departureAirport: 'JFK',
-      departureDate: '2024-03-01',
-      arrivalAirport: 'LAX',
-      arrivalDate: '2024-03-01',
-      timeReceived: '10:00',
-      action: 'View Details', // This can also be a JSX element like a button
-    },
-    // Add more flights as needed
-  ];
+  const viewHandler = (id: string) => {
+    navigate(`/quotations/${id}`);
+  };
 
   const columns = [
     {
@@ -179,7 +129,10 @@ const Quotations = () => {
           >
             Delete
           </button>
-          <button className="px-4 py-2 bg-slate-700 text-white rounded-md">
+          <button
+            onClick={() => viewHandler(original._id)}
+            className="px-4 py-2 bg-slate-700 text-white rounded-md"
+          >
             View
           </button>
         </div>

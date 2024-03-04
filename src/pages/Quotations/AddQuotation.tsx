@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Toast } from '../../utils/toast';
 import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
 import { ColorRing } from 'react-loader-spinner';
+import {
+  useGetQuotationsEmailQuery,
+  usePostClientMutation,
+} from '../../redux/features/clients/apiClients';
+
 
 const AddQuotationModal = ({
   isOpen,
@@ -11,6 +16,30 @@ const AddQuotationModal = ({
   onClose: () => void;
 }) => {
   const [addQuotations, { isLoading, isSuccess }] = usePostQuotationMutation();
+
+  const [errorMsg, setErrorMsg] = useState('');
+  const [
+    createClientPost,
+    { isSuccess: addSuccess, isError, error, isLoading: createClientLoading },
+  ] = usePostClientMutation();
+
+  useEffect(() => {
+    if (isError) {
+      if ('data' in error && error.data) {
+        const errorData = error.data as Record<string, any>; // Assert as a generic object with string keys
+        setErrorMsg(errorData.message);
+      } else {
+        setErrorMsg('An unknown error occurred');
+        console.error('An unknown error occurred:', error);
+      }
+    }
+  }, [isError, error]);
+
+  console.log(addSuccess, createClientLoading);
+  const { data: emailsData } = useGetQuotationsEmailQuery(undefined);
+
+  console.log('emails~', emailsData);
+
 
   // Initial form state
   const [formData, setFormData] = useState<any>({
@@ -43,22 +72,59 @@ const AddQuotationModal = ({
 
   // Handle form submission
   const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
     // Basic validation for phoneNumber
-    if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
-      Toast.error('Phone number is required.');
-      return;
-    }
+    // if (!formData.phoneNumber || formData.phoneNumber.trim() === '') {
+    //   Toast.error('Phone number is required.');
+    //   return;
+    // }
+
+    const {
+      existingClient,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      client,
+      ...others
+    } = formData;
+    let temp: any = others;
+
     // Remove form fields not expected by the API
 
-    delete formData.existingClient;
-    delete formData.clientId;
-    e.preventDefault();
+    // delete formData.existingClient;
+    // delete formData.clientId;
     console.log('submitteddd dta---- ', formData);
     // alert(JSON.parse(formData))
     try {
+      if (existingClient) {
+        temp = {
+          ...temp,
+          client,
+        };
+      } else {
+        const result: any = await createClientPost({
+          data: {
+            firstName,
+            lastName,
+            phoneNumber,
+            email,
+          },
+        });
+
+        let client = result?.data?.data?._id;
+        if (!client) {
+          return;
+        }
+        console.log('client~', client);
+        temp = { ...temp, client };
+        console.log('create-cleint~', result);
+      }
       // Call the mutation with the adjusted data
-      const result: any = await addQuotations({ data: formData });
+      const result: any = await addQuotations({ data: temp });
       console.log('Form submitted successfully:', result);
+
       if (result.data.success) {
         Toast.success('Quotation Added successfully');
       }
@@ -72,6 +138,7 @@ const AddQuotationModal = ({
     }
     //    const result=  async addQuotations('','');
     console.log(formData);
+    setErrorMsg('');
     onClose(); // Consider closing the modal or resetting form state here
   };
 
@@ -100,6 +167,11 @@ const AddQuotationModal = ({
         </span>
 
         <h2 className="text-2xl font-semibold">Add Quote Request</h2>
+        {errorMsg && (
+          <div className="px-5 py-2 bg-red-200">
+            <p className="text-red-900">{errorMsg}</p>
+          </div>
+        )}
         <form className="mt-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
@@ -118,100 +190,113 @@ const AddQuotationModal = ({
             />
           </div>
 
-          {formData.existingClient && (
+          {formData.existingClient ? (
             <div className="mb-4">
               <label
-                htmlFor="clientId"
+                htmlFor="client"
                 className="block text-gray-700 text-sm font-bold mb-2"
               >
-                Client ID
+                Email
               </label>
-              <input
-                id="clientId"
-                name="clientId"
-                type="text"
-                value={formData.clientId}
+
+              <select
+                id="client"
+                name="client"
+                value={formData.client}
                 onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+                className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="">Select Client</option>
+                {emailsData &&
+                  emailsData?.data.map((item: any) => {
+                    return (
+                      <option key={item._id} value={item._id}>
+                        {item.email}
+                      </option>
+                    );
+                  })}
+              </select>
             </div>
+          ) : (
+            <>
+              <div className="mb-4">
+                <label
+                  htmlFor="firstName"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="lastName"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+
+              {/* Add inputs for email, contactNumber, departureAirport, departureDate, arrivalAirport, arrivalDate, pax, type, flexibility, class, notes, and status in a similar fashion */}
+              {/* Email */}
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+
+              {/* Contact Number */}
+              <div className="mb-4">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Contact Number
+                </label>
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="text"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+            </>
           )}
 
           {/* Repeated pattern for other fields */}
-          <div className="mb-4">
-            <label
-              htmlFor="firstName"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              First Name
-            </label>
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="lastName"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Last Name
-            </label>
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-
-          {/* Add inputs for email, contactNumber, departureAirport, departureDate, arrivalAirport, arrivalDate, pax, type, flexibility, class, notes, and status in a similar fashion */}
-          {/* Email */}
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-
-          {/* Contact Number */}
-          <div className="mb-4">
-            <label
-              htmlFor="phoneNumber"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Contact Number
-            </label>
-            <input
-              id="phoneNumber"
-              name="phoneNumber"
-              type="text"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
 
           {/* Departure Airport */}
           <div className="mb-4">
