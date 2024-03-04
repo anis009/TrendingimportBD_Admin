@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Toast } from '../../utils/toast';
 import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
 import { ColorRing } from 'react-loader-spinner';
@@ -15,10 +15,23 @@ const AddQuotationModal = ({
   onClose: () => void;
 }) => {
   const [addQuotations, { isLoading, isSuccess }] = usePostQuotationMutation();
+  const [errorMsg, setErrorMsg] = useState('');
   const [
     createClientPost,
-    { isSuccess: addSuccess, isLoading: createClientLoading },
+    { isSuccess: addSuccess, isError, error, isLoading: createClientLoading },
   ] = usePostClientMutation();
+
+  useEffect(() => {
+    if (isError) {
+      if ('data' in error && error.data) {
+        const errorData = error.data as Record<string, any>; // Assert as a generic object with string keys
+        setErrorMsg(errorData.message);
+      } else {
+        setErrorMsg('An unknown error occurred');
+        console.error('An unknown error occurred:', error);
+      }
+    }
+  }, [isError, error]);
 
   console.log(addSuccess, createClientLoading);
   const { data: emailsData } = useGetQuotationsEmailQuery(undefined);
@@ -98,6 +111,9 @@ const AddQuotationModal = ({
         });
 
         let client = result?.data?.data?._id;
+        if (!client) {
+          return;
+        }
         console.log('client~', client);
         temp = { ...temp, client };
         console.log('create-cleint~', result);
@@ -119,6 +135,7 @@ const AddQuotationModal = ({
     }
     //    const result=  async addQuotations('','');
     console.log(formData);
+    setErrorMsg('');
     onClose(); // Consider closing the modal or resetting form state here
   };
 
@@ -147,6 +164,11 @@ const AddQuotationModal = ({
         </span>
 
         <h2 className="text-2xl font-semibold">Add Quote Request</h2>
+        {errorMsg && (
+          <div className="px-5 py-2 bg-red-200">
+            <p className="text-red-900">{errorMsg}</p>
+          </div>
+        )}
         <form className="mt-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
