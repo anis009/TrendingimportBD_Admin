@@ -60,6 +60,7 @@ const TableComponent = ({ columns, data }) => {
                     </td>
                   );
                 })}
+                
               </tr>
             );
           })}

@@ -6,6 +6,9 @@ import {
   useGetRequestCallBacksQuery,
   useUpdateRequestCallBackMutation,
 } from '../../redux/features/requestCallBack/apiRquestCallBack';
+import {
+  usePostClientMutation
+} from '../../redux/features/clients/apiClients';
 import { IRequestCallBack } from '../../types/requestCallBack';
 import { convertToLocalDate, getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
@@ -133,14 +136,31 @@ const ListRequestCallBack = () => {
     }
   };
 
+  //TODO:: DELETE HANDLER
+  const assignMeHandler = async (id: string) => {
+    const confirm = window.confirm('Are you sure you want to Assign? !');
+    if (!confirm) {
+      return;
+    }
+    window.confirm('added? !');
+
+    try {
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      Toast.success('Error '+error);
+    }
+  };
+
   const viewHandler = (value: IRequestCallBack) => {
     setViewValue(value);
     setViewModal(true);
   };
+  
 
   // TODO:: TABLE COLUMNS
 
-  const columns = [
+  const columns:any = [
     {
       Header: 'Phone Number',
       accessor: 'phoneNumber',
@@ -209,6 +229,12 @@ const ListRequestCallBack = () => {
             className="px-4 py-2 bg-slate-700 text-white rounded-md"
           >
             View
+          </button>
+          <button
+            onClick={() => assignMeHandler(original._id)}
+            className="px-1 py-2 bg-blue-700 text-white rounded-md"
+          >
+            Assign Me
           </button>
         </div>
       ),
