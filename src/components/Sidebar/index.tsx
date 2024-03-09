@@ -148,7 +148,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-                  All Quotations
+                  My Quotations
                 </NavLink>
               </li>
               <li>
