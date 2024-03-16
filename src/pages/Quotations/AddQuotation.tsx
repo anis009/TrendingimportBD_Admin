@@ -35,10 +35,10 @@ const AddQuotationModal = ({
     }
   }, [isError, error]);
 
-  console.log(addSuccess, createClientLoading);
+  // console.log(addSuccess, createClientLoading);
   const { data: emailsData } = useGetQuotationsEmailQuery(undefined);
 
-  console.log('emails~', emailsData);
+  // console.log('emails~', emailsData);
 
 
   // Initial form state

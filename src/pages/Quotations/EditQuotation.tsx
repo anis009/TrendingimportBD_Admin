@@ -6,16 +6,19 @@ import {
   useUpdateQuotationMutation,
   useGetSingleQuotationQuery,
 } from '../../redux/features/quotations/apiQuotations';
+import { Toast } from '../../utils/toast';
 
-const EditQuotationModal = ({ isOpen, onClose, id }) => {
-  const [updateQuotation, { isLoading, isSuccess, isError }] =
+const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selectedQuotation, setSelectedQuotation }: any) => {
+  const [updateQuotation, { isLoading, isSuccess, isError, data: updatedData }] =
     useUpdateQuotationMutation();
-  const {
-    data: singleData,
-    isLoading: isSingleLoading,
-    isSuccess: isSingleSuccess,
-  } = useGetSingleQuotationQuery(id);
 
+  //   const {
+  //     data: singleData,
+  //     isLoading: isSingleLoading,
+  //     isSuccess: isSingleSuccess,
+  // } = useGetSingleQuotationQuery(id);
+  
+  // const [previousStatus, setPreviousStatus] = useState('-1')
   const [formData, setFormData] = useState({
     // Initialize with empty or default values
     firstName: '',
@@ -27,40 +30,58 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
     arrivalAirport: '',
     arrivalDate: '',
     pax: '',
+    flexibility: '',
     class: '',
     notes: '',
     type: '',
     status: '',
   });
-  console.log('sigle data ===', singleData);
-  console.log('sigle id ===', id);
+  // console.log('sigle data ===', singleData);
+  // console.log('sigle id ===', id);
 //   console.log('sigle first name ===', singleData);
   useEffect(() => {
-    if (id && singleData) {
+    if (id && selectedQuotation) {
       // Populate the form data with the quotation to be edited
+      // console.log('singleData from useEffect: ', singleData.data)
+      
       setFormData({
-        firstName: singleData.data.client.firstName || '',
-        lastName: singleData.data.client.lastName || '',
-        email: singleData.data.client.email || '',
-        phoneNumber: singleData.data.client.phoneNumber,
-        departureAirport: singleData.data.departureAirport || '',
-        departureDate: singleData.data.departureDate || '',
-        arrivalAirport: singleData.data.arrivalAirport || '',
-        arrivalDate: singleData.data.arrivalDate || '',
+        firstName: selectedQuotation.client.firstName || '',
+        lastName: selectedQuotation.client.lastName || '',
+        email: selectedQuotation.client.email || '',
+        phoneNumber: selectedQuotation.client.phoneNumber,
+        departureAirport: selectedQuotation.departureAirport || '',
+        departureDate: selectedQuotation.departureDate || '',
+        arrivalAirport: selectedQuotation.arrivalAirport || '',
+        arrivalDate: selectedQuotation.arrivalDate || '',
 
-        pax: singleData.data.pax || '',
+        pax: selectedQuotation.pax || '',
 
-        flexibility: singleData.data.flexibility,
-        class: singleData.data.class,
-        notes: singleData.data.notes,
-        type: singleData.data.type,
-        status: singleData.data.status,
+        flexibility: selectedQuotation.flexibility,
+        class: selectedQuotation.class,
+        notes: selectedQuotation.notes,
+        type: selectedQuotation.type,
+        status: selectedQuotation.status,
       });
     }
     // console.log('formdata===>',formData);
-  }, [id, singleData]);
+  }, [id, selectedQuotation]);
 
-  const handleInputChange = (e) => {
+  useEffect(() => {
+    if (updatedData?.success && selectedQuotation) {
+      const previousStatus = selectedQuotation.status
+      const updatedStatus = updatedData?.data?.status
+      console.log('previousStatus: ', previousStatus)
+      console.log('updatedStatus: ', updatedStatus)
+      if (updatedStatus && updatedStatus === 'sold' && previousStatus !== updatedStatus) {
+        if (openCreateOrderModal) {
+          console.log('opening create order modal')
+          openCreateOrderModal(true)
+        }
+      }
+    }
+  }, [updatedData, selectedQuotation])
+
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -68,11 +89,11 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       // Assuming your API expects an ID and the updated data
-      await updateQuotation({ id: singleData.data._id, data: formData });
+      await updateQuotation({ id, data: formData });
       Toast.success('Quotation updated successfully');
       onClose(); // Close the modal after successful update
     } catch (error) {
@@ -266,16 +287,16 @@ const EditQuotationModal = ({ isOpen, onClose, id }) => {
           {/* PAX */}
           <div className="mb-4">
             <label
-              htmlFor="PAX"
+              htmlFor="pax"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               PAX
             </label>
             <input
-              id="PAX"
-              name="PAX"
+              id="pax"
+              name="pax"
               type="number"
-              value={formData.PAX}
+              value={formData.pax}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required

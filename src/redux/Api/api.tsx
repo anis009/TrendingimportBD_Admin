@@ -10,6 +10,7 @@ export const api = createApi({
     'quotation',
     'clients',
     'client',
+    'orders'
   ],
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://first-class-for-less-admin-back-end.vercel.app/api/v1',

@@ -8,35 +8,71 @@ import { Toast } from '../../utils/toast.ts';
 import {
   useGetQuotationsQuery,
   useDeleteQuotationMutation,
+  useGetSingleQuotationQuery,
 } from '../../redux/features/quotations/apiQuotations.tsx';
 import TableComponent from '../../components/TableComponent/TableComponents.tsx';
 import AddQuotationModal from './AddQuotation.tsx';
-import EditQuotationModal from './EditQuotation.jsx';
+import EditQuotationModal from './EditQuotation.tsx';
 import { IQuotation } from '../../types/Quotation.ts';
 import { useNavigate } from 'react-router-dom';
 import { useGetQuotationsEmailQuery } from '../../redux/features/clients/apiClients.tsx';
+import CreateOrderModal from '../../components/Order/CreateOrderModal.tsx';
+import { useAppSelector } from '../../redux/hook.ts';
 
 const Quotations = () => {
+  const navigate = useNavigate();
   const {
     data: apiData,
     isLoading,
     isSuccess,
   } = useGetQuotationsQuery(undefined);
+  const [
+    deleteQuotation,
+    // {
+    //   isSuccess: deleteSuccess
+    // }
+  ] = useDeleteQuotationMutation();
+  const { user, isLoading: boolean } = useAppSelector((state: any) => state.user);
+  
+
   const [myData, setData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [edit_id, setEditId] = useState<string>(); // State to hold the quotation to edit
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control modal visibility
+  const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false)
+  const [selectedQuotationForEdit, setSelectedQuotationForEdit] = useState<any>({})
 
-  const navigate = useNavigate();
   // Existing code...
+  // Transform the API data into the format expected by the table
+  useEffect(() => {
+    if (isSuccess) {
+      const tmpData =
+        apiData?.data.map((quotation: any) => ({
+          name: `${quotation?.client?.firstName} ${quotation?.client?.lastName}`,
+          departureAirport: quotation.departureAirport,
+          departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
+          arrivalAirport: quotation.arrivalAirport,
+          arrivalDate: getLocalDate(quotation.arrivalDate), // Adjust this as well
+          timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
+          action: 'View Details', // You can keep this or adjust based on your API data
+          _id: quotation._id,
+        })) || [];
+      setData(tmpData);
+    }
+  }, [isSuccess, apiData]);
 
-  const handleEdit = (id: string) => {
-    setEditId(id);
-    setIsEditModalOpen(true);
-  };
+  useEffect(() => {
+    if (edit_id && selectedQuotationForEdit?._id) {
+      console.log('singleQuotation for edit: ', selectedQuotationForEdit)
+      //setSelectedQuotationForEdit
+    }
+  }, [edit_id, selectedQuotationForEdit])
 
-  const [deleteQuotation, { isSuccess: deleteSuccess }] =
-    useDeleteQuotationMutation();
+  useEffect(() => {
+    console.log('apiData: ', apiData)
+  }, [apiData])
+  
+  
   //TODO:: DELETE HANDLER
   const deleteHandler = async (id: string) => {
     const confirm = window.confirm('Are you sure you want to delete');
@@ -55,23 +91,19 @@ const Quotations = () => {
     }
     // Toast.success('ID'+id);
   };
-  // Transform the API data into the format expected by the table
-  useEffect(() => {
-    if (isSuccess) {
-      const tmpData =
-        apiData?.data.map((quotation: any) => ({
-          name: `${quotation?.client?.firstName} ${quotation?.client?.lastName}`,
-          departureAirport: quotation.departureAirport,
-          departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
-          arrivalAirport: quotation.arrivalAirport,
-          arrivalDate: getLocalDate(quotation.arrivalDate), // Adjust this as well
-          timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
-          action: 'View Details', // You can keep this or adjust based on your API data
-          _id: quotation._id,
-        })) || [];
-      setData(tmpData);
+
+
+  const handleEdit = (id: string) => {
+    setEditId(id);
+    if (apiData?.data) {
+      const _found = apiData?.data?.find((_it: any) => _it._id === id) || {}
+      // console.log('_found: ', _found)
+      setSelectedQuotationForEdit(_found)
     }
-  }, [isSuccess, apiData]);
+    setIsEditModalOpen(true);
+  };
+
+
 
   const viewHandler = (id: string) => {
     navigate(`/quotations/${id}`);
@@ -118,7 +150,9 @@ const Quotations = () => {
       }) => (
         <div className="flex flex-row  items-center justify-center space-x-2 ">
           <button
-            onClick={() => handleEdit(original._id as string)}
+            onClick={() => {
+              handleEdit(original._id as string)
+            }}
             className="px-4 py-2 bg-green-500 text-white rounded-md"
           >
             Edit
@@ -140,7 +174,7 @@ const Quotations = () => {
     },
   ];
 
-  console.log('mydata~', myData);
+  // console.log('mydata~', myData);
   return (
     <div className="overflow-x-auto">
       <div className="qoutations-header-wrapper flex flex-row items-center justify-between space-x-4">
@@ -179,13 +213,31 @@ const Quotations = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
-      {edit_id && (
+      {selectedQuotationForEdit?._id && (
         <EditQuotationModal
           isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
+          onClose={() => {
+            setIsEditModalOpen(false)
+            setEditId('')
+          }}
           id={edit_id}
+          openCreateOrderModal={setIsCreateOrderModalOpen}
+          selectedQuotation={selectedQuotationForEdit}
+          setSelectedQuotation={setSelectedQuotationForEdit}
         />
       )}
+      
+      
+      <CreateOrderModal
+        isOpen={isCreateOrderModalOpen}
+        onClose={() => setIsCreateOrderModalOpen(false)}
+        modalData={{
+          userId: user?._id,
+          clientId: selectedQuotationForEdit?.client?._id,
+          quotationId: selectedQuotationForEdit?._id
+        }}
+      />
+      
     </div>
   );
 };
