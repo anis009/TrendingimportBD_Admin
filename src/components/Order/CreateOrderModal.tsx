@@ -24,6 +24,15 @@ const CreateOrderModal = ({
 }: CreateModalProps) => {
   const [postOrder, { isLoading, isSuccess, error, isError }] = usePostOrderMutation();
   const [errorMsg, setErrorMsg] = useState('')
+  // Initial form state
+  const [formData, setFormData] = useState<any>({
+    client: modalData.clientId,
+    quotation: modalData.quotationId,
+    user: modalData.userId,
+    revenue: 0,
+    profit: 0,
+    status: 'Pending',
+  });
 
   useEffect(() => {
     if (isError && error) {
@@ -37,21 +46,22 @@ const CreateOrderModal = ({
     }
   }, [isError, error]);
 
+  useEffect(() => {
+    console.log('modalData: ', modalData)
+    setFormData((_prev: any) => ({
+      ..._prev,
+      client: modalData.clientId,
+      quotation: modalData.quotationId,
+      user: modalData.userId,
+    }))
+  }, [modalData])
+
   // console.log(addSuccess, createClientLoading);
   const { data: emailsData } = useGetQuotationsEmailQuery(undefined);
 
   // console.log('emails~', emailsData);
 
 
-  // Initial form state
-  const [formData, setFormData] = useState<any>({
-    client: modalData.clientId,
-    quotation: modalData.quotationId,
-    user: modalData.userId,
-    revenue: 0,
-    profit: 0,
-    status: 'Pending',
-  });
 
   // Update form state
   const handleChange = (e: any) => {
@@ -68,9 +78,17 @@ const CreateOrderModal = ({
 
     try {
       // Assuming your API expects an ID and the updated data
+      console.log('create order formData: ', formData)
       await postOrder({ data: formData });
       Toast.success('Order Created successfully');
       onClose(); // Close the modal after successful update
+      setFormData({
+        ...formData,
+        client: '',
+        quotation: '',
+        revenue: 0,
+        profit: 0,
+      })
     } catch (error) {
       Toast.error('Failed to create order');
       console.error(error);

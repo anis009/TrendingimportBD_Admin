@@ -32,7 +32,7 @@ const Quotations = () => {
     //   isSuccess: deleteSuccess
     // }
   ] = useDeleteQuotationMutation();
-  const { user, isLoading: boolean } = useAppSelector((state: any) => state.user);
+  const { user: { user }, isLoading: boolean } = useAppSelector((state: any) => state.user);
   
 
   const [myData, setData] = useState([]);
@@ -69,8 +69,8 @@ const Quotations = () => {
   }, [edit_id, selectedQuotationForEdit])
 
   useEffect(() => {
-    console.log('apiData: ', apiData)
-  }, [apiData])
+    console.log('user from quotations: ', user)
+  }, [user])
   
   
   //TODO:: DELETE HANDLER
