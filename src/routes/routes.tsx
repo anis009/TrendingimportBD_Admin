@@ -12,6 +12,7 @@ import Quotations from '../pages/Quotations/Quotations';
 import ListClients from '../pages/Clients/ListClients';
 import ClientDetails from '../pages/Clients/ClientDetails';
 import QuotationsDetails from '../pages/Quotations/QuotationsDetails';
+import ListOrders from '../pages/Orders/ListOrders';
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Clients" />
               <ListClients />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/orders',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Clients" />
+              <ListOrders />
             </>
           </PrivateRoute>
         ),
