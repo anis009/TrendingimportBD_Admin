@@ -58,7 +58,6 @@ const Header = (props: {
 
           <Link className="block flex-shrink-0 lg:hidden" to="/">
             <img src={'/Images/Logo.svg'} alt="Logo" />
-        
           </Link>
         </div>
 
@@ -105,11 +104,11 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggler --> */}
 
             {/* <!-- Notification Menu Area --> */}
-            <DropdownNotification />
+            {/* <DropdownNotification /> */}
             {/* <!-- Notification Menu Area --> */}
 
             {/* <!-- Chat Notification Area --> */}
-            <DropdownMessage />
+            {/* <DropdownMessage /> */}
             {/* <!-- Chat Notification Area --> */}
           </ul>
 
