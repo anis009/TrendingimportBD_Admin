@@ -11,6 +11,10 @@ const userApi = api.injectEndpoints({
       query: (id) => `/quotations/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'quotation', id }],
     }),
+    getQuotationsWithClientId: builder.query({
+      query: (id) => `/quotations/client/${id}`,
+      providesTags: ['quotations'],
+    }),
     postQuotation: builder.mutation({
       query: ({ data }) => ({
         url: '/quotations',
@@ -46,4 +50,5 @@ export const {
   useDeleteQuotationMutation,
   useUpdateQuotationMutation,
   useGetQuotationsQuery,
+  useGetQuotationsWithClientIdQuery,
 } = userApi;

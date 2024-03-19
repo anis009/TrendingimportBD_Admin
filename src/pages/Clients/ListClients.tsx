@@ -164,7 +164,7 @@ const ListClients = () => {
           </button>
           <button
             onClick={() => deleteHandler(original._id as string)}
-            className="px-4 py-2 bg-red-700 text-white rounded-md"
+            className="px-4 py-2 bg-slate-700 text-white rounded-md"
           >
             {deleteLoading && deleteId === original._id
               ? 'Deleting...'
