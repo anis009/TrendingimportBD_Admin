@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import UserOne from '../../images/user/user-01.png';
+import { useAppDispatch, useAppSelector } from '../../redux/hook';
+import { setUser } from '../../redux/features/user/userSlice';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const { user } = useAppSelector((state: { user: any }) => state.user);
+  const dispatch = useAppDispatch();
+  console.log('user~drop', user);
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
 
@@ -35,6 +39,9 @@ const DropdownUser = () => {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 
+  const logoutHandler = () => {
+    dispatch(setUser(null));
+  };
   return (
     <div className="relative">
       <Link
@@ -45,9 +52,11 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {user && user.user && user.user.userName}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">
+            {user && user.user && user.user.email}
+          </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
@@ -153,7 +162,10 @@ const DropdownUser = () => {
             </Link>
           </li>
         </ul>
-        <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button
+          onClick={logoutHandler}
+          className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        >
           <svg
             className="fill-current"
             width="22"

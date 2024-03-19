@@ -7,7 +7,6 @@ import {
   usePostClientMutation,
 } from '../../redux/features/clients/apiClients';
 
-
 const AddQuotationModal = ({
   isOpen,
   onClose,
@@ -39,7 +38,6 @@ const AddQuotationModal = ({
   const { data: emailsData } = useGetQuotationsEmailQuery(undefined);
 
   // console.log('emails~', emailsData);
-
 
   // Initial form state
   const [formData, setFormData] = useState<any>({
