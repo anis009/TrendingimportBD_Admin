@@ -18,6 +18,9 @@ import { useNavigate } from 'react-router-dom';
 import { useGetQuotationsEmailQuery } from '../../redux/features/clients/apiClients.tsx';
 import CreateOrderModal from '../../components/Order/CreateOrderModal.tsx';
 import { useAppSelector } from '../../redux/hook.ts';
+import { MdDelete } from 'react-icons/md';
+import { BiSolidEdit } from 'react-icons/bi';
+import { GrView } from 'react-icons/gr';
 
 const Quotations = () => {
   const navigate = useNavigate();
@@ -153,21 +156,21 @@ const Quotations = () => {
             onClick={() => {
               handleEdit(original._id as string)
             }}
-            className="px-4 py-2 bg-green-500 text-white rounded-md"
+            className="px-4 py-2 flex flex-row items-center justify-between space-x-2  bg-green-500 text-white rounded-md"
           >
-            Edit
+          <BiSolidEdit/>  <span>Edit</span>
           </button>
           <button
             onClick={() => deleteHandler(original._id)}
-            className="px-4 py-2 bg-red-700 text-white rounded-md"
+            className="px-4 py-2 flex flex-row items-center justify-between space-x-2  bg-red-700 text-white rounded-md"
           >
-            Delete
+          <MdDelete/>  <span>Delete</span>
           </button>
           <button
             onClick={() => viewHandler(original._id)}
-            className="px-4 py-2 bg-slate-700 text-white rounded-md"
+            className="px-4 py-2 flex flex-row items-center justify-between space-x-2  bg-slate-700 text-white rounded-md"
           >
-            View
+          <GrView/> <span> View</span>
           </button>
         </div>
       ),

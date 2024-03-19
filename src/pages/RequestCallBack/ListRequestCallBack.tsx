@@ -6,14 +6,15 @@ import {
   useGetRequestCallBacksQuery,
   useUpdateRequestCallBackMutation,
 } from '../../redux/features/requestCallBack/apiRquestCallBack';
-import {
-  usePostClientMutation
-} from '../../redux/features/clients/apiClients';
+import { usePostClientMutation } from '../../redux/features/clients/apiClients';
 import { IRequestCallBack } from '../../types/requestCallBack';
 import { convertToLocalDate, getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { BiSolidEdit } from 'react-icons/bi';
+import { GrView } from 'react-icons/gr';
+import { MdOutlineAssignmentInd } from 'react-icons/md';
 
 const ListRequestCallBack = () => {
   const { data, isLoading, isSuccess, refetch } =
@@ -132,7 +133,7 @@ const ListRequestCallBack = () => {
       console.log(data);
     } catch (error) {
       console.log(error);
-      Toast.success('Error '+error);
+      Toast.success('Error ' + error);
     }
   };
 
@@ -148,7 +149,7 @@ const ListRequestCallBack = () => {
       console.log(data);
     } catch (error) {
       console.log(error);
-      Toast.success('Error '+error);
+      Toast.success('Error ' + error);
     }
   };
 
@@ -156,11 +157,10 @@ const ListRequestCallBack = () => {
     setViewValue(value);
     setViewModal(true);
   };
-  
 
   // TODO:: TABLE COLUMNS
 
-  const columns:any = [
+  const columns: any = [
     {
       Header: 'Phone Number',
       accessor: 'phoneNumber',
@@ -214,27 +214,28 @@ const ListRequestCallBack = () => {
         <div className="flex flex-row  items-center justify-center space-x-2 ">
           <button
             onClick={() => editHandler(original)}
-            className="px-4 py-2 bg-green-500 text-white rounded-md"
+            className="px-4 flex flex-row items-center justify-between space-x-2 py-2 bg-green-500 text-white rounded-md"
           >
-            Edit
+            <BiSolidEdit /> <span>Edit</span>
           </button>
-          <button
+          {/* <button
             onClick={() => deleteHandler(original._id)}
             className="px-4 py-2 bg-red-700 text-white rounded-md"
           >
             Delete
-          </button>
+          </button> */}
           <button
             onClick={() => viewHandler(original)}
-            className="px-4 py-2 bg-slate-700 text-white rounded-md"
+            className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-700 text-white rounded-md"
           >
-            View
+            <GrView /> <span>View</span>
           </button>
           <button
             onClick={() => assignMeHandler(original._id)}
-            className="px-1 py-2 bg-blue-700 text-white rounded-md"
+            className="px-4 flex flex-row items-center justify-between space-x-2  text-center py-2 text--[10px] bg-blue-700 text-white rounded-md"
           >
-            Assign Me
+            <MdOutlineAssignmentInd />
+            <span>Assign Me</span>
           </button>
         </div>
       ),
