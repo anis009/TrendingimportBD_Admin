@@ -11,13 +11,13 @@ export default function PrivateRoute({ children }: IProps) {
   const { user, isLoading } = useAppSelector((state) => state.user);
   useEffect(() => {
     console.log('user: ', user);
-  }, [user])
+  }, [user]);
 
   const cond = !user && !isLoading;
-  
+
   useEffect(() => {
     console.log('cond', cond);
-  }, [])
+  }, []);
 
   if (isLoading) {
     return <Loading msg="user data loading..." />;
