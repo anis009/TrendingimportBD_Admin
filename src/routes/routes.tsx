@@ -13,6 +13,7 @@ import ListClients from '../pages/Clients/ListClients';
 import ClientDetails from '../pages/Clients/ClientDetails';
 import QuotationsDetails from '../pages/Quotations/QuotationsDetails';
 import ListOrders from '../pages/Orders/ListOrders';
+import ListMyRequestCallBack from '../pages/RequestCallBack/ListMyRequestCallBack';
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Request Call Back" />
               <ListRequestCallBack />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/my-request-call-back',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Request Call Back" />
+              <ListMyRequestCallBack />
             </>
           </PrivateRoute>
         ),

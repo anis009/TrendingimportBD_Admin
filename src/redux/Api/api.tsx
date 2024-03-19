@@ -13,7 +13,8 @@ export const api = createApi({
     'orders'
   ],
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://first-class-for-less-admin-back-end.vercel.app/api/v1',
+    // baseUrl: 'https://first-class-for-less-admin-back-end.vercel.app/api/v1',
+    baseUrl: 'http://localhost:5000/api/v1',
   }),
   endpoints: () => ({}),
 });

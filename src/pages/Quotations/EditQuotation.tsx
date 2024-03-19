@@ -65,22 +65,7 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
     }
     // console.log('formdata===>',formData);
   }, [id, selectedQuotation]);
-
-  useEffect(() => {
-    if (updatedData?.success && selectedQuotation) {
-      const previousStatus = selectedQuotation.status
-      const updatedStatus = updatedData?.data?.status
-      console.log('previousStatus: ', previousStatus)
-      console.log('updatedStatus: ', updatedStatus)
-      if (updatedStatus && updatedStatus === 'sold' && previousStatus !== updatedStatus) {
-        if (openCreateOrderModal) {
-          console.log('opening create order modal')
-          openCreateOrderModal(true)
-        }
-      }
-    }
-  }, [updatedData, selectedQuotation])
-
+  
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -94,6 +79,9 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
     try {
       // Assuming your API expects an ID and the updated data
       await updateQuotation({ id, data: formData });
+      if (formData.status === 'sold') {
+        openCreateOrderModal(true)
+      }
       Toast.success('Quotation updated successfully');
       onClose(); // Close the modal after successful update
     } catch (error) {

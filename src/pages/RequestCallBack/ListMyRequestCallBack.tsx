@@ -3,6 +3,7 @@ import Modal from '../../components/Modal/Modal';
 import TableComponent from '../../components/TableComponent/TableComponents';
 import {
   useDeleteRequestCallBackMutation,
+  useGetMyRequestCallBacksQuery,
   useGetRequestCallBacksQuery,
   useUpdateRequestCallBackMutation,
 } from '../../redux/features/requestCallBack/apiRquestCallBack';
@@ -17,10 +18,10 @@ import { GrView } from 'react-icons/gr';
 import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
 
-const ListRequestCallBack = () => {
+const ListMyRequestCallBack = () => {
   const { user: { user }, isLoading: boolean } = useAppSelector((state: any) => state.user);
   const { data, isLoading, isSuccess, refetch } =
-    useGetRequestCallBacksQuery(undefined);
+    useGetMyRequestCallBacksQuery(user?._id);
   const [tableData, setTableData] = useState([]);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [editedValue, setEditedValue] = useState<IRequestCallBack>();
@@ -138,36 +139,7 @@ const ListRequestCallBack = () => {
       Toast.success('Error ' + error);
     }
   };
-
-  //TODO:: DELETE HANDLER
-  const assignMeHandler = async (id: string) => {
-    const confirm = window.confirm('Are you sure you want to Assign? !');
-    if (!confirm) {
-      return;
-    }
-    window.confirm('added? !');
-
-    try {
-      
-      const result: any = await editRequestCallBack({
-        data: {
-          assignedTo: user?._id
-        },
-        id: id,
-      });
-
-      if (result && result.data?.success) {
-        Toast.success('Updated successfully');
-        modalToggle();
-        await refetch();
-      }
-      
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      Toast.success('Error ' + error);
-    }
-  };
+  
 
   const viewHandler = (value: IRequestCallBack) => {
     setViewValue(value);
@@ -246,16 +218,13 @@ const ListRequestCallBack = () => {
           >
             <GrView /> <span>View</span>
           </button>
-          <button
-            onClick={() => {
-              // console.log('original._id: ', original._id, original)
-              assignMeHandler(original._id)
-            }}
+          {/* <button
+            onClick={() => assignMeHandler(original._id)}
             className="px-4 flex flex-row items-center justify-between space-x-2  text-center py-2 text--[10px] bg-blue-700 text-white rounded-md"
           >
             <MdOutlineAssignmentInd />
             <span>Assign Me</span>
-          </button>
+          </button> */}
         </div>
       ),
     },
@@ -458,4 +427,4 @@ const ListRequestCallBack = () => {
   );
 };
 
-export default ListRequestCallBack;
+export default ListMyRequestCallBack;
