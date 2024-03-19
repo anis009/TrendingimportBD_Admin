@@ -203,7 +203,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 }}
               </SidebarLinkGroup>
             <ul className="mb-6 flex flex-col gap-1.5">
-              <li>
+              {/* <li> */}
 
               {/* <li>
                 <NavLink
