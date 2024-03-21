@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '../layout/MainLayout';
 import PageTitle from '../components/PageTitle';
-import ECommerce from '../pages/Dashboard/ECommerce';
 import NotFound from '../pages/NotFound';
 import PrivateRoute from './privateRoutes';
 import SignIn from '../pages/Authentication/SignIn';
@@ -14,6 +13,7 @@ import ClientDetails from '../pages/Clients/ClientDetails';
 import QuotationsDetails from '../pages/Quotations/QuotationsDetails';
 import ListOrders from '../pages/Orders/ListOrders';
 import ListMyRequestCallBack from '../pages/RequestCallBack/ListMyRequestCallBack';
+import Profile from '../pages/Profile/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -24,9 +24,13 @@ export const router = createBrowserRouter([
         path: '/',
         element: (
           <PrivateRoute>
-            <>
+            {/* <>
               <PageTitle title="FcFl Dashboard" />
               <ECommerce />
+            </> */}
+            <>
+              <PageTitle title="FcFl | Request Call Back" />
+              <ListRequestCallBack />
             </>
           </PrivateRoute>
         ),
@@ -115,6 +119,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Clients Details" />
               <QuotationsDetails />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/profile',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Account profile" />
+              <Profile />
             </>
           </PrivateRoute>
         ),
