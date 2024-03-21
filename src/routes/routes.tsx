@@ -6,7 +6,6 @@ import PrivateRoute from './privateRoutes';
 import SignIn from '../pages/Authentication/SignIn';
 import SignUp from '../pages/Authentication/SignUp';
 import ListRequestCallBack from '../pages/RequestCallBack/ListRequestCallBack';
-import Test from '../pages/Test/Test';
 import Quotations from '../pages/Quotations/Quotations';
 import ListClients from '../pages/Clients/ListClients';
 import ClientDetails from '../pages/Clients/ClientDetails';
@@ -57,17 +56,7 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      {
-        path: '/test',
-        element: (
-          <PrivateRoute>
-            <>
-              <PageTitle title="FcFl | Test" />
-              <Test />
-            </>
-          </PrivateRoute>
-        ),
-      },
+
       {
         path: '/quotations',
         element: (
