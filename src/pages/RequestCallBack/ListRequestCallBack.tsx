@@ -18,7 +18,10 @@ import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
 
 const ListRequestCallBack = () => {
-  const { user: { user }, isLoading: boolean } = useAppSelector((state: any) => state.user);
+  const {
+    user: { user },
+    isLoading: boolean,
+  } = useAppSelector((state: any) => state.user);
   const { data, isLoading, isSuccess, refetch } =
     useGetRequestCallBacksQuery(undefined);
   const [tableData, setTableData] = useState([]);
@@ -148,10 +151,9 @@ const ListRequestCallBack = () => {
     window.confirm('added? !');
 
     try {
-      
       const result: any = await editRequestCallBack({
         data: {
-          assignedTo: user?._id
+          assignedTo: user?._id,
         },
         id: id,
       });
@@ -161,7 +163,7 @@ const ListRequestCallBack = () => {
         modalToggle();
         await refetch();
       }
-      
+
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -249,12 +251,12 @@ const ListRequestCallBack = () => {
           <button
             onClick={() => {
               // console.log('original._id: ', original._id, original)
-              assignMeHandler(original._id)
+              assignMeHandler(original._id);
             }}
             className="px-4 flex flex-row items-center justify-between space-x-2  text-center py-2 text--[10px] bg-blue-700 text-white rounded-md"
           >
             <MdOutlineAssignmentInd />
-            <span>Assign Me</span>
+            <span className="whitespace-nowrap">Assign Me</span>
           </button>
         </div>
       ),
