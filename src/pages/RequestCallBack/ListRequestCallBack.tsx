@@ -24,6 +24,8 @@ const ListRequestCallBack = () => {
   const [viewValue, setViewValue] = useState<IRequestCallBack>();
   const [editedId, setEditedId] = useState<string>('');
   const [editRequestCallBack] = useUpdateRequestCallBackMutation();
+  
+  const [updateClient] = usePostClientMutation();
   const [viewModal, setViewModal] = useState<boolean>(false);
   const {
     register,
@@ -138,14 +140,21 @@ const ListRequestCallBack = () => {
 
   //TODO:: DELETE HANDLER
   const assignMeHandler = async (id: string) => {
-    const confirm = window.confirm('Are you sure you want to Assign? !');
-    if (!confirm) {
-      return;
-    }
-    window.confirm('added? !');
+    // const confirm = window.confirm('Are you sure you want to Assign? !');
+    // if (!confirm) {
+    //   return;
+    // }
+  
 
     try {
-      console.log(data);
+      const result: any = await updateClient({ id });
+      if (result && result?.data && result?.data?.success) {
+        Toast.success('Client Added successfully !');
+      }else{
+      // window.alert(JSON.stringify(result?.error?.data?.message))
+        Toast.error(`${result?.error?.data?.message}`)
+      }
+
     } catch (error) {
       console.log(error);
       Toast.success('Error '+error);
