@@ -89,6 +89,9 @@ const ListMyRequestCallBack = () => {
     if (value.from) {
       setValue('from', value.from);
     }
+    else{
+      setValue('from','N/A');
+    }
     if (value.to) {
       setValue('to', value.to);
     }
@@ -233,7 +236,7 @@ const ListMyRequestCallBack = () => {
   return (
     <div className="rounded-sm  overflow-x-auto border border-stroke bg-white px-5 pt-6 pb-2.5  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Request Call Back
+        My Leads <small> (My request callbacks)</small>
       </h4>
       <TableComponent
         className="min-w-full table-auto"
@@ -355,74 +358,57 @@ const ListMyRequestCallBack = () => {
           </form>
         </Modal>
       )}
-      {viewValue && (
-        <Modal isOpen={viewModal} onClose={() => setViewModal((prev) => !prev)}>
-          <div className="bg-white dark:bg-[#1C2434] rounded px-8 pt-6 pb-8 mb-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Arrival:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.arrival}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Departure:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.departure}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Flight Type:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.flight_type}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                From:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.from}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Number of Passengers:
-              </label>
-              <p className="text-gray-700 text-sm">
-                {viewValue.no_of_passengers}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Phone Number:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.phoneNumber}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                To:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.to}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Travel Class:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.travel_class}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Status:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue.status}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                ID:
-              </label>
-              <p className="text-gray-700 text-sm">{viewValue._id}</p>
-            </div>
-          </div>
-        </Modal>
-      )}
+{viewValue && (
+  <Modal className="z-[9999]" isOpen={viewModal} onClose={() => setViewModal((prev) => !prev)}>
+    <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden">
+      <table className="min-w-full leading-normal">
+        <tbody className="text-gray-700 dark:text-gray-400">
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">ID:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue._id}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">From:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue?.from?.length <= 0 ? "N/A" : viewValue.from}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">To:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.to}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Departure:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.departure}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Arrival:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.arrival}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Flight Type:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.flight_type}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Travel Class:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.travel_class}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Number of Passengers:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.no_of_passengers}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Phone Number:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.phoneNumber}</td>
+          </tr>
+          <tr>
+            <td className="border px-4 py-2 text-sm font-bold">Status:</td>
+            <td className="border px-4 py-2 text-sm">{viewValue.status}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </Modal>
+)}
+
     </div>
   );
 };

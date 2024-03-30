@@ -104,7 +104,7 @@ const QuotationsDetails = () => {
     <div className="flex justify-center mt-4">
         <button
        onClick={toggleModal}
-          className="px-6 py-2 border rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="px-6 py-2 border rounded-md text-white bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:bg-slate-700 focus:ring-opacity-50"
         >
           Send Email
         </button>
@@ -139,7 +139,7 @@ const QuotationsDetails = () => {
               <label htmlFor="flightId" className="text-lg">Flight ID:</label>
               <input type="text" id="flightId"  className="mb-4 p-2 border rounded"/>
 
-              <button type="submit" className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700">
+              <button type="submit" className="px-4 py-2 text-white bg-slate-700 rounded hover:bg-slate-900">
                 Search & Send
               </button>
             </form>

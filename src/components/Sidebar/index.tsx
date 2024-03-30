@@ -149,7 +149,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           fill=""
                         />
                       </svg>
-                      Request Callback
+                     Leads
                       <svg
                         className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
                           open && 'rotate-180'
@@ -183,7 +183,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               (isActive && '!text-white')
                             }
                           >
-                            Request Callback List
+                            All Leads
                           </NavLink>
                         </li>
                         <li>
@@ -194,7 +194,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               (isActive && '!text-white')
                             }
                           >
-                            My Request Callback
+                            My Leads
                           </NavLink>
                         </li>
                       </ul>
@@ -279,7 +279,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-                  Orders
+                 My Orders
                 </NavLink>
               </li>
 
