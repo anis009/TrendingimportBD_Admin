@@ -51,7 +51,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ columns, data }) => {
               {headerGroup.headers.map((column: any) => (
                 <th
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="px-4 py-2 cursor-pointer"
+                  className="px-4 py-2 text-left cursor-pointer"
                 >
                   {column.render('Header')}
                   <span>

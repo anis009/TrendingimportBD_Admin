@@ -1,4 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+// import 'vite/client'
+const ENV = import.meta.env.VITE_ENV
+const API_PROD_URL = import.meta.env.VITE_API_PROD_URL
+const API_DEV_URL = import.meta.env.VITE_API_DEV_URL
+const API_STAGING_URL = import.meta.env.VITE_API_STAGING_URL
+
 export const api = createApi({
   reducerPath: 'api',
   tagTypes: [
@@ -10,9 +16,15 @@ export const api = createApi({
     'quotation',
     'clients',
     'client',
+    'orders'
   ],
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://first-class-for-less-admin-back-end.vercel.app/api/v1',
+    // baseUrl: 'https://first-class-for-less-admin-back-end.vercel.app/api/v1',
+    baseUrl: ENV === 'PROD'
+      ? API_PROD_URL
+      : ENV === 'STAGING'
+        ? API_STAGING_URL
+        : API_DEV_URL,
   }),
   endpoints: () => ({}),
 });

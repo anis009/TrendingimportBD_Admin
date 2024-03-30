@@ -6,6 +6,10 @@ const userApi = api.injectEndpoints({
       query: () => `/request_callback`,
       providesTags: ['requestcallbacks'],
     }),
+    getMyRequestCallBacks: builder.query({
+      query: (userId) => `/request_callback/assigned/${userId}`,
+      providesTags: ['requestcallbacks'],
+    }),
     getSingleRequestCallBacks: builder.query({
       query: (id) => `/request_callback/${id}`, // Fix string interpolation
       providesTags: (_result, _error, id) => [{ type: 'requestcallback', id }],
@@ -58,4 +62,5 @@ export const {
   useDeleteRequestCallBackMutation,
   useUpdateRequestCallBackMutation,
   useGetRequestCallBacksQuery,
+  useGetMyRequestCallBacksQuery,
 } = userApi;

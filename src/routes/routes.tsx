@@ -1,17 +1,18 @@
 import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '../layout/MainLayout';
 import PageTitle from '../components/PageTitle';
-import ECommerce from '../pages/Dashboard/ECommerce';
 import NotFound from '../pages/NotFound';
 import PrivateRoute from './privateRoutes';
 import SignIn from '../pages/Authentication/SignIn';
 import SignUp from '../pages/Authentication/SignUp';
 import ListRequestCallBack from '../pages/RequestCallBack/ListRequestCallBack';
-import Test from '../pages/Test/Test';
 import Quotations from '../pages/Quotations/Quotations';
 import ListClients from '../pages/Clients/ListClients';
 import ClientDetails from '../pages/Clients/ClientDetails';
 import QuotationsDetails from '../pages/Quotations/QuotationsDetails';
+import ListOrders from '../pages/Orders/ListOrders';
+import ListMyRequestCallBack from '../pages/RequestCallBack/ListMyRequestCallBack';
+import Profile from '../pages/Profile/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -22,9 +23,13 @@ export const router = createBrowserRouter([
         path: '/',
         element: (
           <PrivateRoute>
-            <>
+            {/* <>
               <PageTitle title="FcFl Dashboard" />
               <ECommerce />
+            </> */}
+            <>
+              <PageTitle title="FcFl | Request Call Back" />
+              <ListRequestCallBack />
             </>
           </PrivateRoute>
         ),
@@ -41,16 +46,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/test',
+        path: '/my-request-call-back',
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Test" />
-              <Test />
+              <PageTitle title="FcFl | Request Call Back" />
+              <ListMyRequestCallBack />
             </>
           </PrivateRoute>
         ),
       },
+
       {
         path: '/quotations',
         element: (
@@ -74,6 +80,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: '/orders',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Clients" />
+              <ListOrders />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
         path: '/clients/:id',
         element: (
           <PrivateRoute>
@@ -91,6 +108,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Clients Details" />
               <QuotationsDetails />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/profile',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Account profile" />
+              <Profile />
             </>
           </PrivateRoute>
         ),
