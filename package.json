@@ -14,6 +14,7 @@
     "url": "https://fcfladmin.com"
   },
   "dependencies": {
+    "@esbuild/linux-x64": "^0.20.2",
     "@reduxjs/toolkit": "^2.2.1",
     "@types/react-redux": "^7.1.33",
     "apexcharts": "^3.41.0",

@@ -13,6 +13,7 @@ import QuotationsDetails from '../pages/Quotations/QuotationsDetails';
 import ListOrders from '../pages/Orders/ListOrders';
 import ListMyRequestCallBack from '../pages/RequestCallBack/ListMyRequestCallBack';
 import Profile from '../pages/Profile/Profile';
+import ListUsers from '../pages/Users/ListUsers';
 
 export const router = createBrowserRouter([
   {
@@ -23,10 +24,6 @@ export const router = createBrowserRouter([
         path: '/',
         element: (
           <PrivateRoute>
-            {/* <>
-              <PageTitle title="FcFl Dashboard" />
-              <ECommerce />
-            </> */}
             <>
               <PageTitle title="FcFl | Request Call Back" />
               <ListRequestCallBack />
@@ -52,6 +49,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="FcFl | Request Call Back" />
               <ListMyRequestCallBack />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/users/users-list',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Users List" />
+              <ListUsers />
             </>
           </PrivateRoute>
         ),
