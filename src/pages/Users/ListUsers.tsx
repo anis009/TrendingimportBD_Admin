@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Loading from '../../components/Loading/Loading';
 import TableComponent from '../../components/TableComponent/TableComponents';
 import {
+  useDeleteUserMutation,
   useGetUsersQuery,
   useUpdateUserMutation,
 } from '../../redux/features/user/apiUser';
@@ -17,7 +18,9 @@ const ListUsers = () => {
   const [viewValue, setViewValue] = useState<any>(null);
   const [viewModal, setViewModal] = useState<boolean>(false);
   const [editModal, setEditModal] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<string>('');
   const [updateUser, { isLoading: editLoading }] = useUpdateUserMutation();
+  const [deleteUer, { isLoading: deleteLoading }] = useDeleteUserMutation();
   const [user, setUser] = useState<any>({
     userName: '',
     email: '',
@@ -56,7 +59,18 @@ const ListUsers = () => {
     setViewModal(true);
     setViewValue(value);
   };
-  const handleDelete = async (id) => {};
+  const handleDelete = async (id: any) => {
+    console.log('delete id~', id);
+    setDeleteId(id);
+    try {
+      const response = await deleteUer({
+        id: id,
+      });
+      console.log('delete response~', response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return date.toLocaleString(); // Adjust options as per requirement
@@ -89,13 +103,12 @@ const ListUsers = () => {
             Edit
           </button>
           <button
-            onClick={() => handleDelete(row._id as string)}
+            onClick={() => handleDelete(row.original._id as string)}
             className="px-4 py-2 bg-[#555555] text-white rounded-md"
           >
-            {/* {orderDeleteLoading && deleteId === original._id
-            ? 'Deleting...'
-            : 'Delete'} */}
-            Delete
+            {deleteLoading && deleteId === row.original._id
+              ? 'Deleting...'
+              : 'Delete'}
           </button>
           <button
             className="px-4 py-2 bg-blue-700 text-white rounded-md"
@@ -120,8 +133,12 @@ const ListUsers = () => {
           userRole: user.userRole,
         },
       });
-      console.log('user submitted~', user);
-      console.log('user submitted~', response);
+
+      if (response) {
+        setEditModal(false);
+      }
+      // console.log('user submitted~', user);
+      // console.log('user submitted~', response);
     } catch (error) {
       console.log(error);
     }
@@ -234,7 +251,7 @@ const ListUsers = () => {
                 type="submit"
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Save Changes
+                {editLoading ? 'Saving...' : ' Save Changes'}
               </button>
             </form>
           </div>
