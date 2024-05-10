@@ -19,6 +19,20 @@ export function convertToLocalDate(dateString: string) {
   return `${year}-${month}-${day}`;
 }
 
+export const formatDate = (dateString: string | number | Date) => {
+  const date = new Date(dateString);
+  const options: any = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true,
+  };
+  return date.toLocaleString(undefined, options);
+};
+
 export function timeAgo(inputDate: any) {
   if (!inputDate) {
     return null;

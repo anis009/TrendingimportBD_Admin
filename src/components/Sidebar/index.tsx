@@ -13,7 +13,6 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
-
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
   const { user } = useAppSelector((state) => state.user);
@@ -187,17 +186,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             All Leads
                           </NavLink>
                         </li>
-                        <li>
-                          <NavLink
-                            to="/my-request-call-back"
-                            className={({ isActive }) =>
-                              'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                              (isActive && '!text-white')
-                            }
-                          >
-                            My Leads
-                          </NavLink>
-                        </li>
+                        {user && user?.user.userRole === 'lfc' && (
+                          <li>
+                            <NavLink
+                              to="/my-request-call-back"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              My Leads
+                            </NavLink>
+                          </li>
+                        )}
                       </ul>
                     </div>
                     {/* <!-- Dropdown Menu End --> */}
@@ -367,25 +368,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </svg>
                       </NavLink>
                       {/* <!-- Dropdown Menu Start --> */}
-                      <div
-                        className={`translate transform overflow-hidden ${
-                          !open && 'hidden'
-                        }`}
-                      >
-                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                          <li>
-                            <NavLink
-                              to="/users/users-list"
-                              className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                (isActive && '!text-white')
-                              }
-                            >
-                              Users List
-                            </NavLink>
-                          </li>
-                        </ul>
-                      </div>
+                      {user && user?.user?.userRole === 'admin' && (
+                        <div
+                          className={`translate transform overflow-hidden ${
+                            !open && 'hidden'
+                          }`}
+                        >
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                            <li>
+                              <NavLink
+                                to="/users/users-list"
+                                className={({ isActive }) =>
+                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                  (isActive && '!text-white')
+                                }
+                              >
+                                Users List
+                              </NavLink>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );

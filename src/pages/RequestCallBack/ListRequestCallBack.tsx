@@ -30,7 +30,7 @@ const ListRequestCallBack = () => {
   const [viewValue, setViewValue] = useState<IRequestCallBack>();
   const [editedId, setEditedId] = useState<string>('');
   const [editRequestCallBack] = useUpdateRequestCallBackMutation();
-  
+
   const [updateClient] = usePostClientMutation();
   const [viewModal, setViewModal] = useState<boolean>(false);
   const {
@@ -150,7 +150,6 @@ const ListRequestCallBack = () => {
     // if (!confirm) {
     //   return;
     // }
-  
 
     try {
       const result: any = await editRequestCallBack({
@@ -268,7 +267,7 @@ const ListRequestCallBack = () => {
   return (
     <div className="rounded-sm  overflow-x-auto border border-stroke bg-white px-5 pt-6 pb-2.5  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-       All Leads<small> (request callback lists)</small>
+        All Leads<small> (request callback lists)</small>
       </h4>
       <TableComponent
         className="min-w-full table-auto"
@@ -390,62 +389,106 @@ const ListRequestCallBack = () => {
           </form>
         </Modal>
       )}
-{viewValue && (
-  <Modal isOpen={viewModal} onClose={() => setViewModal((prev) => !prev)}>
-    <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden shadow-lg">
-      <table className="min-w-full leading-normal">
-        <tbody className="text-gray-700 dark:text-gray-400">
-          <tr>
-            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 font-bold uppercase text-left text-sm dark:border-gray-700 dark:bg-gray-800">Detail</th>
-            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 font-bold uppercase text-left text-sm dark:border-gray-700 dark:bg-gray-800">Information</th>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">ID:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue._id}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">From:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.from === null || viewValue.from === '' ? "N/A" : viewValue.from}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">To:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.to}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Departure:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.departure}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Arrival:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.arrival}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Flight Type:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.flight_type}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Travel Class:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.travel_class}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Number of Passengers:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.no_of_passengers}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Phone Number:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.phoneNumber}</td>
-          </tr>
-          <tr>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">Status:</td>
-            <td className="px-5 py-5 border-b border-gray-200 text-sm">{viewValue.status}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </Modal>
-)}
-
-
+      {viewValue && (
+        <Modal isOpen={viewModal} onClose={() => setViewModal((prev) => !prev)}>
+          <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden shadow-lg">
+            <table className="min-w-full leading-normal">
+              <tbody className="text-gray-700 dark:text-gray-400">
+                <tr>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 font-bold uppercase text-left text-sm dark:border-gray-700 dark:bg-gray-800">
+                    Detail
+                  </th>
+                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 font-bold uppercase text-left text-sm dark:border-gray-700 dark:bg-gray-800">
+                    Information
+                  </th>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    ID:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue._id}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    From:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.from === null || viewValue.from === ''
+                      ? 'N/A'
+                      : viewValue.from}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    To:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.to}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Departure:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.departure}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Arrival:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.arrival}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Flight Type:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.flight_type}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Travel Class:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.travel_class}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Number of Passengers:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.no_of_passengers}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Phone Number:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.phoneNumber}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    Status:
+                  </td>
+                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                    {viewValue.status}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
