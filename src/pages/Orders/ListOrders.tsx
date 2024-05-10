@@ -83,7 +83,7 @@ const ListOrders = () => {
     setViewValue(value);
     setViewOpen(true);
   };
-  const columns = [
+  const columns: any = [
     {
       Header: 'Profit',
       accessor: 'profit',
@@ -113,7 +113,7 @@ const ListOrders = () => {
         <div className="flex flex-row  items-center justify-center space-x-2 ">
           <button
             onClick={() => editHandler(original)}
-            className="px-4 py-2 bg-[#FFA500] text-white rounded-md"
+            className="px-4 py-2 bg-green-400 text-white rounded-md"
           >
             {orderEditLoading && editedId === original._id
               ? 'Editing...'
@@ -176,7 +176,7 @@ const ListOrders = () => {
 
   return (
     <div>
-      <TableComponent data={data?.data} columns={columns} />
+      <TableComponent data={data?.data} columns={columns} className="" />
       {editedId && (
         <Modal isOpen={editOpen} onClose={modalToggle}>
           <form
