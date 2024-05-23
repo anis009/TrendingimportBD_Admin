@@ -8,21 +8,19 @@ import {
   usePostClientMutation,
   useUpdateClientMutation,
 } from '../../redux/features/clients/apiClients';
-import {
-  useDeleteRequestCallBackMutation,
-  useGetRequestCallBacksQuery,
-  useUpdateRequestCallBackMutation,
-} from '../../redux/features/requestCallBack/apiRquestCallBack';
+
 import { IClient } from '../../types/client';
-import { IRequestCallBack } from '../../types/requestCallBack';
-import { convertToLocalDate, getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useAppSelector } from '../../redux/hook';
 
 const ListClients = () => {
-  const { data, isLoading, isSuccess, refetch } = useGetClientsQuery(undefined);
-  const [tableData, setTableData] = useState([]);
+  const { user } = useAppSelector((state) => state.user);
+  const { data, isLoading, isSuccess, refetch } = useGetClientsQuery(
+    user?.user?._id,
+  );
+  console.log('user', user);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [editedValue, setEditedValue] = useState<IClient>();
   const [viewValue, setViewValue] = useState<IClient>();

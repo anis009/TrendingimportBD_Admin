@@ -3,7 +3,7 @@ import { api } from '../../Api/api';
 const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getClients: builder.query({
-      query: () => `/clients`,
+      query: (id) => `/clients?userId=${id}`,
       providesTags: ['clients'],
     }),
     getQuotationsEmail: builder.query({
