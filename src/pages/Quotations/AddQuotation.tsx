@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
+
 import { Toast } from '../../utils/toast';
 import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
 import { ColorRing } from 'react-loader-spinner';
@@ -37,7 +39,7 @@ const AddQuotationModal = ({
   // console.log(addSuccess, createClientLoading);
   const { data: emailsData } = useGetQuotationsEmailQuery(undefined);
 
-  // console.log('emails~', emailsData);
+  console.log('emails~', emailsData);
 
   // Initial form state
   const [formData, setFormData] = useState<any>({
@@ -130,7 +132,7 @@ const AddQuotationModal = ({
       // Handle success (e.g., showing a success message or closing the modal)
       // onClose();
     } catch (error) {
-      Toast.success('Err successfully');
+      Toast.error('Something Went wrong');
       console.error('Error submitting form:', error);
       // Handle error (e.g., showing an error message)
     }
@@ -140,11 +142,20 @@ const AddQuotationModal = ({
     onClose(); // Consider closing the modal or resetting form state here
   };
 
+  const handleSelectChange = (data: any) => {
+    const { value } = data;
+    console.log(value);
+    setFormData((prev: any) => ({
+      ...prev,
+      client: value,
+    }));
+  };
+
   if (!isOpen) return null; // Don't render the modal if it's not open
 
   return (
     <div className="fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white dark:bg-boxdark w-full max-w-2xl m-auto flex-col flex rounded-lg">
         <span className="absolute top-0 right-0 p-4">
           <button
             onClick={onClose}
@@ -197,7 +208,7 @@ const AddQuotationModal = ({
                 Email
               </label>
 
-              <select
+              {/* <select
                 id="client"
                 name="client"
                 value={formData.client}
@@ -213,7 +224,24 @@ const AddQuotationModal = ({
                       </option>
                     );
                   })}
-              </select>
+              </select> */}
+
+              <Select
+                id="client"
+                name="client"
+                onChange={handleSelectChange}
+                isSearchable
+                options={
+                  emailsData?.data.map((item: any) => {
+                    return {
+                      value: item._id,
+                      label: item.email,
+                    };
+                  }) || []
+                }
+                placeholder="Select Client"
+                className="placeholder:text-gray-3"
+              />
             </div>
           ) : (
             <>

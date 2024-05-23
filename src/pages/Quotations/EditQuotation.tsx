@@ -8,16 +8,25 @@ import {
 } from '../../redux/features/quotations/apiQuotations';
 import { Toast } from '../../utils/toast';
 
-const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selectedQuotation, setSelectedQuotation }: any) => {
-  const [updateQuotation, { isLoading, isSuccess, isError, data: updatedData }] =
-    useUpdateQuotationMutation();
+const EditQuotationModal = ({
+  isOpen,
+  onClose,
+  id,
+  openCreateOrderModal,
+  selectedQuotation,
+  setSelectedQuotation,
+}: any) => {
+  const [
+    updateQuotation,
+    { isLoading, isSuccess, isError, data: updatedData },
+  ] = useUpdateQuotationMutation();
 
   //   const {
   //     data: singleData,
   //     isLoading: isSingleLoading,
   //     isSuccess: isSingleSuccess,
   // } = useGetSingleQuotationQuery(id);
-  
+
   // const [previousStatus, setPreviousStatus] = useState('-1')
   const [formData, setFormData] = useState({
     // Initialize with empty or default values
@@ -38,12 +47,12 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
   });
   // console.log('sigle data ===', singleData);
   // console.log('sigle id ===', id);
-//   console.log('sigle first name ===', singleData);
+  //   console.log('sigle first name ===', singleData);
   useEffect(() => {
     if (id && selectedQuotation) {
       // Populate the form data with the quotation to be edited
       // console.log('singleData from useEffect: ', singleData.data)
-      
+
       setFormData({
         firstName: selectedQuotation.client.firstName || '',
         lastName: selectedQuotation.client.lastName || '',
@@ -65,7 +74,7 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
     }
     // console.log('formdata===>',formData);
   }, [id, selectedQuotation]);
-  
+
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -80,7 +89,7 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
       // Assuming your API expects an ID and the updated data
       await updateQuotation({ id, data: formData });
       if (formData.status === 'sold') {
-        openCreateOrderModal(true)
+        openCreateOrderModal(true);
       }
       Toast.success('Quotation updated successfully');
       onClose(); // Close the modal after successful update
@@ -94,8 +103,8 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
 
   return (
     <div className="modal fixed inset-0 top-4 z-[9999] overflow-auto bg-smoke-light flex">
-      <div className="modal-content relative p-8 bg-white w-full max-w-xl m-auto flex-col flex rounded-lg">
-        <h3 className="text-xl">Edit Quotation</h3>
+      <div className="modal-content relative p-8 bg-white dark:bg-boxdark w-full max-w-2xl m-auto flex-col flex rounded-lg">
+        <h3 className="text-xl mb-3">Edit Quotation</h3>
         <span className="absolute top-0 right-0 p-4">
           <button
             onClick={onClose}
@@ -129,11 +138,12 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
               id="firstName"
               name="firstName"
               type="text"
-              disabled readOnly
+              disabled
+              readOnly
               value={formData.firstName}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required 
+              required
             />
           </div>
 
@@ -148,11 +158,12 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
               id="lastName"
               name="lastName"
               type="text"
-              disabled readOnly
+              disabled
+              readOnly
               value={formData.lastName}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required 
+              required
             />
           </div>
 
@@ -169,7 +180,8 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
               id="email"
               name="email"
               type="email"
-              disabled readOnly
+              disabled
+              readOnly
               value={formData.email}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -189,7 +201,8 @@ const EditQuotationModal = ({ isOpen, onClose, id, openCreateOrderModal, selecte
               id="phoneNumber"
               name="phoneNumber"
               type="text"
-              disabled readOnly
+              disabled
+              readOnly
               value={formData.phoneNumber}
               onChange={handleInputChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
