@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
-
 import { Toast } from '../../utils/toast';
 import { usePostQuotationMutation } from '../../redux/features/quotations/apiQuotations';
 import { ColorRing } from 'react-loader-spinner';
@@ -8,6 +7,7 @@ import {
   useGetQuotationsEmailQuery,
   usePostClientMutation,
 } from '../../redux/features/clients/apiClients';
+import { useAppSelector } from '../../redux/hook';
 
 const AddQuotationModal = ({
   isOpen,
@@ -16,8 +16,8 @@ const AddQuotationModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const { user } = useAppSelector((state) => state.user);
   const [addQuotations, { isLoading, isSuccess }] = usePostQuotationMutation();
-
   const [errorMsg, setErrorMsg] = useState('');
   const [
     createClientPost,
@@ -110,6 +110,7 @@ const AddQuotationModal = ({
             lastName,
             phoneNumber,
             email,
+            lfcId: user?.user?._id,
           },
         });
 

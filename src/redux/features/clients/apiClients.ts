@@ -6,6 +6,10 @@ const userApi = api.injectEndpoints({
       query: (id) => `/clients?userId=${id}`,
       providesTags: ['clients'],
     }),
+    getMyClients: builder.query({
+      query: (id) => `/clients/my-clients/${id}`,
+      providesTags: ['clients'],
+    }),
     getQuotationsEmail: builder.query({
       query: () => `/clients/email`,
       providesTags: ['clients'],
@@ -63,4 +67,5 @@ export const {
   useUpdateClientMutation,
   useGetClientsQuery,
   useGetQuotationsEmailQuery,
+  useGetMyClientsQuery,
 } = userApi;
