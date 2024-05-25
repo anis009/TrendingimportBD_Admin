@@ -14,6 +14,7 @@ import ListOrders from '../pages/Orders/ListOrders';
 import ListMyRequestCallBack from '../pages/RequestCallBack/ListMyRequestCallBack';
 import Profile from '../pages/Profile/Profile';
 import ListUsers from '../pages/Users/ListUsers';
+import AllClients from '../pages/Clients/AllCients';
 
 export const router = createBrowserRouter([
   {
@@ -77,12 +78,23 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/clients',
+        path: '/my-clients',
         element: (
           <PrivateRoute>
             <>
               <PageTitle title="FcFl | Clients" />
               <ListClients />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/all-clients',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="FcFl | Clients" />
+              <AllClients />
             </>
           </PrivateRoute>
         ),

@@ -16,16 +16,16 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAppSelector } from '../../redux/hook';
 
-const ListClients = () => {
+const AllClients = () => {
   const { user } = useAppSelector((state) => state.user);
-  const { data, isLoading, isSuccess, refetch } = useGetMyClientsQuery(
-    user?.user?._id,
-  );
-
-  // console.log('data', data);
-  // const { data, isLoading, isSuccess, refetch } = useGetClientsQuery(
+  // const { data, isLoading, isSuccess, refetch } = useGetMyClientsQuery(
   //   user?.user?._id,
   // );
+
+  // console.log('data', data);
+  const { data, isLoading, isSuccess, refetch } = useGetClientsQuery(
+    user?.user?._id,
+  );
   // console.log('user', user);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [editedValue, setEditedValue] = useState<IClient>();
@@ -428,4 +428,4 @@ const ListClients = () => {
   );
 };
 
-export default ListClients;
+export default AllClients;

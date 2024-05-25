@@ -53,7 +53,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ columns, data }) => {
               {headerGroup.headers.map((column: any) => (
                 <th
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="px-4 py-2 text-left cursor-pointer"
+                  className="px-4 py-2 text-left whitespace-nowrap cursor-pointer"
                 >
                   {column.render('Header')}
                   <span>
@@ -75,7 +75,10 @@ const TableComponent: React.FC<TableComponentProps> = ({ columns, data }) => {
               <tr {...row.getRowProps()}>
                 {row.cells.map((cell: any) => {
                   return (
-                    <td {...cell.getCellProps()} className="px-4 py-2">
+                    <td
+                      {...cell.getCellProps()}
+                      className="px-4 whitespace-nowrap py-2"
+                    >
                       {cell.render('Cell')}
                     </td>
                   );
