@@ -206,7 +206,7 @@ const AllClients = () => {
       });
 
       if (result && result?.data.success) {
-        Toast.success('Client created successfully');
+        Toast.success('Client added successfully');
         setAddModalOpen(false);
       }
     } catch (error) {
