@@ -65,13 +65,28 @@ const ListRequestCallBack = () => {
   useEffect(() => {
     if (isSuccess && data && data?.data) {
       const temp = data.data.map((item: IRequestCallBack) => {
-        const departure = getLocalDate(item.departure as string);
-        const arrival = getLocalDate(item.arrival as string);
-        return { ...item, departure, arrival };
+        const departure = item.departure?.trim() ? getLocalDate(item.departure as string) : 'N/A';
+        const arrival = item.arrival?.trim() ? getLocalDate(item.arrival as string) : 'N/A';
+        
+        const updatedItem = {
+          ...item,
+          departure,
+          arrival,
+          from: item.from?.trim() ? item.from : 'N/A',
+          to: item.to?.trim() ? item.to : 'N/A',
+          flight_type: item.flight_type?.trim() ? item.flight_type : 'N/A',
+          travel_class: item.travel_class?.trim() ? item.travel_class : 'N/A',
+          phoneNumber: item.phoneNumber?.trim() ? item.phoneNumber : 'N/A',
+          // Add more fields here as necessary
+        };
+        
+        return updatedItem;
       });
       setTableData(temp);
     }
   }, [isSuccess, data]);
+  
+  
 
   const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
     useDeleteRequestCallBackMutation();
@@ -284,7 +299,7 @@ const ListRequestCallBack = () => {
               <input
                 type="date"
                 id="arrival"
-                {...register('arrival')}
+                {...register('arrival')} 
                 className="w-full px-3 py-2 border rounded-md"
               />
             </div>
@@ -415,9 +430,7 @@ const ListRequestCallBack = () => {
                     From:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue.from === null || viewValue.from === ''
-                      ? 'N/A'
-                      : viewValue.from}
+                    {viewValue?.from?.trim() ? viewValue.from  : 'N/A'}
                   </td>
                 </tr>
                 <tr>
@@ -425,7 +438,7 @@ const ListRequestCallBack = () => {
                     To:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue.to}
+                    {viewValue?.to?.trim() ? viewValue.to : 'N/A'}
                   </td>
                 </tr>
                 <tr>
@@ -433,7 +446,7 @@ const ListRequestCallBack = () => {
                     Departure:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue.departure}
+                    {viewValue?.departure?.trim() ? viewValue.departure : 'N/A'}
                   </td>
                 </tr>
                 <tr>
@@ -441,7 +454,7 @@ const ListRequestCallBack = () => {
                     Arrival:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue.arrival}
+                    {viewValue?.arrival?.trim() ? viewValue.arrival : 'N/A'}
                   </td>
                 </tr>
                 <tr>
@@ -449,7 +462,9 @@ const ListRequestCallBack = () => {
                     Flight Type:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue.flight_type}
+                    {viewValue?.flight_type?.trim()
+                      ? viewValue.flight_type
+                      : 'N/A'}
                   </td>
                 </tr>
                 <tr>
@@ -457,7 +472,9 @@ const ListRequestCallBack = () => {
                     Travel Class:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue.travel_class}
+                    {viewValue?.travel_class?.trim()
+                      ? viewValue.travel_class
+                      : 'N/A'}
                   </td>
                 </tr>
                 <tr>

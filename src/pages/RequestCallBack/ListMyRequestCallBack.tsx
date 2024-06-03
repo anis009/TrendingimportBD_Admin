@@ -19,9 +19,13 @@ import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
 
 const ListMyRequestCallBack = () => {
-  const { user: { user }, isLoading: boolean } = useAppSelector((state: any) => state.user);
-  const { data, isLoading, isSuccess, refetch } =
-    useGetMyRequestCallBacksQuery(user?._id);
+  const {
+    user: { user },
+    isLoading: boolean,
+  } = useAppSelector((state: any) => state.user);
+  const { data, isLoading, isSuccess, refetch } = useGetMyRequestCallBacksQuery(
+    user?._id,
+  );
   const [tableData, setTableData] = useState([]);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [editedValue, setEditedValue] = useState<IRequestCallBack>();
@@ -61,13 +65,27 @@ const ListMyRequestCallBack = () => {
   useEffect(() => {
     if (isSuccess && data && data?.data) {
       const temp = data.data.map((item: IRequestCallBack) => {
-        const departure = getLocalDate(item.departure as string);
-        const arrival = getLocalDate(item.arrival as string);
-        return { ...item, departure, arrival };
+        const departure = item.departure?.trim() ? getLocalDate(item.departure as string) : 'N/A';
+        const arrival = item.arrival?.trim() ? getLocalDate(item.arrival as string) : 'N/A';
+        
+        const updatedItem = {
+          ...item,
+          departure,
+          arrival,
+          from: item.from?.trim() ? item.from : 'N/A',
+          to: item.to?.trim() ? item.to : 'N/A',
+          flight_type: item.flight_type?.trim() ? item.flight_type : 'N/A',
+          travel_class: item.travel_class?.trim() ? item.travel_class : 'N/A',
+          phoneNumber: item.phoneNumber?.trim() ? item.phoneNumber : 'N/A',
+          // Add more fields here as necessary
+        };
+        
+        return updatedItem;
       });
       setTableData(temp);
     }
   }, [isSuccess, data]);
+  
 
   const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
     useDeleteRequestCallBackMutation();
@@ -88,9 +106,8 @@ const ListMyRequestCallBack = () => {
     }
     if (value.from) {
       setValue('from', value.from);
-    }
-    else{
-      setValue('from','N/A');
+    } else {
+      setValue('from', 'N/A');
     }
     if (value.to) {
       setValue('to', value.to);
@@ -142,7 +159,6 @@ const ListMyRequestCallBack = () => {
       Toast.success('Error ' + error);
     }
   };
-  
 
   const viewHandler = (value: IRequestCallBack) => {
     setViewValue(value);
@@ -358,57 +374,98 @@ const ListMyRequestCallBack = () => {
           </form>
         </Modal>
       )}
-{viewValue && (
-  <Modal className="z-[9999]" isOpen={viewModal} onClose={() => setViewModal((prev) => !prev)}>
-    <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden">
-      <table className="min-w-full leading-normal">
-        <tbody className="text-gray-700 dark:text-gray-400">
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">ID:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue._id}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">From:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue?.from?.length <= 0 ? "N/A" : viewValue.from}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">To:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.to}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Departure:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.departure}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Arrival:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.arrival}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Flight Type:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.flight_type}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Travel Class:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.travel_class}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Number of Passengers:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.no_of_passengers}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Phone Number:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.phoneNumber}</td>
-          </tr>
-          <tr>
-            <td className="border px-4 py-2 text-sm font-bold">Status:</td>
-            <td className="border px-4 py-2 text-sm">{viewValue.status}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </Modal>
-)}
-
+      {viewValue && (
+        <Modal
+          className="z-[9999]"
+          isOpen={viewModal}
+          onClose={() => setViewModal((prev) => !prev)}
+        >
+          <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden">
+            <table className="min-w-full leading-normal">
+              <tbody className="text-gray-700 dark:text-gray-400">
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">ID:</td>
+                  <td className="border px-4 py-2 text-sm">{viewValue._id}</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">From:</td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.from?.trim() ? viewValue.from : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">To:</td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.to?.trim() ? viewValue.to : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Departure:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.departure?.trim() ? viewValue.departure : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Arrival:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.arrival?.trim() ? viewValue.arrival : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Flight Type:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.flight_type?.trim()
+                      ? viewValue.flight_type
+                      : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Travel Class:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.travel_class?.trim()
+                      ? viewValue.travel_class
+                      : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Number of Passengers:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue.no_of_passengers}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Phone Number:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue?.phoneNumber?.trim()
+                      ? viewValue.phoneNumber
+                      : 'N/A'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2 text-sm font-bold">
+                    Status:
+                  </td>
+                  <td className="border px-4 py-2 text-sm">
+                    {viewValue.status}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
