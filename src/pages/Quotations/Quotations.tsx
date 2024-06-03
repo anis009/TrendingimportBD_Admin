@@ -57,7 +57,9 @@ const Quotations = () => {
     if (isSuccess) {
       const tmpData =
         apiData?.data.map((quotation: any) => ({
-          name: `${quotation?.client?.firstName} ${quotation?.client?.lastName}`,
+        name: (quotation?.client?.firstName == null  || quotation?.client?.firstName == '' || quotation?.client?.lastName == null || quotation?.client?.lastName == '') 
+        ? "N/A" 
+        : `${quotation?.client?.firstName} ${quotation?.client?.lastName}`,
           departureAirport: quotation.departureAirport,
           departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
           arrivalAirport: quotation.arrivalAirport,
