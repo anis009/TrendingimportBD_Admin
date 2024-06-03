@@ -82,7 +82,9 @@ const ClientDetails = () => {
                 </div>
                 <div className="lg:w-3/4 px-4 py-5 ">
                   <div className="text-sm text-gray-700">
-                    {data?.data?.firstName}
+                    {data?.data?.firstName?.trim()
+                      ? data.data.firstName
+                      : 'N/A'}
                   </div>
                 </div>
 
@@ -93,7 +95,7 @@ const ClientDetails = () => {
                 </div>
                 <div className="lg:w-3/4 px-4 py-5 ">
                   <div className="text-sm text-gray-700">
-                    {data?.data?.lastName}
+                    {data?.data?.lastName?.trim() ? data.data.lastName : 'N/A'}
                   </div>
                 </div>
 
@@ -102,7 +104,7 @@ const ClientDetails = () => {
                 </div>
                 <div className="lg:w-3/4 px-4 py-5 ">
                   <div className="text-sm text-gray-700">
-                    {data?.data?.email}
+                    {data?.data?.email?.trim() ? data.data.email : 'N/A'}
                   </div>
                 </div>
 
@@ -113,10 +115,17 @@ const ClientDetails = () => {
                 </div>
                 <div className="lg:w-3/4 px-4 py-5 ">
                   <div className="text-sm text-gray-700">
-                    {data?.data?.phoneNumber}{' '}
-                    <button className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md">
-                      Call
-                    </button>
+                    {data?.data?.phoneNumber?.trim()
+                      ? data.data.phoneNumber
+                      : 'N/A'}
+                    {data?.data?.phoneNumber?.trim() && (
+                      <a
+                        href={`skype:${data.data.phoneNumber.trim()}?call`}
+                        className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+                      >
+                        Call
+                      </a>
+                    )}
                   </div>
                 </div>
 
