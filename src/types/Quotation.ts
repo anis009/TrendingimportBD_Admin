@@ -8,10 +8,10 @@ export type IQuotation = {
 
   status?: string;
     action?: 'View Details',
-    firstName: String,
-    lastName: String,
+    firstName: String | null,
+    lastName: String | null,
     email:String,
-    phoneNumber:String,
+    phoneNumber:String | null,
    
     PAX:String,
     class:String,

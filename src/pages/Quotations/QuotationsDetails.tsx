@@ -38,7 +38,15 @@ const QuotationsDetails = () => {
   };
   // console.log("data=>"+JSON.stringify(data.data));
   console.log(id);
-
+  const formatName = (data) => {
+    const client = data?.client;
+    const name = client?.firstName?.trim() && client?.lastName?.trim()
+      ? `${client.firstName} ${client.lastName}`
+      : data?.firstName?.trim() && data?.lastName?.trim()
+      ? `${data.firstName} ${data.lastName}`
+      : 'N/A';
+    return name;
+  };
   if (isLoading) {
     return <Loading msg="Single Quotation data loading...." />;
   } else if (data) {
@@ -107,12 +115,13 @@ const QuotationsDetails = () => {
                 <p className="text-black dark:text-white">Name:</p>
               </td>
               <td className="px-5 py-5 border-b border-gray text-sm dark:border-gray">
-                <p className="text-black dark:text-white">
+                {/* <p className="text-black dark:text-white">
                   {data?.data?.client?.firstName?.trim() &&
                   data?.data?.client?.lastName?.trim()
                     ? `${data.data.client.firstName} ${data.data.client.lastName}`
                     : 'N/A'}
-                </p>
+                </p> */}
+                 <p className="text-gray-900 dark:text-white">{formatName(data)}</p>
               </td>
             </tr>
             <tr>
@@ -122,7 +131,7 @@ const QuotationsDetails = () => {
               <td className="px-5 py-5 border-b border-gray text-sm dark:border-gray">
                 <p className="text-black dark:text-white">
                   {data?.data?.client?.email?.trim()
-                    ? data.data.client.email
+                    ?  data.data.client.email
                     : 'N/A'}
                 </p>
               </td>

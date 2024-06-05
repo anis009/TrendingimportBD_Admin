@@ -55,22 +55,22 @@ const Quotations = () => {
   // Transform the API data into the format expected by the table
   useEffect(() => {
     if (isSuccess) {
-      const tmpData =
-        apiData?.data.map((quotation: any) => ({
-        name: (quotation?.client?.firstName == null  || quotation?.client?.firstName == '' || quotation?.client?.lastName == null || quotation?.client?.lastName == '') 
-        ? "N/A" 
-        : `${quotation?.client?.firstName} ${quotation?.client?.lastName}`,
-          departureAirport: quotation.departureAirport,
-          departureDate: getLocalDate(quotation.departureDate), // Assuming getLocalDate formats your date as needed
-          arrivalAirport: quotation.arrivalAirport,
-          arrivalDate: getLocalDate(quotation.arrivalDate), // Adjust this as well
-          timeReceived: 'Unknown', // This field is not provided by your API, you might need to adjust
-          action: 'View Details', // You can keep this or adjust based on your API data
-          _id: quotation._id,
-        })) || [];
+      const tmpData = apiData?.data.map((quotation) => ({
+        ...quotation,
+        name: `${(quotation.firstName || quotation.client?.firstName || 'N/A')} ${(quotation.lastName || quotation.client?.lastName || '')}`.trim() || 'N/A',
+        email: quotation.email || quotation.client?.email || 'No Email Provided',
+        phoneNumber: quotation.phoneNumber || quotation.client?.phoneNumber || 'No Phone Number',
+        departureAirport: quotation.departureAirport || 'Unknown Airport',
+        departureDate: getLocalDate(quotation.departureDate) || 'Unknown Date',
+        arrivalAirport: quotation.arrivalAirport || 'Unknown Airport',
+        arrivalDate: getLocalDate(quotation.arrivalDate) || 'Unknown Date',
+        _id: quotation._id,
+      })) || [];
       setData(tmpData);
     }
   }, [isSuccess, apiData]);
+  
+  
 
   useEffect(() => {
     if (edit_id && selectedQuotationForEdit?._id) {
@@ -127,10 +127,35 @@ const Quotations = () => {
   };
 
   const columns = [
+    // {
+    //   Header: 'Name',
+    //   accessor: 'name', // Corresponds to the keys in your data objects
+    // },
     {
       Header: 'Name',
-      accessor: 'name', // Corresponds to the keys in your data objects
+      accessor: 'name',
+
     },
+    {
+      Header: 'Phone Number',
+      accessor: 'phoneNumber',
+      // Custom Cell rendering
+      Cell: ({ value }) => {
+        if (!value || value === 'No Phone Number') {
+          return 'No Phone Number'; // Handle cases where no phone number is available
+        }
+        return (
+          <a href={`skype:${value}?call`} style={{ color: 'blue', textDecoration: 'underline' }}>
+            Call {value}
+          </a>
+        );
+      }
+    },
+    // {
+    //   Header: 'Email',
+    //   accessor: 'email',
+     
+    // },
     {
       Header: 'Departure Airport',
       accessor: 'departureAirport',

@@ -17,6 +17,7 @@ import { BiSolidEdit } from 'react-icons/bi';
 import { GrView } from 'react-icons/gr';
 import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
+import { SiConvertio } from "react-icons/si";
 
 const ListMyRequestCallBack = () => {
   const {
@@ -236,6 +237,12 @@ const ListMyRequestCallBack = () => {
             className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-700 text-white rounded-md"
           >
             <GrView /> <span>View</span>
+          </button>
+          <button
+            onClick={() => viewHandler(original)}
+            className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-900 text-white rounded-md"
+          >
+            <SiConvertio /> <span>Add to Quote</span>
           </button>
           {/* <button
             onClick={() => assignMeHandler(original._id)}

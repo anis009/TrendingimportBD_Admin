@@ -9,4 +9,5 @@ export type IRequestCallBack = {
   travel_class: string;
   _id: string;
   status: string;
+  updatedAt: string | null;
 };

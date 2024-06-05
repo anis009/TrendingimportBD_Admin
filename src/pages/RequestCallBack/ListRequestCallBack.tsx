@@ -193,44 +193,62 @@ const ListRequestCallBack = () => {
   };
 
   // TODO:: TABLE COLUMNS
-
+  const calculateTimePassed = (updatedAt: string) => {
+    const pastDate = new Date(updatedAt);
+    const currentDate = new Date();
+    const diff = currentDate.getTime() - pastDate.getTime();
+  
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / 1000 / 60) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+  
+    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+  };
   const columns: any = [
+    // {
+    //   Header: 'Phone Number',
+    //   accessor: 'phoneNumber',
+    // },
+    // {
+    //   Header: 'From',
+    //   accessor: 'from',
+    // },
+    // {
+    //   Header: 'Arrival',
+    //   accessor: 'arrival',
+    // },
+    // {
+    //   Header: 'To',
+    //   accessor: 'to',
+    // },
+    // {
+    //   Header: 'Departure',
+    //   accessor: 'departure',
+    // },
+    // {
+    //   Header: 'Flight Type',
+    //   accessor: 'flight_type',
+    // },
+    // // Define other columns similarly
+    // {
+    //   Header: 'No Of Passengers',
+    //   accessor: 'no_of_passengers',
+    // },
+    // {
+    //   Header: 'Status',
+    //   accessor: 'status',
+    // },
     {
-      Header: 'Phone Number',
-      accessor: 'phoneNumber',
+      Header: 'SL',
+      accessor: (row, rowIndex) => rowIndex + 1, // Auto-increment for serial number
+      id: 'sl', // Unique ID for the column
     },
+ 
     {
-      Header: 'From',
-      accessor: 'from',
-    },
-    {
-      Header: 'Arrival',
-      accessor: 'arrival',
-    },
-    {
-      Header: 'To',
-      accessor: 'to',
-    },
-    {
-      Header: 'Departure',
-      accessor: 'departure',
-    },
-    {
-      Header: 'Flight Type',
-      accessor: 'flight_type',
-    },
-    // Define other columns similarly
-    {
-      Header: 'No Of Passengers',
-      accessor: 'no_of_passengers',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-    {
-      Header: 'Travel Class',
-      accessor: 'travel_class',
+      Header: 'Time Passed',
+      accessor: 'updatedAt',
+      Cell: ({ value }: { value: string }) => calculateTimePassed(value),
     },
     {
       Header: 'Action',
@@ -246,24 +264,24 @@ const ListRequestCallBack = () => {
         };
       }) => (
         <div className="flex flex-row  items-center justify-center space-x-2 ">
-          <button
+          {/* <button
             onClick={() => editHandler(original)}
             className="px-4 flex flex-row items-center justify-between space-x-2 py-2 bg-green-500 text-white rounded-md"
           >
             <BiSolidEdit /> <span>Edit</span>
-          </button>
+          </button> */}
           {/* <button
             onClick={() => deleteHandler(original._id)}
             className="px-4 py-2 bg-red-700 text-white rounded-md"
           >
             Delete
           </button> */}
-          <button
+          {/* <button
             onClick={() => viewHandler(original)}
             className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-700 text-white rounded-md"
           >
             <GrView /> <span>View</span>
-          </button>
+          </button> */}
           <button
             onClick={() => {
               // console.log('original._id: ', original._id, original)
@@ -282,7 +300,7 @@ const ListRequestCallBack = () => {
   return (
     <div className="rounded-sm  overflow-x-auto border border-stroke bg-white px-5 pt-6 pb-2.5  dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        All Leads<small> (request callback lists)</small>
+        All New Leads<small> (request callback lists)</small>
       </h4>
       <TableComponent
         className="min-w-full table-auto"

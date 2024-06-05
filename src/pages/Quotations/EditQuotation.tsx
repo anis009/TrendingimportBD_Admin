@@ -53,11 +53,29 @@ const EditQuotationModal = ({
       // Populate the form data with the quotation to be edited
       // console.log('singleData from useEffect: ', singleData.data)
 
+      // setFormData({
+      //   firstName: selectedQuotation.client.firstName || '',
+      //   lastName: selectedQuotation.client.lastName || '',
+      //   email: selectedQuotation.client.email || '',
+      //   phoneNumber: selectedQuotation.client.phoneNumber,
+      //   departureAirport: selectedQuotation.departureAirport || '',
+      //   departureDate: selectedQuotation.departureDate || '',
+      //   arrivalAirport: selectedQuotation.arrivalAirport || '',
+      //   arrivalDate: selectedQuotation.arrivalDate || '',
+
+      //   pax: selectedQuotation.pax || '',
+
+      //   flexibility: selectedQuotation.flexibility,
+      //   class: selectedQuotation.class,
+      //   notes: selectedQuotation.notes,
+      //   type: selectedQuotation.type,
+      //   status: selectedQuotation.status,
+      // });
       setFormData({
-        firstName: selectedQuotation.client.firstName || '',
-        lastName: selectedQuotation.client.lastName || '',
-        email: selectedQuotation.client.email || '',
-        phoneNumber: selectedQuotation.client.phoneNumber,
+        firstName: selectedQuotation.firstName || '',
+        lastName: selectedQuotation.lastName || '',
+        email: selectedQuotation.email || '',
+        phoneNumber: selectedQuotation.phoneNumber,
         departureAirport: selectedQuotation.departureAirport || '',
         departureDate: selectedQuotation.departureDate || '',
         arrivalAirport: selectedQuotation.arrivalAirport || '',
