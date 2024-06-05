@@ -14,8 +14,26 @@ const QuotationsDetails = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetSingleQuotationQuery(id);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [statusFlags, setStatusFlags] = useState<StatusFlags>({ called: false, mailed: false, quoted: false });
+  // const [statusFlags, setStatusFlags] = useState<StatusFlags>({ called: false, mailed: false, quoted: false });
+  const [statusFlags, setStatusFlags] = useState({
+    called: 0,
+    mailed: 0,
+    quoted: 0,
+  });
 
+  const handleIncrement = (field: keyof typeof statusFlags) => {
+    setStatusFlags(prev => ({
+      ...prev,
+      [field]: prev[field] + 1,
+    }));
+  };
+
+  const handleDecrement = (field: keyof typeof statusFlags) => {
+    setStatusFlags(prev => ({
+      ...prev,
+      [field]: prev[field] > 0 ? prev[field] - 1 : 0,
+    }));
+  };
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
     setStatusFlags(prev => ({ ...prev, [name]: checked }));
@@ -315,12 +333,21 @@ const QuotationsDetails = () => {
           </p>
 
           <div className="flex justify-start mt-4">
-            <button
+            {/* <button
               onClick={() => console.log('Calling client...')}
               className="flex items-center bg-slate-500 text-white px-3 py-2 mr-4 rounded hover:bg-slate-700"
             >
               <FaPhone className="mr-2" /> Call Client
-            </button>
+            </button> */}
+                <div>
+      {/* Skype call button */}
+      <a
+        href={`skype:${data?.data?.phoneNumber}?call`}
+        className="flex items-center bg-slate-500 text-white px-3 py-2 mr-4 rounded hover:bg-slate-700"
+      >
+        <FaPhone className="mr-2" /> Call Client
+      </a>
+    </div>
             <button
               onClick={toggleModal}
               className="px-6 py-2 border rounded-md text-white bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:bg-slate-700 focus:ring-opacity-50"
@@ -332,50 +359,32 @@ const QuotationsDetails = () => {
           {/* Status Flags */}
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Status Flags</h3>
-            <div className="mb-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  name="called"
-                  checked={statusFlags.called}
-                  onChange={handleCheckboxChange}
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <span className="ml-2">Called?</span>
-              </label>
+            {Object.entries(statusFlags).map(([key, value]) => (
+            <div key={key} className="mb-2">
+              <div className="flex items-center justify-start">
+                <span className='mr-4'>{key.charAt(0).toUpperCase() + key.slice(1)}:</span>
+                <div className="flex items-center">
+                  <button onClick={() => handleDecrement(key as keyof typeof statusFlags)}
+                          className="px-4 py-1 text-white bg-red-500 rounded hover:bg-red-700">
+                    -
+                  </button>
+                  <span className="mx-2">{value}</span>
+                  <button onClick={() => handleIncrement(key as keyof typeof statusFlags)}
+                          className="px-4 py-1 text-white bg-green-500 rounded hover:bg-green-700">
+                    +
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="mb-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  name="mailed"
-                  checked={statusFlags.mailed}
-                  onChange={handleCheckboxChange}
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <span className="ml-2">Mailed?</span>
-              </label>
-            </div>
-            <div className="mb-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  name="quoted"
-                  checked={statusFlags.quoted}
-                  onChange={handleCheckboxChange}
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <span className="ml-2">Quoted?</span>
-              </label>
-            </div>
+          ))}
           </div>
 
           {/* Statistics */}
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Statistics</h3>
-            <p>Total Calls: 2</p>
-            <p>Total Mails: 1</p>
-            <p>Total Quotes: 0</p>
+            <p>Total Calls: {statusFlags.called}</p>
+            <p>Total Mails: {statusFlags.mailed}</p>
+            <p>Total Quotes: {statusFlags.quoted}</p>
           </div>
         </div>
       </div>
