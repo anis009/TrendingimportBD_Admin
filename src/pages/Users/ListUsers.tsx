@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loading from '../../components/Loading/Loading';
 import TableComponent from '../../components/TableComponent/TableComponents';
 import {
   useDeleteUserMutation,
   useGetUsersQuery,
   useUpdateUserMutation,
+  usePostAddUserMutation,
 } from '../../redux/features/user/apiUser';
 import Modal from '../../components/Modal/Modal';
+import { Toast } from '../../utils/toast';
 interface IUser {
   _id: string;
   userName: string;
@@ -14,19 +16,37 @@ interface IUser {
   userRole: string;
 }
 const ListUsers = () => {
-  const { data, isLoading } = useGetUsersQuery({ userRole: 'lfc' });
+  const { data, isLoading,refetch  } = useGetUsersQuery({ userRole: 'lfc' });
   const [viewValue, setViewValue] = useState<any>(null);
   const [viewModal, setViewModal] = useState<boolean>(false);
   const [editModal, setEditModal] = useState<boolean>(false);
+  const [userAddModal, setUserAddModal] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<string>('');
   const [updateUser, { isLoading: editLoading }] = useUpdateUserMutation();
   const [deleteUer, { isLoading: deleteLoading }] = useDeleteUserMutation();
-  const [user, setUser] = useState<any>({
+  const [postAddUser, { isLoading: addUserLoading }] = usePostAddUserMutation();
+
+  useEffect(()=>{
+    
+  })
+
+  const initialState = {
     userName: '',
     email: '',
+    password: '',
     userRole: '',
     _id: '',
-  });
+  };
+  const [user, setUser] = useState<any>(initialState);
+
+  const addUserdata = {
+    userName: '',
+    email: '',
+    password: '',
+    userRole: '',
+    _id: '',
+  };
+  const [addUser, setAddUser] = useState<any>(addUserdata);
 
   // const handleEditFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   const fieldName: any = event.target.name;
@@ -42,6 +62,16 @@ const ListUsers = () => {
     const fieldName: string = event.target.name;
     const fieldValue: string = event.target.value;
     setUser((prevUser: IUser) => ({
+      ...prevUser,
+      [fieldName]: fieldValue,
+    }));
+  };
+  const handleAddUserFormChanges = (
+    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>,
+  ) => {
+    const fieldName: string = event.target.name;
+    const fieldValue: string = event.target.value;
+    setAddUser((prevUser: IUser) => ({
       ...prevUser,
       [fieldName]: fieldValue,
     }));
@@ -137,6 +167,31 @@ const ListUsers = () => {
       if (response) {
         setEditModal(false);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleAddUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const response:any = await postAddUser({
+        data: {
+          email: addUser.email,
+          userName: addUser.userName,
+          password: addUser.password,
+          userRole: addUser.userRole,
+        },
+      });
+      console.log('Api reponse',response);
+      if (response?.data?.success) {
+        Toast.success(response?.data?.message || 'An error occurred');
+
+        setUserAddModal(false);
+        refetch();
+      } else {
+        Toast.error(response?.error?.data?.message);
+      }
       // console.log('user submitted~', user);
       // console.log('user submitted~', response);
     } catch (error) {
@@ -144,10 +199,27 @@ const ListUsers = () => {
     }
   };
 
+  const handleClose = () => {
+    setUser(initialState);
+    setAddUser(addUserdata);
+    if (userAddModal) {
+      setUserAddModal(false);
+    }
+    if (editModal) {
+      setEditModal(false);
+    }
+  };
+
   return (
     <div>
-      <div>
-        <h2>Users List</h2>
+      <div className="qoutations-header-wrapper flex flex-row items-center justify-between space-x-4">
+        <h3 className="text-xl mb-4">Users List</h3>
+        <button
+          onClick={() => setUserAddModal(true)}
+          className="px-4 py-2 bg-slate-600 text-white rounded-md   hover:bg-green-400"
+        >
+          Add New User
+        </button>
       </div>
       <div className="overflow-x-auto">
         <TableComponent
@@ -190,9 +262,8 @@ const ListUsers = () => {
           </div>
         </Modal>
       )}
-
       {user && (
-        <Modal onClose={() => setEditModal((prev) => !prev)} isOpen={editModal}>
+        <Modal onClose={handleClose} isOpen={editModal}>
           <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden shadow-lg p-4">
             <h2 className="text-lg font-semibold mb-4">Edit User</h2>
             <form onSubmit={handleSubmitEdit}>
@@ -257,6 +328,88 @@ const ListUsers = () => {
           </div>
         </Modal>
       )}
+      {
+        <Modal onClose={handleClose} isOpen={userAddModal}>
+          <div className="bg-white dark:bg-[#1C2434] rounded-lg overflow-hidden shadow-lg p-4">
+            <h2 className="text-lg font-semibold mb-4">Add User</h2>
+            <form onSubmit={handleAddUser}>
+              <div className="mb-4">
+                <label
+                  htmlFor="userName"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                >
+                  Username:
+                </label>
+                <input
+                  id="userName"
+                  type="text"
+                  name="userName"
+                  value={addUser.userName}
+                  onChange={handleAddUserFormChanges}
+                  className="mt-1 focus:ring-indigo-500 outline-none py-2 indent-2 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                >
+                  Email:
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={addUser.email}
+                  onChange={handleAddUserFormChanges}
+                  className="mt-1 focus:ring-indigo-500 outline-none py-2 indent-2 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  value={addUser.password}
+                  onChange={handleAddUserFormChanges}
+                  className="mt-1 focus:ring-indigo-500 outline-none py-2 indent-2 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="userRole"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                >
+                  User Role:
+                </label>
+                <select
+                  id="userRole"
+                  name="userRole"
+                  value={addUser.userRole}
+                  onChange={handleAddUserFormChanges}
+                  className="mt-1 focus:ring-indigo-500 outline-none py-2 indent-2 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                >
+                  <option value="admin">Admin</option>
+                  <option value="lfc">Lfc</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                {addUserLoading ? 'Adding...' : ' Add User'}
+              </button>
+            </form>
+          </div>
+        </Modal>
+      }
     </div>
   );
 };

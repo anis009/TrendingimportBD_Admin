@@ -18,6 +18,14 @@ const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ['users'],
     }),
+    postAddUser: builder.mutation({
+      query: ({ data }) => ({
+        url: '/users/add_user',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['addUser'],
+    }),
     registerUser: builder.mutation({
       query: ({ data }) => ({
         url: '/users',
@@ -46,6 +54,7 @@ const userApi = api.injectEndpoints({
 export const {
   useGetUsersQuery,
   usePostUserMutation,
+  usePostAddUserMutation,
   useRegisterUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,

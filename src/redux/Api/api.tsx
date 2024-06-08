@@ -8,7 +8,7 @@ const API_STAGING_URL = import.meta.env.VITE_API_STAGING_URL;
 export const api = createApi({
   reducerPath: 'api',
   tagTypes: [
-    'user',
+    'addUser',
     'users',
     'requestcallbacks',
     'requestcallback',
@@ -17,15 +17,16 @@ export const api = createApi({
     'clients',
     'client',
     'orders',
+    "requestcallbacksToQuotations"
   ],
   baseQuery: fetchBaseQuery({
-    // baseUrl: 'https://first-class-for-less-admin-back-end.vercel.app/api/v1',
-    baseUrl:
-      ENV === 'PROD'
-        ? API_PROD_URL
-        : ENV === 'STAGING'
-        ? API_STAGING_URL
-        : API_DEV_URL,
+    baseUrl: 'http://localhost:5000/api/v1',
+    // baseUrl:
+    //   ENV === 'PROD'
+    //     ? API_PROD_URL
+    //     : ENV === 'STAGING'
+    //     ? API_STAGING_URL
+    //     : API_DEV_URL,
     prepareHeaders: (headers, { getState }: any) => {
       // Get the token from your auth state
       const token = getState()?.user?.user?.token;
