@@ -17,20 +17,20 @@ export const api = createApi({
     'clients',
     'client',
     'orders',
-    "requestcallbacksToQuotations"
+    'requestcallbacksToQuotations',
   ],
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/v1',
-    // baseUrl:
-    //   ENV === 'PROD'
-    //     ? API_PROD_URL
-    //     : ENV === 'STAGING'
-    //     ? API_STAGING_URL
-    //     : API_DEV_URL,
+    // baseUrl: 'http://localhost:5000/api/v1',
+    baseUrl:
+      ENV === 'PROD'
+        ? API_PROD_URL
+        : ENV === 'STAGING'
+        ? API_STAGING_URL
+        : API_DEV_URL,
     prepareHeaders: (headers, { getState }: any) => {
       // Get the token from your auth state
       const token = getState()?.user?.user?.token;
-      console.log('api~~', getState().user, token);
+      // console.log('api~~', getState().user, token);
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
