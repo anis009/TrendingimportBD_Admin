@@ -1,46 +1,81 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetSingleQuotationQuery } from '../../redux/features/quotations/apiQuotations';
+import {
+  useGetSingleQuotationQuery,
+  useUpdateQuotationMutation,
+} from '../../redux/features/quotations/apiQuotations';
 import Loading from '../../components/Loading/Loading';
 import { getLocalDate } from '../../utils/date';
 import { FaPhone, FaEnvelope } from 'react-icons/fa';
 import { getLocalInfo } from 'phone-number-to-timezone';
 interface StatusFlags {
-  called: boolean;
-  mailed: boolean;
-  quoted: boolean;
+  called: number;
+  mailed: number;
+  quoted: number;
 }
 const QuotationsDetails = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetSingleQuotationQuery(id);
+  const [updateQuotation, { data: editData }] = useUpdateQuotationMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const [statusFlags, setStatusFlags] = useState<StatusFlags>({ called: false, mailed: false, quoted: false });
-  const [statusFlags, setStatusFlags] = useState({
+  const [statusFlags, setStatusFlags] = useState<StatusFlags>({
     called: 0,
     mailed: 0,
     quoted: 0,
   });
 
+  // console.log('update-quotation-details~~', editData);
+
+  useEffect(() => {
+    if (data) {
+      setStatusFlags((prev) => ({
+        ...prev,
+        called: +data.data?.totalCalls || 0,
+        mailed: +data.data?.totalMails || 0,
+        quoted: +data.data?.totalQuotes || 0,
+      }));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (id) {
+      const updateStatusFlags = async () => {
+        await updateQuotation({
+          id: id,
+          data: {
+            totalCalls: statusFlags.called,
+            totalMails: statusFlags.mailed,
+            totalQuotes: statusFlags.quoted,
+          },
+        });
+      };
+      updateStatusFlags();
+    }
+  }, [id, statusFlags]);
+
+  console.log('quotation-details~~', data);
+
   const handleIncrement = (field: keyof typeof statusFlags) => {
-    setStatusFlags(prev => ({
+    setStatusFlags((prev) => ({
       ...prev,
       [field]: prev[field] + 1,
     }));
   };
 
   const handleDecrement = (field: keyof typeof statusFlags) => {
-    setStatusFlags(prev => ({
+    setStatusFlags((prev) => ({
       ...prev,
       [field]: prev[field] > 0 ? prev[field] - 1 : 0,
     }));
   };
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
-    setStatusFlags(prev => ({ ...prev, [name]: checked }));
+    setStatusFlags((prev) => ({ ...prev, [name]: checked }));
   };
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const formatName = (data) => {
+  const formatName = (data: any) => {
     const client = data?.client;
     return client?.firstName?.trim() && client?.lastName?.trim()
       ? `${client.firstName} ${client.lastName}`
@@ -49,7 +84,7 @@ const QuotationsDetails = () => {
       : 'N/A';
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log('Form submitted');
     // Additional email sending logic goes here
@@ -149,7 +184,9 @@ const QuotationsDetails = () => {
                 </td>
                 <td className="px-5 py-5 border-b border-gray text-sm dark:border-gray">
                   <p className="text-black dark:text-white">
-                    {data?.data?.client?.email?.trim() || data?.data?.email?.trim() || 'N/A'}
+                    {data?.data?.client?.email?.trim() ||
+                      data?.data?.email?.trim() ||
+                      'N/A'}
                   </p>
                 </td>
               </tr>
@@ -159,7 +196,7 @@ const QuotationsDetails = () => {
                 </td>
                 <td className="px-5 py-5 border-b border-gray text-sm dark:border-gray">
                   <p className="text-black dark:text-white">
-                    { data?.data?.status?.trim() || 'N/A'}
+                    {data?.data?.status?.trim() || 'N/A'}
                   </p>
                 </td>
               </tr>
@@ -327,9 +364,9 @@ const QuotationsDetails = () => {
             {data?.data?.firstName?.trim() && data?.data?.lastName?.trim()
               ? `${data.data.firstName} ${data.data.lastName}`
               : 'N/A'}{' '}
-            ({getLocalInfo(data?.data?.phoneNumber).time.zone}){' '}
-            {getLocalInfo(data?.data?.phoneNumber).time.display},{' '}
-            {getLocalInfo(data?.data?.phoneNumber).country_info?.name}
+            ({getLocalInfo(data?.data?.phoneNumber)?.time.zone}){' '}
+            {getLocalInfo(data?.data?.phoneNumber)?.time.display},{' '}
+            {getLocalInfo(data?.data?.phoneNumber)?.country_info?.name}
           </p>
 
           <div className="flex justify-start mt-4">
@@ -339,15 +376,15 @@ const QuotationsDetails = () => {
             >
               <FaPhone className="mr-2" /> Call Client
             </button> */}
-                <div>
-      {/* Skype call button */}
-      <a
-        href={`skype:${data?.data?.phoneNumber}?call`}
-        className="flex items-center bg-slate-500 text-white px-3 py-2 mr-4 rounded hover:bg-slate-700"
-      >
-        <FaPhone className="mr-2" /> Call Client
-      </a>
-    </div>
+            <div>
+              {/* Skype call button */}
+              <a
+                href={`skype:${data?.data?.phoneNumber}?call`}
+                className="flex items-center bg-slate-500 text-white px-3 py-2 mr-4 rounded hover:bg-slate-700"
+              >
+                <FaPhone className="mr-2" /> Call Client
+              </a>
+            </div>
             <button
               onClick={toggleModal}
               className="px-6 py-2 border rounded-md text-white bg-slate-900 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:bg-slate-700 focus:ring-opacity-50"
@@ -360,23 +397,33 @@ const QuotationsDetails = () => {
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Status Flags</h3>
             {Object.entries(statusFlags).map(([key, value]) => (
-            <div key={key} className="mb-2">
-              <div className="flex items-center justify-start">
-                <span className='mr-4'>{key.charAt(0).toUpperCase() + key.slice(1)}:</span>
-                <div className="flex items-center">
-                  <button onClick={() => handleDecrement(key as keyof typeof statusFlags)}
-                          className="px-4 py-1 text-white bg-red-500 rounded hover:bg-red-700">
-                    -
-                  </button>
-                  <span className="mx-2">{value}</span>
-                  <button onClick={() => handleIncrement(key as keyof typeof statusFlags)}
-                          className="px-4 py-1 text-white bg-green-500 rounded hover:bg-green-700">
-                    +
-                  </button>
+              <div key={key} className="mb-2">
+                <div className="flex items-center justify-start">
+                  <span className="mr-4">
+                    {key.charAt(0).toUpperCase() + key.slice(1)}:
+                  </span>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() =>
+                        handleDecrement(key as keyof typeof statusFlags)
+                      }
+                      className="px-4 py-1 text-white bg-red-500 rounded hover:bg-red-700"
+                    >
+                      -
+                    </button>
+                    <span className="mx-2">{value}</span>
+                    <button
+                      onClick={() =>
+                        handleIncrement(key as keyof typeof statusFlags)
+                      }
+                      className="px-4 py-1 text-white bg-green-500 rounded hover:bg-green-700"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
           </div>
 
           {/* Statistics */}
