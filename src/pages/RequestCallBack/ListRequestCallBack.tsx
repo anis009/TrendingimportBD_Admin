@@ -250,7 +250,24 @@ const ListRequestCallBack = () => {
     const minutes = Math.floor((diff / 1000 / 60) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
 
-    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    let timeString = ''
+    if (days) {
+      timeString += `${days} days, `
+    }
+    if (hours) {
+      timeString += `${hours} hours, `
+    }
+    if (minutes) {
+      timeString += `${minutes} minutes, `
+    }
+    if (seconds) {
+      timeString += `${seconds} seconds`
+    }
+
+
+
+    // return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    return timeString
   };
   const columns: any = [
     // {
