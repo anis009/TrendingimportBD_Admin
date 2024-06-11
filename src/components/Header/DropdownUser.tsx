@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import UserOne from '../../images/user/user-01.png';
 import { useAppDispatch, useAppSelector } from '../../redux/hook';
 import { setUser } from '../../redux/features/user/userSlice';
+import { StoreToCookies } from '../../utils/cookies';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -40,6 +41,7 @@ const DropdownUser = () => {
   });
 
   const logoutHandler = () => {
+    StoreToCookies.removeUser();
     dispatch(setUser(null));
   };
   return (
