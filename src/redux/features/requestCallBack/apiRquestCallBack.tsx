@@ -26,6 +26,13 @@ const userApi = api.injectEndpoints({
       }),
       invalidatesTags: ['requestcallbacks'],
     }),
+    postCallbackToQuotations: builder.mutation({
+      query: (id) => ({
+        url: `/request_callback/callback_to_quotation/${id}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['requestcallbacksToQuotations'],
+    }),
     registerRequestCallBack: builder.mutation({
       query: ({ data }) => ({
         url: '/request_callback',
@@ -57,6 +64,7 @@ const userApi = api.injectEndpoints({
 export const {
   useGetSingleRequestCallBacksQuery,
   usePostRequestCallBackMutation,
+  usePostCallbackToQuotationsMutation,
   useGetSingleQuery,
   useRegisterRequestCallBackMutation,
   useDeleteRequestCallBackMutation,

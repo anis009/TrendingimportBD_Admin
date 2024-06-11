@@ -4,10 +4,10 @@ import TableComponent from '../../components/TableComponent/TableComponents';
 import {
   useDeleteRequestCallBackMutation,
   useGetMyRequestCallBacksQuery,
-  useGetRequestCallBacksQuery,
   useUpdateRequestCallBackMutation,
+  usePostCallbackToQuotationsMutation,
 } from '../../redux/features/requestCallBack/apiRquestCallBack';
-import { usePostClientMutation } from '../../redux/features/clients/apiClients';
+// import { usePostClientMutation } from '../../redux/features/clients/apiClients';
 import { IRequestCallBack } from '../../types/requestCallBack';
 import { convertToLocalDate, getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
@@ -15,11 +15,22 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiSolidEdit } from 'react-icons/bi';
 import { GrView } from 'react-icons/gr';
-import { MdOutlineAssignmentInd } from 'react-icons/md';
+// import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
-import { SiConvertio } from "react-icons/si";
+import { SiConvertio } from 'react-icons/si';
+import {
+  requestCallbackSlice,
+  updateRequestCallback,
+} from '../../redux/features/requestCallBack/requestCallbackSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const ListMyRequestCallBack = () => {
+  const dispatch = useDispatch();
+  const reqestcallbackLoading: any = () => {
+    return useSelector((state: RootState) => state.requestCallback.isLoading);
+  };
+
   const {
     user: { user },
     isLoading: boolean,
@@ -34,6 +45,8 @@ const ListMyRequestCallBack = () => {
   const [editedId, setEditedId] = useState<string>('');
   const [editRequestCallBack] = useUpdateRequestCallBackMutation();
   const [viewModal, setViewModal] = useState<boolean>(false);
+
+  const [postCallbackToQuotations] = usePostCallbackToQuotationsMutation();
   const {
     register,
     handleSubmit,
@@ -66,9 +79,13 @@ const ListMyRequestCallBack = () => {
   useEffect(() => {
     if (isSuccess && data && data?.data) {
       const temp = data.data.map((item: IRequestCallBack) => {
-        const departure = item.departure?.trim() ? getLocalDate(item.departure as string) : 'N/A';
-        const arrival = item.arrival?.trim() ? getLocalDate(item.arrival as string) : 'N/A';
-        
+        const departure = item.departure?.trim()
+          ? getLocalDate(item.departure as string)
+          : 'N/A';
+        const arrival = item.arrival?.trim()
+          ? getLocalDate(item.arrival as string)
+          : 'N/A';
+
         const updatedItem = {
           ...item,
           departure,
@@ -80,13 +97,12 @@ const ListMyRequestCallBack = () => {
           phoneNumber: item.phoneNumber?.trim() ? item.phoneNumber : 'N/A',
           // Add more fields here as necessary
         };
-        
+
         return updatedItem;
       });
       setTableData(temp);
     }
   }, [isSuccess, data]);
-  
 
   const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
     useDeleteRequestCallBackMutation();
@@ -143,27 +159,58 @@ const ListMyRequestCallBack = () => {
   };
 
   //TODO:: DELETE HANDLER
-  const deleteHandler = async (id: string) => {
-    const confirm = window.confirm('Are you sure you want to delete');
-    if (!confirm) {
-      return;
-    }
+  // const deleteHandler = async (id: string) => {
+  //   const confirm = window.confirm('Are you sure you want to delete');
+  //   if (!confirm) {
+  //     return;
+  //   }
 
-    try {
-      const result: any = await deleteRequestCallBack({ id });
-      if (result && result?.data && result?.data?.success) {
-        Toast.success('Deleted successfully');
-      }
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      Toast.success('Error ' + error);
-    }
-  };
+  //   try {
+  //     const result: any = await deleteRequestCallBack({ id });
+  //     if (result && result?.data && result?.data?.success) {
+  //       Toast.success('Deleted successfully');
+  //     }
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     Toast.success('Error ' + error);
+  //   }
+  // };
 
   const viewHandler = (value: IRequestCallBack) => {
     setViewValue(value);
     setViewModal(true);
+  };
+  const updateQuotations = reqestcallbackLoading();
+
+  const addQuotationsHandler = async (id: any) => {
+    const confirm = window.confirm('Are you want to move this leads ?');
+    if (!confirm) {
+      return;
+    }
+    try {
+      const addQuotationsFromCallback: any = await postCallbackToQuotations(id);
+      // alert(JSON.stringify(addQuotationsFromCallback))
+      if (
+        addQuotationsFromCallback &&
+        addQuotationsFromCallback?.data &&
+        addQuotationsFromCallback?.data?.success
+      ) {
+        Toast.success(
+          addQuotationsFromCallback?.data?.message || 'Added in Quotations !',
+        );
+        refetch();
+
+        dispatch(updateRequestCallback(!updateQuotations));
+      } else {
+        Toast.error(
+          addQuotationsFromCallback?.data?.message || 'Something went wrong !',
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      Toast.success('Error ' + error);
+    }
   };
 
   // TODO:: TABLE COLUMNS
@@ -239,7 +286,7 @@ const ListMyRequestCallBack = () => {
             <GrView /> <span>View</span>
           </button>
           <button
-            onClick={() => viewHandler(original)}
+            onClick={() => addQuotationsHandler(original._id)}
             className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-900 text-white rounded-md"
           >
             <SiConvertio /> <span>Add to Quote</span>
@@ -383,7 +430,7 @@ const ListMyRequestCallBack = () => {
       )}
       {viewValue && (
         <Modal
-          className="z-[9999]"
+          // className="z-[9999]"
           isOpen={viewModal}
           onClose={() => setViewModal((prev) => !prev)}
         >

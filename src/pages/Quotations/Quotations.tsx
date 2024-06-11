@@ -21,14 +21,19 @@ import { useAppSelector } from '../../redux/hook.ts';
 import { MdDelete } from 'react-icons/md';
 import { BiSolidEdit } from 'react-icons/bi';
 import { GrView } from 'react-icons/gr';
-import NewWindow from 'react-new-window';
+import { UseSelector, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store.tsx';
+// import NewWindow from 'react-new-window';
+
 
 const Quotations = () => {
+
   const navigate = useNavigate();
   const {
     data: apiData,
     isLoading,
     isSuccess,
+    refetch,
   } = useGetQuotationsQuery(undefined);
   const [
     deleteQuotation,
@@ -49,7 +54,15 @@ const Quotations = () => {
   const [selectedQuotationForEdit, setSelectedQuotationForEdit] = useState<any>(
     {},
   );
+  const reqestcallbackLoading: any = () => {
+    return useSelector((state: RootState) => state.requestCallback.isLoading);
+  };
+  const updateQuotations=reqestcallbackLoading();
   const [openW, setOpenW] = useState(false);
+
+  useEffect(()=>{
+    refetch();
+  },[updateQuotations])
 
   // Existing code...
   // Transform the API data into the format expected by the table
