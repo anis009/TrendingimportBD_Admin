@@ -84,16 +84,13 @@ const SignIn: React.FC = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Sign In" />
+      {/* <Breadcrumb pageName="Sign In" /> */}
 
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm   h-[100vh] bg-white w-full shadow-default  dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
-          <div className="w-full border-stroke dark:border-strokedark  xl:border-l-2">
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <span className="mb-1.5 block font-medium">
-                First Class For Less
-              </span>
-              <h2 className=" text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+          <div className="lg:w-[50%] mx-auto border-0  ">
+            <div className="w-full mx-auto text-centers p-4 sm:p-12.5 xl:p-17.5">
+              <h2 className=" text-2xl font-bold text-black text-center dark:text-white sm:text-title-xl2">
                 Sign In to FcFl
               </h2>
 
@@ -103,7 +100,7 @@ const SignIn: React.FC = () => {
                 </div>
               )}
 
-              <form className="mt-9" onSubmit={signInSubmitHandler}>
+              <form className="mt-9 w-full " onSubmit={signInSubmitHandler}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     User Name
@@ -142,7 +139,7 @@ const SignIn: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-6 w-full">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Password
                   </label>
