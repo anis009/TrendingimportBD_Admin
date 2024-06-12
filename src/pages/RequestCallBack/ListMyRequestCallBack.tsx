@@ -18,22 +18,11 @@ import { GrView } from 'react-icons/gr';
 // import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
 import { SiConvertio } from 'react-icons/si';
-import {
-  requestCallbackSlice,
-  updateRequestCallback,
-} from '../../redux/features/requestCallBack/requestCallbackSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 
 const ListMyRequestCallBack = () => {
-  const dispatch = useDispatch();
-  const reqestcallbackLoading: any = () => {
-    return useSelector((state: RootState) => state.requestCallback.isLoading);
-  };
-
   const {
     user: { user },
-    isLoading: boolean,
+    isLoading: userLoading,
   } = useAppSelector((state: any) => state.user);
   const { data, isLoading, isSuccess, refetch } = useGetMyRequestCallBacksQuery(
     user?._id,
@@ -43,7 +32,8 @@ const ListMyRequestCallBack = () => {
   const [editedValue, setEditedValue] = useState<IRequestCallBack>();
   const [viewValue, setViewValue] = useState<IRequestCallBack>();
   const [editedId, setEditedId] = useState<string>('');
-  const [editRequestCallBack] = useUpdateRequestCallBackMutation();
+  const [editRequestCallBack, { isLoading: editedLoading }] =
+    useUpdateRequestCallBackMutation();
   const [viewModal, setViewModal] = useState<boolean>(false);
 
   const [postCallbackToQuotations] = usePostCallbackToQuotationsMutation();
@@ -55,7 +45,7 @@ const ListMyRequestCallBack = () => {
   } = useForm();
 
   const onSubmit = async (formData: any) => {
-    console.log('formData~', formData);
+    // console.log('formData~', formData);
 
     try {
       const result: any = await editRequestCallBack({
@@ -104,8 +94,8 @@ const ListMyRequestCallBack = () => {
     }
   }, [isSuccess, data]);
 
-  const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
-    useDeleteRequestCallBackMutation();
+  // const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
+  //   useDeleteRequestCallBackMutation();
 
   // console.log('isSuccess', deleteSuccess);
   if (isLoading) {
@@ -181,7 +171,7 @@ const ListMyRequestCallBack = () => {
     setViewValue(value);
     setViewModal(true);
   };
-  const updateQuotations = reqestcallbackLoading();
+  // const updateQuotations = reqestcallbackLoading();
 
   const addQuotationsHandler = async (id: any) => {
     const confirm = window.confirm('Are you want to move this leads ?');
@@ -201,7 +191,7 @@ const ListMyRequestCallBack = () => {
         );
         refetch();
 
-        dispatch(updateRequestCallback(!updateQuotations));
+        // dispatch(updateRequestCallback(!updateQuotations));
       } else {
         Toast.error(
           addQuotationsFromCallback?.data?.message || 'Something went wrong !',
@@ -214,6 +204,19 @@ const ListMyRequestCallBack = () => {
   };
 
   // TODO:: TABLE COLUMNS
+
+  const statusColorMapping = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-500 text-white';
+      case 'completed':
+        return 'bg-green-500 text-white';
+      case 'canceled':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  };
 
   const columns: any = [
     {
@@ -240,7 +243,6 @@ const ListMyRequestCallBack = () => {
       Header: 'Flight Type',
       accessor: 'flight_type',
     },
-    // Define other columns similarly
     {
       Header: 'No Of Passengers',
       accessor: 'no_of_passengers',
@@ -248,6 +250,15 @@ const ListMyRequestCallBack = () => {
     {
       Header: 'Status',
       accessor: 'status',
+      Cell: ({ cell: { value } }: { cell: { value: string } }) => (
+        <span
+          className={`px-2 py-1 rounded capitalize font-medium ${statusColorMapping(
+            value,
+          )}`}
+        >
+          {value}
+        </span>
+      ),
     },
     {
       Header: 'Travel Class',
@@ -256,7 +267,6 @@ const ListMyRequestCallBack = () => {
     {
       Header: 'Action',
       accessor: 'action',
-      // Example of rendering a custom component or JSX in a cell
       Cell: ({
         cell: {
           row: { original },
@@ -273,12 +283,6 @@ const ListMyRequestCallBack = () => {
           >
             <BiSolidEdit /> <span>Edit</span>
           </button>
-          {/* <button
-            onClick={() => deleteHandler(original._id)}
-            className="px-4 py-2 bg-red-700 text-white rounded-md"
-          >
-            Delete
-          </button> */}
           <button
             onClick={() => viewHandler(original)}
             className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-700 text-white rounded-md"
@@ -291,13 +295,6 @@ const ListMyRequestCallBack = () => {
           >
             <SiConvertio /> <span>Add to Quote</span>
           </button>
-          {/* <button
-            onClick={() => assignMeHandler(original._id)}
-            className="px-4 flex flex-row items-center justify-between space-x-2  text-center py-2 text--[10px] bg-blue-700 text-white rounded-md"
-          >
-            <MdOutlineAssignmentInd />
-            <span>Assign Me</span>
-          </button> */}
         </div>
       ),
     },
@@ -423,7 +420,7 @@ const ListMyRequestCallBack = () => {
               type="submit"
               className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded"
             >
-              Submit
+              {editedLoading ? 'Editing..' : 'Submit'}
             </button>
           </form>
         </Modal>
