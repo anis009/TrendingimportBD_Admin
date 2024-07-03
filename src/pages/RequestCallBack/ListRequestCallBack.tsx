@@ -16,6 +16,8 @@ import { BiSolidEdit } from 'react-icons/bi';
 import { GrView } from 'react-icons/gr';
 import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
+import ReactSelect from 'react-select';
+import { useGetUsersQuery } from '../../redux/features/user/apiUser';
 
 const ListRequestCallBack = () => {
   const {
@@ -24,12 +26,20 @@ const ListRequestCallBack = () => {
   } = useAppSelector((state: any) => state.user);
   const { data, isLoading, isSuccess, refetch } =
     useGetRequestCallBacksQuery(undefined);
+
+  const { data: lfcUsers, isLoading: isLFCLoading } = useGetUsersQuery({
+    userRole: 'lfc',
+  });
+
   const [tableData, setTableData] = useState([]);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [editedValue, setEditedValue] = useState<IRequestCallBack>();
   const [viewValue, setViewValue] = useState<IRequestCallBack>();
   const [editedId, setEditedId] = useState<string>('');
   const [editRequestCallBack] = useUpdateRequestCallBackMutation();
+  const [selectedReqId, setSelectedReqId] = useState('');
+  const [selectedLFC, setSelectedLFC] = useState<any>({});
+  const [lfcOptions, setLfcOptions] = useState<any>(null)
 
   const [updateClient] = usePostClientMutation();
   const [viewModal, setViewModal] = useState<boolean>(false);
@@ -65,9 +75,13 @@ const ListRequestCallBack = () => {
   useEffect(() => {
     if (isSuccess && data && data?.data) {
       const temp = data.data.map((item: IRequestCallBack) => {
-        const departure = item.departure?.trim() ? getLocalDate(item.departure as string) : 'N/A';
-        const arrival = item.arrival?.trim() ? getLocalDate(item.arrival as string) : 'N/A';
-        
+        const departure = item.departure?.trim()
+          ? getLocalDate(item.departure as string)
+          : 'N/A';
+        const arrival = item.arrival?.trim()
+          ? getLocalDate(item.arrival as string)
+          : 'N/A';
+
         const updatedItem = {
           ...item,
           departure,
@@ -79,7 +93,7 @@ const ListRequestCallBack = () => {
           phoneNumber: item.phoneNumber?.trim() ? item.phoneNumber : 'N/A',
           // Add more fields here as necessary
         };
-        
+
         return updatedItem;
       });
       setTableData(temp);
@@ -87,9 +101,19 @@ const ListRequestCallBack = () => {
   }, [isSuccess, data]);
   
   
+  
+
+
+  
 
   const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
     useDeleteRequestCallBackMutation();
+  
+  useEffect(() => {
+    const _tempOptions = lfcUsers?.data?.map((_itm: any) => ({ label: _itm.userName, value: _itm._id })) || []
+    console.log('lfc options: ', _tempOptions)
+    setLfcOptions(_tempOptions)
+  }, [lfcUsers])
 
   // console.log('isSuccess', deleteSuccess);
   if (isLoading) {
@@ -187,6 +211,29 @@ const ListRequestCallBack = () => {
     }
   };
 
+  const handleLFCAssign = async () => {
+    try {
+      const result: any = await editRequestCallBack({
+        data: {
+          assignedTo: selectedLFC.value,
+        },
+        id: selectedReqId,
+      });
+
+      if (result && result.data?.success) {
+        Toast.success('Updated successfully');
+        // modalToggle();
+        setSelectedReqId('')
+        await refetch();
+      }
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      Toast.success('Error ' + error);
+    }
+  };
+
   const viewHandler = (value: IRequestCallBack) => {
     setViewValue(value);
     setViewModal(true);
@@ -197,13 +244,30 @@ const ListRequestCallBack = () => {
     const pastDate = new Date(updatedAt);
     const currentDate = new Date();
     const diff = currentDate.getTime() - pastDate.getTime();
-  
+
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((diff / 1000 / 60) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
-  
-    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+
+    let timeString = ''
+    if (days) {
+      timeString += `${days} days, `
+    }
+    if (hours) {
+      timeString += `${hours} hours, `
+    }
+    if (minutes) {
+      timeString += `${minutes} minutes, `
+    }
+    if (seconds) {
+      timeString += `${seconds} seconds`
+    }
+
+
+
+    // return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    return timeString
   };
   const columns: any = [
     // {
@@ -244,7 +308,7 @@ const ListRequestCallBack = () => {
       accessor: (row, rowIndex) => rowIndex + 1, // Auto-increment for serial number
       id: 'sl', // Unique ID for the column
     },
- 
+
     {
       Header: 'Time Passed',
       accessor: 'updatedAt',
@@ -284,13 +348,18 @@ const ListRequestCallBack = () => {
           </button> */}
           <button
             onClick={() => {
-              // console.log('original._id: ', original._id, original)
-              assignMeHandler(original._id);
+              console.log('original._id: ', original._id, original);
+              console.log('user: ', user)
+              if (user && user.userRole === 'admin') {
+                setSelectedReqId(original._id);
+              } else if (user && user.userRole === 'lfc') {
+                assignMeHandler(original._id);
+              }
             }}
             className="px-4 flex flex-row items-center justify-between space-x-2  text-center py-2 text--[10px] bg-blue-700 text-white rounded-md"
           >
             <MdOutlineAssignmentInd />
-            <span className="whitespace-nowrap">Assign Me</span>
+            <span className="whitespace-nowrap">{user && user.userRole === 'lfc' ? 'Assign Me' : 'Assign To LFC'}</span>
           </button>
         </div>
       ),
@@ -317,7 +386,7 @@ const ListRequestCallBack = () => {
               <input
                 type="date"
                 id="arrival"
-                {...register('arrival')} 
+                {...register('arrival')}
                 className="w-full px-3 py-2 border rounded-md"
               />
             </div>
@@ -448,7 +517,7 @@ const ListRequestCallBack = () => {
                     From:
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                    {viewValue?.from?.trim() ? viewValue.from  : 'N/A'}
+                    {viewValue?.from?.trim() ? viewValue.from : 'N/A'}
                   </td>
                 </tr>
                 <tr>
@@ -524,6 +593,35 @@ const ListRequestCallBack = () => {
           </div>
         </Modal>
       )}
+      <Modal
+        isOpen={selectedReqId.length > 0}
+        onClose={() => setSelectedReqId('')}
+      >
+        <div className="bg-white dark:bg-[#1C2434] rounded-lg min-h-80 shadow-lg">
+          <label htmlFor="" className=''>Select LFC</label>
+          {/* {lfcOptions.map((_it: any) => <p>{_it.label}</p>)} */}
+          <ReactSelect
+            // id="client"
+            // name="client"
+            value={selectedLFC}
+            onChange={(val) => setSelectedLFC(val)}
+            isSearchable
+            options={lfcOptions}
+            placeholder="Select LFC"
+            className="placeholder:text-gray-3 my-2"
+            isLoading={isLFCLoading}
+          />
+        </div>
+        <div className="assign-btn text-right">
+          <button
+            type="submit"
+            className=" bg-blue-500 text-white font-bold py-2 px-4 rounded"
+            onClick={handleLFCAssign}
+          >
+            Submit
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };

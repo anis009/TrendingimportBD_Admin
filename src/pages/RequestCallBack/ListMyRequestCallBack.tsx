@@ -4,10 +4,10 @@ import TableComponent from '../../components/TableComponent/TableComponents';
 import {
   useDeleteRequestCallBackMutation,
   useGetMyRequestCallBacksQuery,
-  useGetRequestCallBacksQuery,
   useUpdateRequestCallBackMutation,
+  usePostCallbackToQuotationsMutation,
 } from '../../redux/features/requestCallBack/apiRquestCallBack';
-import { usePostClientMutation } from '../../redux/features/clients/apiClients';
+// import { usePostClientMutation } from '../../redux/features/clients/apiClients';
 import { IRequestCallBack } from '../../types/requestCallBack';
 import { convertToLocalDate, getLocalDate } from '../../utils/date';
 import { Toast } from '../../utils/toast';
@@ -15,14 +15,14 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiSolidEdit } from 'react-icons/bi';
 import { GrView } from 'react-icons/gr';
-import { MdOutlineAssignmentInd } from 'react-icons/md';
+// import { MdOutlineAssignmentInd } from 'react-icons/md';
 import { useAppSelector } from '../../redux/hook';
-import { SiConvertio } from "react-icons/si";
+import { SiConvertio } from 'react-icons/si';
 
 const ListMyRequestCallBack = () => {
   const {
     user: { user },
-    isLoading: boolean,
+    isLoading: userLoading,
   } = useAppSelector((state: any) => state.user);
   const { data, isLoading, isSuccess, refetch } = useGetMyRequestCallBacksQuery(
     user?._id,
@@ -32,8 +32,11 @@ const ListMyRequestCallBack = () => {
   const [editedValue, setEditedValue] = useState<IRequestCallBack>();
   const [viewValue, setViewValue] = useState<IRequestCallBack>();
   const [editedId, setEditedId] = useState<string>('');
-  const [editRequestCallBack] = useUpdateRequestCallBackMutation();
+  const [editRequestCallBack, { isLoading: editedLoading }] =
+    useUpdateRequestCallBackMutation();
   const [viewModal, setViewModal] = useState<boolean>(false);
+
+  const [postCallbackToQuotations] = usePostCallbackToQuotationsMutation();
   const {
     register,
     handleSubmit,
@@ -42,7 +45,7 @@ const ListMyRequestCallBack = () => {
   } = useForm();
 
   const onSubmit = async (formData: any) => {
-    console.log('formData~', formData);
+    // console.log('formData~', formData);
 
     try {
       const result: any = await editRequestCallBack({
@@ -66,9 +69,13 @@ const ListMyRequestCallBack = () => {
   useEffect(() => {
     if (isSuccess && data && data?.data) {
       const temp = data.data.map((item: IRequestCallBack) => {
-        const departure = item.departure?.trim() ? getLocalDate(item.departure as string) : 'N/A';
-        const arrival = item.arrival?.trim() ? getLocalDate(item.arrival as string) : 'N/A';
-        
+        const departure = item.departure?.trim()
+          ? getLocalDate(item.departure as string)
+          : 'N/A';
+        const arrival = item.arrival?.trim()
+          ? getLocalDate(item.arrival as string)
+          : 'N/A';
+
         const updatedItem = {
           ...item,
           departure,
@@ -80,16 +87,15 @@ const ListMyRequestCallBack = () => {
           phoneNumber: item.phoneNumber?.trim() ? item.phoneNumber : 'N/A',
           // Add more fields here as necessary
         };
-        
+
         return updatedItem;
       });
       setTableData(temp);
     }
   }, [isSuccess, data]);
-  
 
-  const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
-    useDeleteRequestCallBackMutation();
+  // const [deleteRequestCallBack, { isSuccess: deleteSuccess }] =
+  //   useDeleteRequestCallBackMutation();
 
   // console.log('isSuccess', deleteSuccess);
   if (isLoading) {
@@ -143,30 +149,74 @@ const ListMyRequestCallBack = () => {
   };
 
   //TODO:: DELETE HANDLER
-  const deleteHandler = async (id: string) => {
-    const confirm = window.confirm('Are you sure you want to delete');
+  // const deleteHandler = async (id: string) => {
+  //   const confirm = window.confirm('Are you sure you want to delete');
+  //   if (!confirm) {
+  //     return;
+  //   }
+
+  //   try {
+  //     const result: any = await deleteRequestCallBack({ id });
+  //     if (result && result?.data && result?.data?.success) {
+  //       Toast.success('Deleted successfully');
+  //     }
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     Toast.success('Error ' + error);
+  //   }
+  // };
+
+  const viewHandler = (value: IRequestCallBack) => {
+    setViewValue(value);
+    setViewModal(true);
+  };
+  // const updateQuotations = reqestcallbackLoading();
+
+  const addQuotationsHandler = async (id: any) => {
+    const confirm = window.confirm('Are you want to move this leads ?');
     if (!confirm) {
       return;
     }
-
     try {
-      const result: any = await deleteRequestCallBack({ id });
-      if (result && result?.data && result?.data?.success) {
-        Toast.success('Deleted successfully');
+      const addQuotationsFromCallback: any = await postCallbackToQuotations(id);
+      // alert(JSON.stringify(addQuotationsFromCallback))
+      if (
+        addQuotationsFromCallback &&
+        addQuotationsFromCallback?.data &&
+        addQuotationsFromCallback?.data?.success
+      ) {
+        Toast.success(
+          addQuotationsFromCallback?.data?.message || 'Added in Quotations !',
+        );
+        refetch();
+
+        // dispatch(updateRequestCallback(!updateQuotations));
+      } else {
+        Toast.error(
+          addQuotationsFromCallback?.data?.message || 'Something went wrong !',
+        );
       }
-      console.log(data);
     } catch (error) {
       console.log(error);
       Toast.success('Error ' + error);
     }
   };
 
-  const viewHandler = (value: IRequestCallBack) => {
-    setViewValue(value);
-    setViewModal(true);
-  };
-
   // TODO:: TABLE COLUMNS
+
+  const statusColorMapping = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-500 text-white';
+      case 'completed':
+        return 'bg-green-500 text-white';
+      case 'canceled':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  };
 
   const columns: any = [
     {
@@ -193,7 +243,6 @@ const ListMyRequestCallBack = () => {
       Header: 'Flight Type',
       accessor: 'flight_type',
     },
-    // Define other columns similarly
     {
       Header: 'No Of Passengers',
       accessor: 'no_of_passengers',
@@ -201,6 +250,15 @@ const ListMyRequestCallBack = () => {
     {
       Header: 'Status',
       accessor: 'status',
+      Cell: ({ cell: { value } }: { cell: { value: string } }) => (
+        <span
+          className={`px-2 py-1 rounded capitalize font-medium ${statusColorMapping(
+            value,
+          )}`}
+        >
+          {value}
+        </span>
+      ),
     },
     {
       Header: 'Travel Class',
@@ -209,7 +267,6 @@ const ListMyRequestCallBack = () => {
     {
       Header: 'Action',
       accessor: 'action',
-      // Example of rendering a custom component or JSX in a cell
       Cell: ({
         cell: {
           row: { original },
@@ -226,12 +283,6 @@ const ListMyRequestCallBack = () => {
           >
             <BiSolidEdit /> <span>Edit</span>
           </button>
-          {/* <button
-            onClick={() => deleteHandler(original._id)}
-            className="px-4 py-2 bg-red-700 text-white rounded-md"
-          >
-            Delete
-          </button> */}
           <button
             onClick={() => viewHandler(original)}
             className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-700 text-white rounded-md"
@@ -239,18 +290,11 @@ const ListMyRequestCallBack = () => {
             <GrView /> <span>View</span>
           </button>
           <button
-            onClick={() => viewHandler(original)}
+            onClick={() => addQuotationsHandler(original._id)}
             className="px-4 flex flex-row items-center justify-between space-x-2  py-2 bg-slate-900 text-white rounded-md"
           >
             <SiConvertio /> <span>Add to Quote</span>
           </button>
-          {/* <button
-            onClick={() => assignMeHandler(original._id)}
-            className="px-4 flex flex-row items-center justify-between space-x-2  text-center py-2 text--[10px] bg-blue-700 text-white rounded-md"
-          >
-            <MdOutlineAssignmentInd />
-            <span>Assign Me</span>
-          </button> */}
         </div>
       ),
     },
@@ -376,14 +420,14 @@ const ListMyRequestCallBack = () => {
               type="submit"
               className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded"
             >
-              Submit
+              {editedLoading ? 'Editing..' : 'Submit'}
             </button>
           </form>
         </Modal>
       )}
       {viewValue && (
         <Modal
-          className="z-[9999]"
+          // className="z-[9999]"
           isOpen={viewModal}
           onClose={() => setViewModal((prev) => !prev)}
         >
