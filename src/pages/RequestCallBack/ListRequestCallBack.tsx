@@ -25,7 +25,7 @@ const ListRequestCallBack = () => {
     isLoading: boolean,
   } = useAppSelector((state: any) => state.user);
   const { data, isLoading, isSuccess, refetch } =
-    useGetRequestCallBacksQuery(undefined);
+    useGetRequestCallBacksQuery({ type: 'not_assigned' });
 
   const { data: lfcUsers, isLoading: isLFCLoading } = useGetUsersQuery({
     userRole: 'lfc',
@@ -74,6 +74,7 @@ const ListRequestCallBack = () => {
 
   useEffect(() => {
     if (isSuccess && data && data?.data) {
+      console.log('call back data length: ', data.data.length)
       const temp = data.data.map((item: IRequestCallBack) => {
         const departure = item.departure?.trim()
           ? getLocalDate(item.departure as string)

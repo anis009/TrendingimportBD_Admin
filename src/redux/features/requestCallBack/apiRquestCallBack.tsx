@@ -3,7 +3,7 @@ import { api } from '../../Api/api';
 const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getRequestCallBacks: builder.query({
-      query: () => `/request_callback`,
+      query: (query) => `/request_callback?type=${query.type}`,
       providesTags: ['requestcallbacks'],
     }),
     getMyRequestCallBacks: builder.query({
