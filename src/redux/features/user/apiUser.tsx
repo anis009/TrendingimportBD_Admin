@@ -3,16 +3,16 @@ import { api } from '../../Api/api';
 const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query({
-      query: (query) => `/users?userRole=${query.userRole}`,
+      query: (query) => `/user?userRole=${query.userRole}`,
       providesTags: ['users'],
     }),
     getSingleUsers: builder.query({
-      query: (id) => `/users/${id}`, // Fix string interpolation
+      query: (id) => `/user/${id}`, // Fix string interpolation
       providesTags: (_result, _error, id) => [{ type: 'user', id }],
     }),
     postUser: builder.mutation({
       query: ({ data }) => ({
-        url: '/users/login',
+        url: '/user/login',
         method: 'POST',
         body: data,
       }),
@@ -28,21 +28,21 @@ const userApi = api.injectEndpoints({
     }),
     registerUser: builder.mutation({
       query: ({ data }) => ({
-        url: '/users',
+        url: '/user',
         method: 'POST',
         body: data,
       }),
     }),
     deleteUser: builder.mutation({
       query: ({ id }) => ({
-        url: `/users/${id}`, // Fix string interpolation
+        url: `/user/${id}`, // Fix string interpolation
         method: 'DELETE',
       }),
       invalidatesTags: ['users'],
     }),
     updateUser: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/users/${id}`, // Fix string interpolation
+        url: `/user/${id}`, // Fix string interpolation
         method: 'PUT',
         body: data,
       }),

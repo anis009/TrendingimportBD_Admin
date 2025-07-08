@@ -1,0 +1,44 @@
+#dangerous-clean-slate: true
+
+name: 🚀 Deploy EMP-QR website on push
+on:
+  push:
+    branches:
+      - master
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_DEV_URL: 'https://server.d-sai.com/api'
+      VITE_API_PROD_URL: 'https://server.d-sai.com/api'
+      VITE_LOGIN_USERNAME: 'anis.cse5.bu@gmail.com'
+      VITE_LOGIN_PASSWORD: '2468'
+      VITE_REACT_APP_NODE_ENV: 'production'
+    #   VITE_REACT_APP_vapidKey: "BPFs6JWBmfzCdWbHW7TfxrTAa5ZWcXs1WvTFyd7ErF1f0TzObZySfvg6OzRJatI_pzYVEd-phO1cZdh8ZQ9G_o8"
+    steps:
+      - name: environment variable
+        run: echo Hello world $REACT_APP_IMGBB_KEY
+
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: 🔨 Build Project
+        run: |
+          npm install --legacy-peer-deps
+          CI=false npm run build
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: 'ftp.trendingimportbd.com'
+          username: 'trendingimportbdadmin@admin.trendingimportbd.com'
+          # dangerous-clean-slate: true
+          password: 'wuT.J~LOO}_NIGYI'
+          port: 21
+          local-dir: ./dist/

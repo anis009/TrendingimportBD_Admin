@@ -1,6 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { useNavigate } from 'react-router-dom';
 import { IFormAuthData } from '../../types/auth';
 import { usePostUserMutation } from '../../redux/features/user/apiUser';
 import { useAppDispatch } from '../../redux/hook';
@@ -14,7 +13,6 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   // Example usage:
   const initialFormData: IFormAuthData = {
-    userName: '',
     email: '',
     password: '',
   };
@@ -67,7 +65,7 @@ const SignIn: React.FC = () => {
     try {
       const response = await signIn({
         data: {
-          userName: formData.userName,
+          email: formData.email,
           password: formData.password,
         },
       });
@@ -103,15 +101,15 @@ const SignIn: React.FC = () => {
               <form className="mt-9 w-full " onSubmit={signInSubmitHandler}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    User Name
+                    Email
                   </label>
                   <div className="relative">
                     <input
-                      value={formData.userName}
+                      value={formData.email}
                       onChange={handleChange}
                       type="text"
-                      name="userName"
-                      placeholder="Enter your username"
+                      name="email"
+                      placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 

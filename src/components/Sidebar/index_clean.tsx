@@ -16,7 +16,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
   const { user } = useAppSelector((state) => state.user);
-  // console.log('sidebar-user~', user);
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -61,7 +60,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-10 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-2 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
@@ -103,88 +102,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
               MENU
             </h3>
-            <SidebarLinkGroup
-              activeCondition={
-                pathname === '/' || pathname.includes('dashboard')
-              }
-            >
-              {(handleClick, open) => {
-                return (
-                  <React.Fragment>
-                    <NavLink
-                      to="#"
-                      className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        (pathname === '/' || pathname.includes('dashboard')) &&
-                        'bg-graydark dark:bg-meta-4'
-                      }`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        sidebarExpanded
-                          ? handleClick()
-                          : setSidebarExpanded(true);
-                      }}
-                    >
-                      <svg
-                        className="fill-current"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6.10322 0.956299H2.53135C1.5751 0.956299 0.787598 1.7438 0.787598 2.70005V6.27192C0.787598 7.22817 1.5751 8.01567 2.53135 8.01567H6.10322C7.05947 8.01567 7.84697 7.22817 7.84697 6.27192V2.72817C7.8751 1.7438 7.0876 0.956299 6.10322 0.956299ZM6.60947 6.30005C6.60947 6.5813 6.38447 6.8063 6.10322 6.8063H2.53135C2.2501 6.8063 2.0251 6.5813 2.0251 6.30005V2.72817C2.0251 2.44692 2.2501 2.22192 2.53135 2.22192H6.10322C6.38447 2.22192 6.60947 2.44692 6.60947 2.72817V6.30005Z"
-                          fill=""
-                        />
-                        <path
-                          d="M15.4689 0.956299H11.8971C10.9408 0.956299 10.1533 1.7438 10.1533 2.70005V6.27192C10.1533 7.22817 10.9408 8.01567 11.8971 8.01567H15.4689C16.4252 8.01567 17.2127 7.22817 17.2127 6.27192V2.72817C17.2127 1.7438 16.4252 0.956299 15.4689 0.956299ZM15.9752 6.30005C15.9752 6.5813 15.7502 6.8063 15.4689 6.8063H11.8971C11.6158 6.8063 11.3908 6.5813 11.3908 6.30005V2.72817C11.3908 2.44692 11.6158 2.22192 11.8971 2.22192H15.4689C15.7502 2.22192 15.9752 2.44692 15.9752 2.72817V6.30005Z"
-                          fill=""
-                        />
-                        <path
-                          d="M6.10322 9.92822H2.53135C1.5751 9.92822 0.787598 10.7157 0.787598 11.672V15.2438C0.787598 16.2001 1.5751 16.9876 2.53135 16.9876H6.10322C7.05947 16.9876 7.84697 16.2001 7.84697 15.2438V11.7001C7.8751 10.7157 7.0876 9.92822 6.10322 9.92822ZM6.60947 15.272C6.60947 15.5532 6.38447 15.7782 6.10322 15.7782H2.53135C2.2501 15.7782 2.0251 15.5532 2.0251 15.272V11.7001C2.0251 11.4188 2.2501 11.1938 2.53135 11.1938H6.10322C6.38447 11.1938 6.60947 11.4188 6.60947 11.7001V15.272Z"
-                          fill=""
-                        />
-                        <path
-                          d="M15.4689 9.92822H11.8971C10.9408 9.92822 10.1533 10.7157 10.1533 11.672V15.2438C10.1533 16.2001 10.9408 16.9876 11.8971 16.9876H15.4689C16.4252 16.9876 17.2127 16.2001 17.2127 15.2438V11.7001C17.2127 10.7157 16.4252 9.92822 15.4689 9.92822ZM15.9752 15.272C15.9752 15.5532 15.7502 15.7782 15.4689 15.7782H11.8971C11.6158 15.7782 11.3908 15.5532 11.3908 15.272V11.7001C11.3908 11.4188 11.6158 11.1938 11.8971 11.1938H15.4689C15.7502 11.1938 15.9752 11.4188 15.9752 11.7001V15.272Z"
-                          fill=""
-                        />
-                      </svg>
-                      New Leads
-                      <svg
-                        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                          open && 'rotate-180'
-                        }`}
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                          fill=""
-                        />
-                      </svg>{' '}
-                    </NavLink>
-                    {/* <!-- Dropdown Menu Start --> */}
-                    <div
-                      className={`translate transform overflow-hidden ${
-                        !open && 'hidden'
-                      }`}
-                    >
-                      <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                        {/* Request callback links removed */}
-                      </ul>
-                    </div>
-                    {/* <!-- Dropdown Menu End --> */}
-                  </React.Fragment>
-                );
-              }}
-            </SidebarLinkGroup>
+
             <ul className="mb-6 flex list-none flex-col gap-1.5">
-              {/* <li> */}
               <li>
                 {user && user?.user.userRole === 'lfc' ? (
                   <NavLink
@@ -234,7 +153,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </NavLink>
                 )}
               </li>
-
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <NavLink
@@ -259,12 +177,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       d="M10.8283 9.05627H7.17207C4.16269 9.05627 1.71582 11.5313 1.71582 14.5406V16.875C1.71582 17.2125 1.99707 17.5219 2.3627 17.5219C2.72832 17.5219 3.00957 17.2407 3.00957 16.875V14.5406C3.00957 12.2344 4.89394 10.3219 7.22832 10.3219H10.8564C13.1627 10.3219 15.0752 12.2063 15.0752 14.5406V16.875C15.0752 17.2125 15.3564 17.5219 15.7221 17.5219C16.0877 17.5219 16.3689 17.2407 16.3689 16.875V14.5406C16.2846 11.5313 13.8377 9.05627 10.8283 9.05627Z"
                       fill=""
                     />
-                  </svg>{' '}
+                  </svg>
                   Profile
                 </NavLink>
               </li>
               {/* <!-- Menu Item Profile --> */}
-
               {/* <!-- Menu Item Categories --> */}
               <li>
                 <NavLink
@@ -303,7 +220,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
               {/* <!-- Menu Item Categories --> */}
-
               {/* <!-- Menu Item SubCategories --> */}
               <li>
                 <NavLink
@@ -322,7 +238,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M2.25 4.5h13.5c.621 0 1.125-.504 1.125-1.125S16.371 2.25 15.75 2.25H2.25C1.629 2.25 1.125 2.754 1.125 3.375S1.629 4.5 2.25 4.5zM15.75 6.75H2.25C1.629 6.75 1.125 7.254 1.125 7.875s.504 1.125 1.125 1.125h13.5c.621 0 1.125-.504 1.125-1.125S16.371 6.75 15.75 6.75zM15.75 11.25H2.25c-.621 0-1.125.504-1.125 1.125s.504 1.125 1.125 1.125h13.5c.621 0 1.125-.504 1.125-1.125s-.504-1.125-1.125-1.125zM15.75 15.75H2.25c-.621 0-1.125.504-1.125 1.125s.504 1.125 1.125 1.125h13.5c.621 0 1.125-.504 1.125-1.125s-.504-1.125-1.125-1.125z"
+                      d="M15.7499 2.9812H14.2874V2.36245C14.2874 2.02495 14.0062 1.71558 13.6405 1.71558C13.2749 1.71558 12.9937 1.99683 12.9937 2.36245V2.9812H4.97803V2.36245C4.97803 2.02495 4.69678 1.71558 4.33115 1.71558C3.96553 1.71558 3.68428 1.99683 3.68428 2.36245V2.9812H2.2499C1.29365 2.9812 0.478027 3.7687 0.478027 4.75308V14.5406C0.478027 15.4968 1.26553 16.3125 2.2499 16.3125H15.7499C16.7062 16.3125 17.5218 15.4968 17.5218 14.5406V4.72495C17.5218 3.7687 16.7062 2.9812 15.7499 2.9812ZM1.77178 8.23433H3.96553V10.4281H1.77178V8.23433ZM5.25928 8.23433H7.45303V10.4281H5.25928V8.23433ZM8.74678 8.23433H10.9405V10.4281H8.74678V8.23433ZM12.2343 8.23433H14.428V10.4281H12.2343V8.23433ZM15.7218 8.23433H16.2281V10.4281H15.7218V8.23433Z"
+                      fill=""
+                    />
+                    <path
+                      d="M1.77178 11.7218H3.96553V13.9156H1.77178V11.7218ZM5.25928 11.7218H7.45303V13.9156H5.25928V11.7218ZM8.74678 11.7218H10.9405V13.9156H8.74678V11.7218ZM12.2343 11.7218H14.428V13.9156H12.2343V11.7218Z"
                       fill=""
                     />
                   </svg>
@@ -330,7 +250,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
               {/* <!-- Menu Item SubCategories --> */}
-
               {/* <!-- Menu Item Products --> */}
               <li>
                 <NavLink
@@ -349,11 +268,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M15.75 3.375H14.625V2.25C14.625 1.629 14.121 1.125 13.5 1.125S12.375 1.629 12.375 2.25v1.125H5.625V2.25C5.625 1.629 5.121 1.125 4.5 1.125S3.375 1.629 3.375 2.25v1.125H2.25C1.007 3.375 0 4.382 0 5.625v9C0 15.868 1.007 16.875 2.25 16.875h13.5c1.243 0 2.25-1.007 2.25-2.25v-9c0-1.243-1.007-2.25-2.25-2.25zM1.5 5.625c0-.414.336-.75.75-.75h1.125v1.125c0 .621.504 1.125 1.125 1.125s1.125-.504 1.125-1.125V4.875h7.5V6c0 .621.504 1.125 1.125 1.125S15.375 6.621 15.375 6V4.875h.375c.414 0 .75.336.75.75v2.25H1.5V5.625zM16.5 14.625c0 .414-.336.75-.75.75H2.25c-.414 0-.75-.336-.75-.75V9.375h15v5.25z"
+                      d="M15.7499 0.956299H2.53135C1.5751 0.956299 0.787598 1.7438 0.787598 2.70005V6.27192C0.787598 7.22817 1.5751 8.01567 2.53135 8.01567H15.7499C16.7062 8.01567 17.5218 7.22817 17.5218 6.27192V2.72817C17.5218 1.7438 16.7062 0.956299 15.7499 0.956299ZM16.2218 6.30005C16.2218 6.5813 15.9968 6.8063 15.7155 6.8063H2.53135C2.2501 6.8063 2.0251 6.5813 2.0251 6.30005V2.72817C2.0251 2.44692 2.2501 2.22192 2.53135 2.22192H15.7155C15.9968 2.22192 16.2218 2.44692 16.2218 2.72817V6.30005Z"
                       fill=""
                     />
                     <path
-                      d="M4.5 11.25h2.25c.414 0 .75-.336.75-.75s-.336-.75-.75-.75H4.5c-.414 0-.75.336-.75.75s.336.75.75.75zM9 11.25h4.5c.414 0 .75-.336.75-.75s-.336-.75-.75-.75H9c-.414 0-.75.336-.75.75s.336.75.75.75zM4.5 13.5h1.5c.414 0 .75-.336.75-.75s-.336-.75-.75-.75H4.5c-.414 0-.75.336-.75.75s.336.75.75.75z"
+                      d="M15.7499 9.92822H2.53135C1.5751 9.92822 0.787598 10.7157 0.787598 11.672V15.2438C0.787598 16.2001 1.5751 16.9876 2.53135 16.9876H15.7499C16.7062 16.9876 17.5218 16.2001 17.5218 15.2438V11.7001C17.5218 10.7157 16.7062 9.92822 15.7499 9.92822ZM16.2218 15.272C16.2218 15.5532 15.9968 15.7782 15.7155 15.7782H2.53135C2.2501 15.7782 2.0251 15.5532 2.0251 15.272V11.7001C2.0251 11.4188 2.2501 11.1938 2.53135 11.1938H15.7155C15.9968 11.1938 16.2218 11.4188 16.2218 11.7001V15.272Z"
                       fill=""
                     />
                   </svg>
@@ -367,10 +286,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           {/* <!-- Others Group --> */}
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
-              {/* <!-- Menu Item Chart --> */}
-
-              {/* <!-- Menu Item Chart --> */}
-
               {/* <!-- Menu Item users Pages --> */}
               <SidebarLinkGroup
                 activeCondition={
@@ -436,7 +351,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </ul>
                         </div>
                       )}
-
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );
@@ -530,17 +444,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Sign In
                             </NavLink>
                           </li>
-                          {/* <li>
-                            <NavLink
-                              to="/auth/sign-up"
-                              className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                (isActive && '!text-white')
-                              }
-                            >
-                              Sign Up
-                            </NavLink>
-                          </li> */}
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}

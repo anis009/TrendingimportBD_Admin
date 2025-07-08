@@ -1,0 +1,282 @@
+/* Ant Design custom theme integration styles */
+
+/* Ensure Ant Design components respect the dark mode */
+.dark .ant-card {
+  background-color: #24303f !important;
+  border-color: #2e3a47 !important;
+}
+
+.dark .ant-table {
+  background-color: #24303f !important;
+}
+
+.dark .ant-table-thead > tr > th {
+  background-color: #24303f !important;
+  border-color: #2e3a47 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-table-tbody > tr > td {
+  border-color: #2e3a47 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-table-tbody > tr:hover > td {
+  background-color: #1a222c !important;
+}
+
+.dark .ant-modal-content {
+  background-color: #24303f !important;
+}
+
+.dark .ant-modal-header {
+  background-color: #24303f !important;
+  border-color: #2e3a47 !important;
+}
+
+.dark .ant-modal-title {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-form-item-label > label {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-input {
+  background-color: #1d2a39 !important;
+  border-color: #3d4d60 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-input:focus,
+.dark .ant-input-focused {
+  border-color: #3c50e0 !important;
+  box-shadow: 0 0 0 2px rgba(60, 80, 224, 0.2) !important;
+}
+
+.dark .ant-btn-default {
+  background-color: #24303f !important;
+  border-color: #2e3a47 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-btn-default:hover {
+  background-color: #1a222c !important;
+  border-color: #3c50e0 !important;
+  color: #3c50e0 !important;
+}
+
+.dark .ant-descriptions-item-label {
+  background-color: #1a222c !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-descriptions-item-content {
+  background-color: #24303f !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-descriptions-bordered .ant-descriptions-item-label,
+.dark .ant-descriptions-bordered .ant-descriptions-item-content {
+  border-color: #2e3a47 !important;
+}
+
+/* Custom scrollbar for dark mode */
+.dark .ant-table-body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark .ant-table-body::-webkit-scrollbar-track {
+  background: #1a222c;
+}
+
+.dark .ant-table-body::-webkit-scrollbar-thumb {
+  background: #2e3a47;
+  border-radius: 4px;
+}
+
+.dark .ant-table-body::-webkit-scrollbar-thumb:hover {
+  background: #3c50e0;
+}
+
+/* Light mode enhancements */
+.ant-btn-primary {
+  background-color: #3c50e0 !important;
+  border-color: #3c50e0 !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #2940d3 !important;
+  border-color: #2940d3 !important;
+}
+
+/* ReactQuill Dark Mode Support */
+.dark .dark-quill .ql-toolbar {
+  background-color: #24303f !important;
+  border-color: #2e3a47 !important;
+}
+
+.dark .dark-quill .ql-toolbar .ql-stroke {
+  stroke: #aeb7c0 !important;
+}
+
+.dark .dark-quill .ql-toolbar .ql-fill {
+  fill: #aeb7c0 !important;
+}
+
+.dark .dark-quill .ql-toolbar .ql-picker-label {
+  color: #aeb7c0 !important;
+}
+
+.dark .dark-quill .ql-toolbar .ql-picker-options {
+  background-color: #24303f !important;
+  border: 1px solid #2e3a47 !important;
+}
+
+.dark .dark-quill .ql-toolbar .ql-picker-item {
+  color: #aeb7c0 !important;
+}
+
+.dark .dark-quill .ql-toolbar .ql-picker-item:hover {
+  background-color: #1a222c !important;
+}
+
+.dark .dark-quill .ql-container {
+  background-color: #1d2a39 !important;
+  border-color: #2e3a47 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .dark-quill .ql-editor {
+  color: #aeb7c0 !important;
+}
+
+.dark .dark-quill .ql-editor.ql-blank::before {
+  color: #64748b !important;
+}
+
+/* Ant Design Select dark mode enhancements */
+.dark .ant-select-dropdown {
+  background-color: #24303f !important;
+  border: 1px solid #2e3a47 !important;
+}
+
+.dark .ant-select-item {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-select-item:hover {
+  background-color: #1a222c !important;
+}
+
+.dark .ant-select-item-option-selected {
+  background-color: #3c50e0 !important;
+  color: white !important;
+}
+
+.dark .ant-select-selector {
+  background-color: #1d2a39 !important;
+  border-color: #3d4d60 !important;
+}
+
+.dark .ant-select-arrow {
+  color: #aeb7c0 !important;
+}
+
+/* Ant Design DatePicker dark mode enhancements */
+.dark .ant-picker-dropdown {
+  background-color: #24303f !important;
+  border: 1px solid #2e3a47 !important;
+}
+
+.dark .ant-picker-header {
+  border-color: #2e3a47 !important;
+}
+
+.dark .ant-picker-header-view {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-picker-content th {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-picker-cell {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-picker-cell:hover {
+  background-color: #1a222c !important;
+}
+
+.dark .ant-picker-cell-selected .ant-picker-cell-inner {
+  background-color: #3c50e0 !important;
+  color: white !important;
+}
+
+/* Ant Design Tabs dark mode enhancements */
+.dark .ant-tabs-tab {
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-tabs-tab-active {
+  color: #3c50e0 !important;
+}
+
+.dark .ant-tabs-ink-bar {
+  background-color: #3c50e0 !important;
+}
+
+.dark .ant-tabs-content-holder {
+  background-color: transparent !important;
+}
+
+/* Ant Design Switch dark mode enhancements */
+.dark .ant-switch {
+  background-color: #2e3a47 !important;
+}
+
+.dark .ant-switch-checked {
+  background-color: #3c50e0 !important;
+}
+
+/* Product Form Container */
+.product-form-container {
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.dark .product-form-container {
+  background-color: #24303f !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Ant Design InputNumber dark mode enhancements */
+.dark .ant-input-number {
+  background-color: #1d2a39 !important;
+  border-color: #3d4d60 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-input-number:hover {
+  border-color: #3c50e0 !important;
+}
+
+.dark .ant-input-number-focused {
+  border-color: #3c50e0 !important;
+  box-shadow: 0 0 0 2px rgba(60, 80, 224, 0.2) !important;
+}
+
+.dark .ant-input-number-handler {
+  background-color: #24303f !important;
+  border-color: #3d4d60 !important;
+  color: #aeb7c0 !important;
+}
+
+.dark .ant-input-number-handler:hover {
+  background-color: #1a222c !important;
+  color: #3c50e0 !important;
+}
