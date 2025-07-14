@@ -10,8 +10,8 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     env:
-      VITE_API_DEV_URL: 'https://server.d-sai.com/api'
-      VITE_API_PROD_URL: 'https://server.d-sai.com/api'
+      VITE_API_DEV_URL: 'https://server.trendingimportbd.com/api'
+      VITE_API_PROD_URL: 'https://server.trendingimportbd.com/api'
       VITE_LOGIN_USERNAME: 'anis.cse5.bu@gmail.com'
       VITE_LOGIN_PASSWORD: '2468'
       VITE_REACT_APP_NODE_ENV: 'production'
