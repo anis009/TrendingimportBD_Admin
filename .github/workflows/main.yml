@@ -1,6 +1,6 @@
 #dangerous-clean-slate: true
 
-name: 🚀 Deploy EMP-QR website on push
+name: 🚀 Deploy TRENDING IMPORT BD website on push
 on:
   push:
     branches:
