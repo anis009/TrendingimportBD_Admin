@@ -21,6 +21,8 @@ const UpdateProduct = () => {
   const [updateProduct, { isLoading: updateLoading }] =
     useUpdateProductMutation();
 
+  console.log('productData~~', productData);
+
   // Utility function to generate slug
   const generateSlug = (title: string): string => {
     return title
@@ -33,46 +35,47 @@ const UpdateProduct = () => {
 
   useEffect(() => {
     if (productData?.data) {
-      const product = productData.data;
+      const product: any = productData.data;
       form.setFieldsValue({
-        title: product.title,
-        slug: product.slug,
-        img: product.img,
-        unit: product.unit,
-        parent: product.parent,
-        children: product.children,
-        price: product.price,
-        discount: product.discount,
-        quantity: product.quantity,
-        brandName: product.brand.name,
-        brandId: product.brand.id,
-        categoryName: product.category.name,
-        categoryId: product.category.id,
-        categories: product.categories,
-        subCategories: product.subCategories,
-        subCategoriesItemName: product.subCategoriesItemName,
-        status: product.status,
-        productType: product.productType,
-        description: product.description,
-        videoId: product.videoId,
-        tags: product.tags,
-        sizes: product.sizes,
-        featured: product.featured,
-        offerDate: product.offerDate
-          ? [
-              product.offerDate.startDate
-                ? dayjs(product.offerDate.startDate)
-                : null,
-              product.offerDate.endDate
-                ? dayjs(product.offerDate.endDate)
-                : null,
-            ]
-          : undefined,
+        title: product.title || '',
+        slug: product.slug || '',
+        img: product.img || '',
+        unit: product.unit || '',
+        parent: product.parent || '',
+        children: product.children || '',
+        price: product.price || 0,
+        discount: product.discount || 0,
+        quantity: product.quantity || 0,
+        brandName: product.brand?.name || '',
+        brandId: product.brand?.id || product.brand?._id || '',
+        categoryName: product.category?.name || '',
+        categoryId: product.category?.id || product.category?._id || '',
+        categories: product.categories || '',
+        subCategories: product.subCategories || '',
+        subCategoriesItemName: product.subCategoriesItemName || '',
+        status: product.status || 'in-stock',
+        productType: product.productType || '',
+        description: product.description || '',
+        videoId: product.videoId || '',
+        tags: product.tags || [],
+        sizes: product.sizes || [],
+        featured: product.featured || false,
+        sku: product.sku || '',
+        additionalImages: product.additionalImages || [],
+        offerDate:
+          product.offerDate?.startDate && product.offerDate?.endDate
+            ? [
+                dayjs(product.offerDate.startDate),
+                dayjs(product.offerDate.endDate),
+              ]
+            : undefined,
       });
     }
   }, [productData, form]);
 
   const handleSubmit = async (formData: any) => {
+    console.log('formData~~', formData);
+
     try {
       if (!formData.slug || formData.slug.trim() === '') {
         formData.slug = generateSlug(formData.title);
@@ -141,6 +144,7 @@ const UpdateProduct = () => {
         submitButtonText="Update Product"
         onCancel={handleCancel}
         showCancelButton={true}
+        initialValues={productData?.data || null}
       />
     </Card>
   );

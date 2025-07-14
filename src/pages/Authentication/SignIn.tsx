@@ -89,7 +89,7 @@ const SignIn: React.FC = () => {
           <div className="lg:w-[50%] mx-auto border-0  ">
             <div className="w-full mx-auto text-centers p-4 sm:p-12.5 xl:p-17.5">
               <h2 className=" text-2xl font-bold text-black text-center dark:text-white sm:text-title-xl2">
-                Sign In to FcFl
+                Sign In to TrendingImportBD
               </h2>
 
               {!isSuccess && errorMsg && (

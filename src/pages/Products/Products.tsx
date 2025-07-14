@@ -34,6 +34,7 @@ import { useGetSubCategoriesQuery } from '../../redux/features/subcategories/api
 import { IProduct } from '../../types/product';
 import { ICategory } from '../../types/category';
 import { ISubCategory } from '../../types/subCategory';
+import { media_url } from '../../constants';
 
 const { Title, Text } = Typography;
 
@@ -42,12 +43,6 @@ const Products = () => {
   const { data, isLoading, error, refetch } = useGetProductsQuery();
   const { data: categoriesData } = useGetCategoriesQuery(undefined);
   const { data: subCategoriesData } = useGetSubCategoriesQuery(undefined);
-
-  // Debug logging to check data structure
-  console.log('Products API response:', data);
-  console.log('Products loading state:', isLoading);
-  console.log('Products error:', error);
-  console.log('Products data array:', data?.data);
 
   // State management
   const [viewValue, setViewValue] = useState<IProduct | null>(null);
@@ -58,10 +53,12 @@ const Products = () => {
   const [deleteProduct, { isLoading: deleteLoading }] =
     useDeleteProductMutation();
   const [updateProductStatus] = useUpdateProductStatusMutation();
+
   // Navigation handlers
   const editHandler = (product: IProduct) => {
     navigate(`/products/update/${product._id}`);
   };
+
   const deleteHandler = async (id: string) => {
     try {
       const result: any = await deleteProduct({ id });
@@ -119,40 +116,41 @@ const Products = () => {
       console.error(error);
     }
   };
-  // Ensure we have valid data before rendering the table
+
+  // Safely handle products data with multiple fallbacks
   const products = React.useMemo(() => {
     console.log('Raw API data:', data);
 
+    // Handle loading state
+    if (isLoading) {
+      return [];
+    }
+
+    // Handle no data
     if (!data) {
       console.log('No data received');
       return [];
     }
 
     // Handle different possible response structures
+    let productArray: any = [];
+
     if (Array.isArray(data)) {
-      console.log('Data is array:', data);
-      return data;
+      productArray = data;
+    } else if (data.data && Array.isArray(data.data)) {
+      productArray = data.data;
+    } else if (data.status === 'success' && data.data === null) {
+      productArray = [];
+    } else {
+      console.warn('Unexpected data structure:', data);
+      productArray = [];
     }
 
-    if (data.data && Array.isArray(data.data)) {
-      console.log('Data.data is array:', data.data);
-      return data.data;
-    }
-
-    if (data.products && Array.isArray(data.products)) {
-      console.log('Data.products is array:', data.products);
-      return data.products;
-    }
-
-    // Handle case where data might be null or undefined but API call succeeded
-    if (data.status === 'success' && (!data.data || data.data === null)) {
-      console.log('API success but no data, returning empty array');
-      return [];
-    }
-
-    console.warn('Unexpected data structure:', data);
-    return [];
-  }, [data]);
+    // Ensure all items have required properties
+    return productArray.filter(
+      (item: any) => item && typeof item === 'object' && item._id,
+    );
+  }, [data, isLoading]);
 
   // Table columns
   const productColumns: ColumnsType<IProduct> = [
@@ -166,7 +164,7 @@ const Products = () => {
           <AntImage
             width={60}
             height={60}
-            src={value}
+            src={`${media_url}${value}`}
             alt="Product"
             style={{ borderRadius: 4, objectFit: 'cover' }}
           />
@@ -407,20 +405,14 @@ const Products = () => {
         </Col>
       </Row>
 
-      {error && (
-        <div style={{ color: 'red', marginBottom: 16 }}>
-          Error loading products: {error.toString()}
-        </div>
-      )}
-
-      {/* <Table
-        dataSource={Array.isArray(products) ? products : []}
+      <Table
+        dataSource={products}
         columns={productColumns}
-        rowKey={(record) => record._id || record.id || Math.random().toString()}
+        rowKey={(record) => record._id || Math.random().toString()}
         loading={isLoading}
         scroll={{ x: 1500 }}
         pagination={{
-          total: Array.isArray(products) ? products.length : 0,
+          total: products.length,
           pageSize: 10,
           showSizeChanger: true,
           showQuickJumper: true,
@@ -430,7 +422,7 @@ const Products = () => {
         locale={{
           emptyText: isLoading ? 'Loading...' : 'No products found',
         }}
-      /> */}
+      />
 
       {/* View Product Modal */}
       <AntdModal
@@ -461,7 +453,7 @@ const Products = () => {
                 <AntImage
                   width={150}
                   height={150}
-                  src={viewValue.img}
+                  src={`${media_url}${viewValue.img}`}
                   alt="Product"
                   style={{ borderRadius: 8, objectFit: 'cover' }}
                 />
@@ -500,10 +492,10 @@ const Products = () => {
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Brand">
-              {viewValue.brand.name}
+              {viewValue.brand?.name || 'N/A'}
             </Descriptions.Item>
             <Descriptions.Item label="Category">
-              {viewValue.category.name}
+              {viewValue.category?.name || 'N/A'}
             </Descriptions.Item>
             <Descriptions.Item label="Product Type">
               {viewValue.productType}
@@ -551,7 +543,9 @@ const Products = () => {
               )}
             </Descriptions.Item>
             <Descriptions.Item label="Description" span={2}>
-              {viewValue.description}
+              <div
+                dangerouslySetInnerHTML={{ __html: viewValue.description }}
+              />
             </Descriptions.Item>
             <Descriptions.Item label="Created At">
               {viewValue.createdAt

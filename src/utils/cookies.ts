@@ -5,11 +5,11 @@ const setUserToCookie = (user: any) => {
   if (temp) {
     temp = JSON.stringify(temp);
   }
-  Cookies.set('fcfl-user', temp, { expires: 7 });
+  Cookies.set('TrendingImportBD-user', temp, { expires: 7 });
 };
 
 const getUserFromCookie = () => {
-  let user = Cookies.get('fcfl-user');
+  let user = Cookies.get('TrendingImportBD-user');
   if (user) {
     user = JSON.parse(user);
   }
@@ -17,7 +17,7 @@ const getUserFromCookie = () => {
 };
 
 const removeUser = () => {
-  Cookies.remove('fcfl-user');
+  Cookies.remove('TrendingImportBD-user');
 };
 
 export const StoreToCookies = {

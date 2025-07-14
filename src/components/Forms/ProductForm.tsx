@@ -13,16 +13,14 @@ import {
   DatePicker,
 } from 'antd';
 import { useGetCategoriesQuery } from '../../redux/features/categories/apiCategories';
-import {
-  useGetSubCategoriesQuery,
-  useGetSubCategoriesByCategoryQuery,
-} from '../../redux/features/subcategories/apiSubCategories';
+import { useGetSubCategoriesByCategoryQuery } from '../../redux/features/subcategories/apiSubCategories';
 import { ICategory } from '../../types/category';
 import { ISubCategory, IItem } from '../../types/subCategory';
 import { IProduct } from '../../types/product';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import FlexibleImageInput from '../ImageInput/FlexibleImageInput';
+import MultipleImageUpload from '../ImageInput/MultipleImageUpload';
 import axios from 'axios';
 import useColorMode from '../../hooks/useColorMode';
 
@@ -43,16 +41,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
   form,
   onFinish,
   loading = false,
+  initialValues,
   submitButtonText = 'Submit',
   onCancel,
   showCancelButton = true,
-}) => {  const [colorMode] = useColorMode();
+}) => {
+  const [colorMode] = useColorMode();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
-  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | null>(
-    null,
-  );
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<
+    string | null
+  >(null);
+
+  // Add state for description to manage ReactQuill value
+  const [description, setDescription] = useState<string>('');
 
   const { data: categoriesData, isLoading: categoriesLoading } =
     useGetCategoriesQuery(undefined);
@@ -65,10 +68,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
   } = useGetSubCategoriesByCategoryQuery(selectedCategoryId, {
     skip: !selectedCategoryId,
   });
+
   // Handle category selection change
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
     setSelectedSubCategoryId(null);
+
+    // Update form field value for category
+    form.setFieldValue('categories', categoryId);
+
     // Clear subcategory and item selections when category changes
     form.setFieldsValue({
       subCategories: undefined,
@@ -79,26 +87,153 @@ const ProductForm: React.FC<ProductFormProps> = ({
   // Handle subcategory selection change
   const handleSubCategoryChange = (subCategoryId: string) => {
     setSelectedSubCategoryId(subCategoryId);
+
+    // Update form field value for subcategory
+    form.setFieldValue('subCategories', subCategoryId);
+
     // Clear item selection when subcategory changes
     form.setFieldsValue({
       subCategoriesItemName: undefined,
     });
   };
 
-  // Set initial category if editing existing product
+  // Handle subcategory item selection
+  const handleSubCategoryItemChange = (itemId: string) => {
+    form.setFieldValue('subCategoriesItemName', itemId);
+  };
+
+  // Handle description change from ReactQuill
+  const handleDescriptionChange = (value: string) => {
+    setDescription(value);
+    // Update the form field value
+    form.setFieldValue('description', value);
+  };
+
+  // Helper function to extract path from full URL
+  const extractPathFromUrl = (fullUrl: string): string => {
+    try {
+      const url = new URL(fullUrl);
+      return url.pathname; // This will return the path without domain
+    } catch (error) {
+      // If it's already a path without domain, return as is
+      return fullUrl;
+    }
+  };
+
+  // Handle image upload (shared function for both main and additional images)
+  const handleImageUpload = async (file: File): Promise<string> => {
+    try {
+      console.log('Starting upload for:', file.name);
+
+      const formData = new FormData();
+      formData.append('media', file);
+
+      const response = await axios.post(
+        'https://media.trendingimportbd.com/api/v1/upload/media',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      console.log('Upload response:', response.data);
+
+      if (response.data.success) {
+        // Return only the path without domain for storage
+        const pathOnly = response.data.file?.path || response.data.url;
+
+        // If response.data.url contains full URL, extract path
+        if (pathOnly && pathOnly.startsWith('http')) {
+          const extractedPath = extractPathFromUrl(pathOnly);
+          console.log('Extracted path for storage:', extractedPath);
+          return extractedPath;
+        }
+
+        console.log('Path for storage:', pathOnly);
+        return pathOnly;
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error: any) {
+      console.error('Upload failed:', error);
+      throw new Error(error.response?.data?.message || 'Upload failed');
+    }
+  };
+
+  // Custom onFinish handler to ensure additionalImages is included
+  const handleFormSubmit = (values: any) => {
+    console.log('Form submitted with values:', values);
+
+    // Ensure additionalImages is included in the submitted data
+    const formData = {
+      ...values,
+      // Make sure additionalImages is always an array
+      additionalImages: values.additionalImages || [],
+    };
+
+    // Convert image URLs to paths only (remove domain if present)
+    if (formData.img && formData.img.startsWith('http')) {
+      formData.img = extractPathFromUrl(formData.img);
+    }
+
+    if (formData.additionalImages && Array.isArray(formData.additionalImages)) {
+      formData.additionalImages = formData.additionalImages.map(
+        (url: string) => {
+          return url.startsWith('http') ? extractPathFromUrl(url) : url;
+        },
+      );
+    }
+
+    console.log('Final form data being submitted:', formData);
+    onFinish(formData);
+  };
+
+  // Set initial values when editing existing product
+  useEffect(() => {
+    if (initialValues) {
+      // Set category
+      if (initialValues.categories) {
+        setSelectedCategoryId(initialValues.categories);
+      }
+
+      // Set subcategory
+      if (initialValues.subCategories) {
+        setSelectedSubCategoryId(initialValues.subCategories);
+      }
+
+      // Set description
+      if (initialValues.description) {
+        setDescription(initialValues.description);
+      }
+    }
+  }, [initialValues]);
+
+  // Handle form field changes
   useEffect(() => {
     const categoryValue = form.getFieldValue('categories');
+    const subCategoryValue = form.getFieldValue('subCategories');
+    const descriptionValue = form.getFieldValue('description');
+
     if (categoryValue && categoryValue !== selectedCategoryId) {
       setSelectedCategoryId(categoryValue);
     }
-  }, [form, selectedCategoryId]);
 
-  
+    if (subCategoryValue && subCategoryValue !== selectedSubCategoryId) {
+      setSelectedSubCategoryId(subCategoryValue);
+    }
+
+    if (descriptionValue !== undefined && descriptionValue !== description) {
+      setDescription(descriptionValue);
+    }
+  }, [form, selectedCategoryId, selectedSubCategoryId, description]);
+
   return (
     <div
       className={`product-form-container ${colorMode === 'dark' ? 'dark' : ''}`}
     >
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
         <Tabs defaultActiveKey="basic" type="card">
           <TabPane tab="Basic Info" key="basic">
             <Row gutter={16}>
@@ -141,67 +276,54 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 </Form.Item>
               </Col>
             </Row>
+
+            {/* Main Image Upload */}
             <Form.Item
               label="Main Image"
               name="img"
               rules={[
                 {
                   required: true,
-                  message: 'Please provide an image URL or upload an image',
+                  message: 'Please upload an image',
                 },
               ]}
             >
               <FlexibleImageInput
-                placeholder="Enter image URL or upload an image"
-                customRequest={async (file) => {
-                  try {
-                    console.log('Starting upload for:', file.name);
-
-                    const formData = new FormData();
-                    formData.append('media', file);
-
-                    const response = await axios.post(
-                      'https://media.trendingimportbd.com/api/v1/upload/media',
-                      formData,
-                      {
-                        headers: {
-                          'Content-Type': 'multipart/form-data',
-                        },
-                      },
-                    );
-                    console.log('Upload response:', response.data);
-
-                    if (response.data.success) {
-                      // The API returns the file path, we need to construct the full URL
-                      const baseUrl = 'https://media.trendingimportbd.com';
-                      const fullUrl = response.data.file?.path
-                        ? `${baseUrl}${response.data.file.path}`
-                        : response.data.url; // fallback to url if available
-
-                      console.log('Constructed image URL:', fullUrl);
-                      return fullUrl;
-                    } else {
-                      throw new Error('Upload failed');
-                    }
-                  } catch (error: any) {
-                    console.error('Upload failed:', error);
-                    throw new Error(
-                      error.response?.data?.message || 'Upload failed',
-                    );
-                  }
-                }}
+                uploadText="Click or drag file to upload main image"
+                customRequest={handleImageUpload}
               />
-            </Form.Item>{' '}
+            </Form.Item>
+
+            {/* Multiple Images Upload - Now using the separate component */}
+            <Form.Item
+              label="Additional Images"
+              name="additionalImages"
+              help="Upload multiple product images (Each image uploads immediately)"
+              initialValue={[]} // Ensure it starts as an empty array
+            >
+              <MultipleImageUpload
+                maxCount={8}
+                maxSize={10}
+                customRequest={handleImageUpload}
+              />
+            </Form.Item>
+
+            {/* Description field */}
             <Form.Item
               label="Description"
               name="description"
               rules={[
-                { required: true, message: 'Please enter product description' },
+                {
+                  required: false,
+                  message: 'Please enter product description',
+                },
               ]}
             >
               <div className={colorMode === 'dark' ? 'dark-quill' : ''}>
                 <ReactQuill
                   theme="snow"
+                  value={description}
+                  onChange={handleDescriptionChange}
                   placeholder="Enter product description"
                   style={{
                     height: '200px',
@@ -249,7 +371,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 />
               </div>
             </Form.Item>
-          </TabPane>{' '}
+          </TabPane>
+
+          {/* Categories & Classification Tab */}
           <TabPane tab="Categories & Classification" key="categories">
             <Row gutter={16}>
               <Col span={12}>
@@ -257,7 +381,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Category"
                   name="categories"
                   rules={[
-                    { required: true, message: 'Please select a category' },
+                    { required: false, message: 'Please select a category' },
                   ]}
                   help="Select a category to load related subcategories"
                 >
@@ -271,10 +395,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     onClear={() => {
                       setSelectedCategoryId(null);
                       form.setFieldsValue({
+                        categories: undefined,
                         subCategories: undefined,
                         subCategoriesItemName: undefined,
                       });
                     }}
+                    value={selectedCategoryId}
                   >
                     {categoriesData?.data?.map((category: ICategory) => (
                       <Select.Option key={category._id} value={category._id}>
@@ -282,7 +408,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                       </Select.Option>
                     ))}
                   </Select>
-                </Form.Item>{' '}
+                </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
@@ -292,7 +418,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     { required: false, message: 'Please select a subcategory' },
                   ]}
                   help="Subcategories will load after selecting a category"
-                >                  <Select
+                >
+                  <Select
                     placeholder={
                       !selectedCategoryId
                         ? 'Please select a category first'
@@ -307,9 +434,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     onClear={() => {
                       setSelectedSubCategoryId(null);
                       form.setFieldsValue({
+                        subCategories: undefined,
                         subCategoriesItemName: undefined,
                       });
                     }}
+                    value={selectedSubCategoryId}
                     notFoundContent={
                       !selectedCategoryId
                         ? 'Please select a category first'
@@ -331,7 +460,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   </Select>
                 </Form.Item>
               </Col>
-            </Row>            <Row gutter={16}>
+            </Row>
+
+            <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
                   label="SubCategory Item Name"
@@ -351,6 +482,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     showSearch
                     optionFilterProp="children"
                     disabled={!selectedSubCategoryId}
+                    onChange={handleSubCategoryItemChange}
                     notFoundContent={
                       !selectedCategoryId
                         ? 'Please select a category first'
@@ -359,18 +491,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         : 'No items found in this subcategory'
                     }
                   >
-                    {selectedSubCategoryId && 
-                      subCategoriesData?.data?.find(
-                        (subCat: ISubCategory) => subCat._id === selectedSubCategoryId
-                      )?.items?.map((item: IItem) => (
-                        <Select.Option
-                          key={item._id}
-                          value={item._id}
-                        >
-                          {item.name}
-                        </Select.Option>
-                      ))
-                    }
+                    {selectedSubCategoryId &&
+                      subCategoriesData?.data
+                        ?.find(
+                          (subCat: ISubCategory) =>
+                            subCat._id === selectedSubCategoryId,
+                        )
+                        ?.items?.map((item: IItem) => (
+                          <Select.Option key={item._id} value={item.name}>
+                            {item.name}
+                          </Select.Option>
+                        ))}
                   </Select>
                 </Form.Item>
               </Col>
@@ -379,7 +510,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Product Type"
                   name="productType"
                   rules={[
-                    { required: true, message: 'Please enter product type' },
+                    { required: false, message: 'Please enter product type' },
                   ]}
                 >
                   <Input placeholder="Enter product type" />
@@ -387,6 +518,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
               </Col>
             </Row>
           </TabPane>
+
+          {/* Pricing & Inventory Tab */}
           <TabPane tab="Pricing & Inventory" key="pricing">
             <Row gutter={16}>
               <Col span={8}>
@@ -394,7 +527,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Price"
                   name="price"
                   rules={[
-                    { required: true, message: 'Please enter price' },
+                    { required: false, message: 'Please enter price' },
                     {
                       type: 'number',
                       min: 0,
@@ -428,7 +561,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Quantity"
                   name="quantity"
                   rules={[
-                    { required: true, message: 'Please enter quantity' },
+                    { required: false, message: 'Please enter quantity' },
                     {
                       type: 'number',
                       min: 0,
@@ -451,7 +584,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Brand Name"
                   name="brandName"
                   rules={[
-                    { required: true, message: 'Please enter brand name' },
+                    { required: false, message: 'Please enter brand name' },
                   ]}
                 >
                   <Input placeholder="Enter brand name" />
@@ -461,7 +594,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <Form.Item
                   label="Brand ID"
                   name="brandId"
-                  rules={[{ required: true, message: 'Please enter brand ID' }]}
+                  rules={[
+                    { required: false, message: 'Please enter brand ID' },
+                  ]}
                 >
                   <Input placeholder="Enter brand ID" />
                 </Form.Item>
@@ -474,7 +609,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Category Name"
                   name="categoryName"
                   rules={[
-                    { required: true, message: 'Please enter category name' },
+                    { required: false, message: 'Please enter category name' },
                   ]}
                 >
                   <Input placeholder="Enter category name" />
@@ -485,7 +620,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   label="Category ID"
                   name="categoryId"
                   rules={[
-                    { required: true, message: 'Please enter category ID' },
+                    { required: false, message: 'Please enter category ID' },
                   ]}
                 >
                   <Input placeholder="Enter category ID" />
@@ -496,7 +631,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <Form.Item
               label="Status"
               name="status"
-              rules={[{ required: true, message: 'Please select status' }]}
+              rules={[{ required: false, message: 'Please select status' }]}
             >
               <Select placeholder="Select status">
                 <Select.Option value="in-stock">In Stock</Select.Option>
@@ -505,6 +640,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
               </Select>
             </Form.Item>
           </TabPane>
+
+          {/* Additional Info Tab */}
           <TabPane tab="Additional Info" key="additional">
             <Row gutter={16}>
               <Col span={12}>
@@ -563,7 +700,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             {showCancelButton && <Button onClick={onCancel}>Cancel</Button>}
             <Button type="primary" htmlType="submit" loading={loading}>
               {submitButtonText}
-            </Button>{' '}
+            </Button>
           </Space>
         </Form.Item>
       </Form>

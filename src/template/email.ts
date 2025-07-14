@@ -10,7 +10,7 @@ export const template = `<!DOCTYPE html>
     rel="stylesheet">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="style.css">
-  <title>Simple Email for FCFL</title>
+  <title>Simple Email for TrendingImportBD</title>
   <style>
     @media only screen and (max-width: 620px) {
       table[class="body"] h1 {
@@ -143,7 +143,7 @@ export const template = `<!DOCTYPE html>
         style="font-size: 14px; vertical-align: top; display: block; padding-top: 63px; padding-bottom: 63px; width: 60%; margin: 0 auto; font-family: 'Inter', sans-serif;"
         width="60%" valign="top">
         <div class="header-box" style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <img class="template-header-img" src="https://i.ibb.co/qRqtMRj/fcfl-logo.png"
+          <img class="template-header-img" src="https://i.ibb.co/qRqtMRj/TrendingImportBD-logo.png"
             style="border: none; -ms-interpolation-mode: bicubic; max-width: 100%;">
           <div class="template-header" style="display: flex; align-items: center;">
             <div>
@@ -460,7 +460,7 @@ export const template = `<!DOCTYPE html>
   </table>
 </body>
 
-</html>`
+</html>`;
 
 export const smallEmail = `<table role="presentation" cellpadding="0" cellspacing="0" class="body"
 style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; background-color: #001b4c; width: 100%; margin: auto; font-family: 'Inter', sans-serif;"
@@ -542,4 +542,4 @@ width="100%">
     </div>
   </td>
 </tr>
-</table>`
+</table>`;

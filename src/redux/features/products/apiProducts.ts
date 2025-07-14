@@ -17,7 +17,7 @@ const apiProducts = api.injectEndpoints({
 
     // Get single product
     getProduct: builder.query<ApiResponse<IProduct>, string>({
-      query: (id) => `/product/${id}`,
+      query: (id) => `/product/single-product/${id}`,
       providesTags: ['product'],
     }),
 
@@ -40,7 +40,7 @@ const apiProducts = api.injectEndpoints({
       { id: string; data: Partial<IProductFormData> }
     >({
       query: ({ id, data }) => ({
-        url: `/product/${id}`,
+        url: `/product/edit-product/${id}`,
         method: 'PATCH',
         body: data,
       }),
@@ -83,7 +83,7 @@ const apiProducts = api.injectEndpoints({
         body: { status },
       }),
       invalidatesTags: ['products', 'product'],
-    }), // Upload product image
+    }),
     uploadProductImage: builder.mutation<
       ApiResponse<{ url: string; filename: string }>,
       FormData

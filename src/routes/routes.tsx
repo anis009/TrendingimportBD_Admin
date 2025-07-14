@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Users List" />
+              <PageTitle title="TrendingImportBD | Users List" />
               <ListUsers />
             </>
           </PrivateRoute>
@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Users List" />
+              <PageTitle title="TrendingImportBD | Users List" />
               <ListUsers />
             </>
           </PrivateRoute>
@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Clients" />
+              <PageTitle title="TrendingImportBD | Clients" />
               <ListClients />
             </>
           </PrivateRoute>
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Clients" />
+              <PageTitle title="TrendingImportBD | Clients" />
               <AllClients />
             </>
           </PrivateRoute>
@@ -71,7 +71,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Clients Details" />
+              <PageTitle title="TrendingImportBD | Clients Details" />
               <ClientDetails />
             </>
           </PrivateRoute>
@@ -82,7 +82,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Account profile" />
+              <PageTitle title="TrendingImportBD | Account profile" />
               <Profile />
             </>
           </PrivateRoute>
@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Categories Management" />
+              <PageTitle title="TrendingImportBD | Categories Management" />
               <Categories />
             </>
           </PrivateRoute>
@@ -104,7 +104,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | SubCategories Management" />
+              <PageTitle title="TrendingImportBD | SubCategories Management" />
               <SubCategories />
             </>
           </PrivateRoute>
@@ -115,7 +115,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Products Management" />
+              <PageTitle title="TrendingImportBD | Products Management" />
               <Products />
             </>
           </PrivateRoute>
@@ -126,7 +126,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Create Product" />
+              <PageTitle title="TrendingImportBD | Create Product" />
               <CreateProduct />
             </>
           </PrivateRoute>
@@ -137,7 +137,7 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <>
-              <PageTitle title="FcFl | Update Product" />
+              <PageTitle title="TrendingImportBD | Update Product" />
               <UpdateProduct />
             </>
           </PrivateRoute>

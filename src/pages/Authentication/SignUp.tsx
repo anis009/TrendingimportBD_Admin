@@ -92,7 +92,9 @@ const SignUp: React.FC = () => {
               <Link className="mb-5.5 inline-block" to="/">
                 {/* <img className="hidden dark:block" src={Logo} alt="Logo" />
                 <img className="dark:hidden" src={LogoDark} alt="Logo" /> */}
-                <h2 className="text-xl font-semibold">FcFl Admin</h2>
+                <h2 className="text-xl font-semibold">
+                  TrendingImportBD Admin
+                </h2>
               </Link>
               <p className="2xl:px-20">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit
@@ -228,7 +230,7 @@ const SignUp: React.FC = () => {
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className=" text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign Up to FcFl
+                Sign Up to TrendingImportBD
               </h2>
               {!isSuccess && errorMsg && (
                 <div className="mt-3 bg-red-300 px-5 py-2 rounded-md">
