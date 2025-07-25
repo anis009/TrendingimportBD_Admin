@@ -20,6 +20,8 @@ export const api = createApi({
     'products',
     'product',
     'subcategories-by-category',
+    'orders',
+    'order',
   ],
   baseQuery: fetchBaseQuery({
     // baseUrl: 'http://localhost:5000/api/v1',

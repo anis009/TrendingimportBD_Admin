@@ -15,6 +15,7 @@ import SubCategories from '../pages/SubCategories/SubCategories';
 import Products from '../pages/Products/Products';
 import CreateProduct from '../pages/Products/CreateProduct';
 import UpdateProduct from '../pages/Products/UpdateProduct';
+import Orders from '../pages/Orders/Orders';
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +28,7 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <>
               <PageTitle title="TrendingImportBD | Users List" />
-              <ListUsers />
+              <Orders />
             </>
           </PrivateRoute>
         ),
@@ -62,6 +63,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="TrendingImportBD | Clients" />
               <AllClients />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/orders',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="TrendingImportBD | Orders" />
+              <Orders />
             </>
           </PrivateRoute>
         ),
