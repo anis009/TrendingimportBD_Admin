@@ -16,6 +16,7 @@ import Products from '../pages/Products/Products';
 import CreateProduct from '../pages/Products/CreateProduct';
 import UpdateProduct from '../pages/Products/UpdateProduct';
 import Orders from '../pages/Orders/Orders';
+import BrandList from '../pages/Brand/BrandList';
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,17 @@ export const router = createBrowserRouter([
             <>
               <PageTitle title="TrendingImportBD | Users List" />
               <ListUsers />
+            </>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/brands/brand-list',
+        element: (
+          <PrivateRoute>
+            <>
+              <PageTitle title="TrendingImportBD | Brand List" />
+              <BrandList />
             </>
           </PrivateRoute>
         ),
