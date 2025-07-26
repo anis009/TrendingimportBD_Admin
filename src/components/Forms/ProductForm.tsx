@@ -35,6 +35,7 @@ interface ProductFormProps {
   submitButtonText?: string;
   onCancel?: () => void;
   showCancelButton?: boolean;
+  isEditMode?: boolean; // Add this prop
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -45,6 +46,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   submitButtonText = 'Submit',
   onCancel,
   showCancelButton = true,
+  isEditMode = false, // Default to false
 }) => {
   const [colorMode] = useColorMode();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
@@ -53,14 +55,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<
     string | null
   >(null);
-
-  // Add state for description to manage ReactQuill value
   const [description, setDescription] = useState<string>('');
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const { data: categoriesData, isLoading: categoriesLoading } =
     useGetCategoriesQuery(undefined);
 
-  // Only fetch subcategories when a category is selected
+  // Fetch subcategories when a category is selected OR when editing existing product
   const {
     data: subCategoriesData,
     isLoading: subCategoriesLoading,
@@ -69,8 +70,61 @@ const ProductForm: React.FC<ProductFormProps> = ({
     skip: !selectedCategoryId,
   });
 
+  // Initialize form values when editing existing product
+  useEffect(() => {
+    if (isEditMode && initialValues && !isInitialized) {
+      console.log('Initializing form with:', initialValues);
+
+      // Set category first
+      if (initialValues.categories) {
+        setSelectedCategoryId(initialValues.categories);
+      }
+
+      // Set subcategory
+      if (initialValues.subCategories) {
+        setSelectedSubCategoryId(initialValues.subCategories);
+      }
+
+      // Set description
+      if (initialValues.description) {
+        setDescription(initialValues.description);
+      }
+
+      setIsInitialized(true);
+    }
+  }, [isEditMode, initialValues, isInitialized]);
+
+  // Watch for form field changes and sync with state
+  useEffect(() => {
+    const categoryValue = form.getFieldValue('categories');
+    const subCategoryValue = form.getFieldValue('subCategories');
+    const descriptionValue = form.getFieldValue('description');
+
+    // Only update if values are different and not during initialization
+    if (isInitialized) {
+      if (categoryValue && categoryValue !== selectedCategoryId) {
+        setSelectedCategoryId(categoryValue);
+      }
+
+      if (subCategoryValue && subCategoryValue !== selectedSubCategoryId) {
+        setSelectedSubCategoryId(subCategoryValue);
+      }
+
+      if (descriptionValue !== undefined && descriptionValue !== description) {
+        setDescription(descriptionValue);
+      }
+    }
+  }, [
+    form,
+    selectedCategoryId,
+    selectedSubCategoryId,
+    description,
+    isInitialized,
+  ]);
+
   // Handle category selection change
   const handleCategoryChange = (categoryId: string) => {
+    console.log('Category changed to:', categoryId);
     setSelectedCategoryId(categoryId);
     setSelectedSubCategoryId(null);
 
@@ -86,6 +140,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   // Handle subcategory selection change
   const handleSubCategoryChange = (subCategoryId: string) => {
+    console.log('Subcategory changed to:', subCategoryId);
     setSelectedSubCategoryId(subCategoryId);
 
     // Update form field value for subcategory
@@ -190,45 +245,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
     onFinish(formData);
   };
 
-  // Set initial values when editing existing product
-  useEffect(() => {
-    if (initialValues) {
-      // Set category
-      if (initialValues.categories) {
-        setSelectedCategoryId(initialValues.categories);
-      }
-
-      // Set subcategory
-      if (initialValues.subCategories) {
-        setSelectedSubCategoryId(initialValues.subCategories);
-      }
-
-      // Set description
-      if (initialValues.description) {
-        setDescription(initialValues.description);
-      }
-    }
-  }, [initialValues]);
-
-  // Handle form field changes
-  useEffect(() => {
-    const categoryValue = form.getFieldValue('categories');
-    const subCategoryValue = form.getFieldValue('subCategories');
-    const descriptionValue = form.getFieldValue('description');
-
-    if (categoryValue && categoryValue !== selectedCategoryId) {
-      setSelectedCategoryId(categoryValue);
-    }
-
-    if (subCategoryValue && subCategoryValue !== selectedSubCategoryId) {
-      setSelectedSubCategoryId(subCategoryValue);
-    }
-
-    if (descriptionValue !== undefined && descriptionValue !== description) {
-      setDescription(descriptionValue);
-    }
-  }, [form, selectedCategoryId, selectedSubCategoryId, description]);
-
   return (
     <div
       className={`product-form-container ${colorMode === 'dark' ? 'dark' : ''}`}
@@ -294,12 +310,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
               />
             </Form.Item>
 
-            {/* Multiple Images Upload - Now using the separate component */}
+            {/* Multiple Images Upload */}
             <Form.Item
               label="Additional Images"
               name="additionalImages"
               help="Upload multiple product images (Each image uploads immediately)"
-              initialValue={[]} // Ensure it starts as an empty array
+              initialValue={[]}
             >
               <MultipleImageUpload
                 maxCount={8}

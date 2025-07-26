@@ -245,9 +245,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </div>
 
           {/* <!-- Others Group --> */}
-          <div>
+          {/* <div>
             <ul className="mb-6 flex flex-col gap-1.5">
-              {/* <!-- Menu Item Auth Pages --> */}
+             
               <SidebarLinkGroup
                 activeCondition={
                   pathname === '/auth' || pathname.includes('auth')
@@ -317,7 +317,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           />
                         </svg>
                       </NavLink>
-                      {/* <!-- Dropdown Menu Start --> */}
+                      
                       <div
                         className={`translate transform overflow-hidden ${
                           !open && 'hidden'
@@ -342,7 +342,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 }}
               </SidebarLinkGroup>
             </ul>
-          </div>
+          </div> */}
         </nav>
       </div>
     </aside>

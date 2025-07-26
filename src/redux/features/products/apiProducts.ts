@@ -36,8 +36,8 @@ const apiProducts = api.injectEndpoints({
 
     // Update product
     updateProduct: builder.mutation<
-      ApiResponse<IProduct>,
-      { id: string; data: Partial<IProductFormData> }
+      ApiResponse<IProduct | any>,
+      { id: string; data: Partial<IProductFormData | any> }
     >({
       query: ({ id, data }) => ({
         url: `/product/edit-product/${id}`,

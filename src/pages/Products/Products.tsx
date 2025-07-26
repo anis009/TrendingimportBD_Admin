@@ -102,9 +102,11 @@ const Products = () => {
 
   const updateStatus = async (productId: string, newStatus: string) => {
     try {
-      const result: any = await updateProductStatus({
+      const result: any = await updateProduct({
         id: productId,
-        status: newStatus,
+        data: {
+          status: newStatus,
+        },
       });
 
       if (result && result?.data && result?.data?.status === 'success') {

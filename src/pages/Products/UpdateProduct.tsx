@@ -36,7 +36,9 @@ const UpdateProduct = () => {
   useEffect(() => {
     if (productData?.data) {
       const product: any = productData.data;
-      form.setFieldsValue({
+
+      // Prepare form values with proper category and subcategory handling
+      const formValues = {
         title: product.title || '',
         slug: product.slug || '',
         img: product.img || '',
@@ -50,8 +52,9 @@ const UpdateProduct = () => {
         brandId: product.brand?.id || product.brand?._id || '',
         categoryName: product.category?.name || '',
         categoryId: product.category?.id || product.category?._id || '',
-        categories: product.categories || '',
-        subCategories: product.subCategories || '',
+        // Fixed: Use the actual stored IDs from the product
+        categories: product.categories?._id || '',
+        subCategories: product.subCategories?._id,
         subCategoriesItemName: product.subCategoriesItemName || '',
         status: product.status || 'in-stock',
         productType: product.productType || '',
@@ -69,7 +72,12 @@ const UpdateProduct = () => {
                 dayjs(product.offerDate.endDate),
               ]
             : undefined,
-      });
+      };
+
+      console.log('Setting form values:', formValues);
+
+      // Set all form values at once
+      form.setFieldsValue(formValues);
     }
   }, [productData, form]);
 
@@ -145,6 +153,7 @@ const UpdateProduct = () => {
         onCancel={handleCancel}
         showCancelButton={true}
         initialValues={productData?.data || null}
+        isEditMode={true} // Add this prop to indicate edit mode
       />
     </Card>
   );
