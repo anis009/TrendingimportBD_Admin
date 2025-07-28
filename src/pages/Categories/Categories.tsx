@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { BiSolidEdit } from 'react-icons/bi';
 import { GrView } from 'react-icons/gr';
 import { MdDelete } from 'react-icons/md';
+import { Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 import {
   Button,
@@ -29,6 +32,7 @@ import {
 } from '../../redux/features/categories/apiCategories';
 import { ICategory } from '../../types/category';
 import { Toast } from '../../utils/toast';
+import { getImageUrl } from '../../utils/common';
 
 const { Title } = Typography;
 
@@ -51,6 +55,10 @@ const Categories = () => {
 
   const [deleteCategory, { isLoading: deleteLoading }] =
     useDeleteCategoryMutation();
+  const [editImagePreview, setEditImagePreview] = useState<
+    string | undefined
+  >();
+  const [addImagePreview, setAddImagePreview] = useState<string | undefined>();
   if (isLoading) {
     return (
       <Card>
@@ -65,9 +73,9 @@ const Categories = () => {
     return title
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, '') // Remove special characters except word chars, spaces, and hyphens
-      .replace(/[\s_-]+/g, '-') // Replace spaces, underscores, and multiple hyphens with single hyphen
-      .replace(/^-+|-+$/g, ''); // Remove leading and trailing hyphens
+      .replace(/[^\w\s-]/g, '') 
+      .replace(/[\s_-]+/g, '-') 
+      .replace(/^-+|-+$/g, ''); 
   };
 
   // Form submission for editing
@@ -164,6 +172,30 @@ const Categories = () => {
     }
   };
 
+  // Helper for image upload
+  const handleImageUpload = async (options: any) => {
+    const { onSuccess, onError, file } = options;
+    const formData = new FormData();
+    formData.append('media', file);
+
+    try {
+      const res = await axios.post(
+        'https://media.trendingimportbd.com/api/v1/upload/media',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+
+      console.log('res~~', res);
+      if (res.data.success) {
+        onSuccess(res.data.file?.path || res.data.url);
+      } else {
+        onError(new Error('Upload failed'));
+      }
+    } catch (err) {
+      onError(err);
+    }
+  };
+
   // Table columns
   const columns = [
     {
@@ -175,7 +207,7 @@ const Categories = () => {
           <AntImage
             width={48}
             height={48}
-            src={value}
+            src={getImageUrl(value)}
             alt="Category"
             style={{ objectFit: 'cover', borderRadius: '4px' }}
           />
@@ -316,12 +348,36 @@ const Categories = () => {
             <Input placeholder="Auto-generated from title if left empty" />
           </Form.Item>
 
-          <Form.Item
-            name="image"
-            label="Image URL"
-            rules={[{ type: 'url', message: 'Please enter a valid URL' }]}
-          >
-            <Input placeholder="https://example.com/image.jpg" />
+          <Form.Item name="image" label="Image" rules={[{ required: false }]}>
+            <Upload
+              customRequest={handleImageUpload}
+              listType="picture"
+              maxCount={1}
+              showUploadList={false}
+              beforeUpload={() => true}
+              onChange={(info) => {
+                if (info.file.status === 'done') {
+                  form.setFieldsValue({ image: info.file.response });
+                  setEditImagePreview(info.file.response);
+                } else if (info.file.status === 'removed') {
+                  form.setFieldsValue({ image: undefined });
+                  setEditImagePreview(undefined);
+                }
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Upload Image</Button>
+            </Upload>
+            {editImagePreview && (
+              <div>
+                <AntImage
+                  src={getImageUrl(editImagePreview)}
+                  alt="Preview"
+                  width={80}
+                  height={80}
+                  style={{ marginTop: 8, objectFit: 'cover', borderRadius: 4 }}
+                />
+              </div>
+            )}
           </Form.Item>
 
           <Form.Item
@@ -380,12 +436,36 @@ const Categories = () => {
             <Input placeholder="Auto-generated from title if left empty" />
           </Form.Item>
 
-          <Form.Item
-            name="image"
-            label="Image URL"
-            rules={[{ type: 'url', message: 'Please enter a valid URL' }]}
-          >
-            <Input placeholder="https://example.com/image.jpg" />
+          <Form.Item name="image" label="Image" rules={[{ required: false }]}>
+            <Upload
+              customRequest={handleImageUpload}
+              listType="picture"
+              maxCount={1}
+              showUploadList={false}
+              beforeUpload={() => true}
+              onChange={(info) => {
+                if (info.file.status === 'done') {
+                  addForm.setFieldsValue({ image: info.file.response });
+                  setAddImagePreview(info.file.response);
+                } else if (info.file.status === 'removed') {
+                  addForm.setFieldsValue({ image: undefined });
+                  setAddImagePreview(undefined);
+                }
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Upload Image</Button>
+            </Upload>
+            {addImagePreview && (
+              <div>
+                <AntImage
+                  src={getImageUrl(addImagePreview)}
+                  alt="Preview"
+                  width={80}
+                  height={80}
+                  style={{ marginTop: 8, objectFit: 'cover', borderRadius: 4 }}
+                />
+              </div>
+            )}
           </Form.Item>
 
           <Form.Item
